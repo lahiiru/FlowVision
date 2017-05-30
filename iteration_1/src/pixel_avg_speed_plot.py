@@ -47,8 +47,9 @@ i=0
 videoMode = True
 record = True
 speed =0
-frame_count=0
-var_mean_size=1
+black_threshold =20
+black_frame_count=0
+white_frame_count=1
 
 if record:
     try:
@@ -83,28 +84,24 @@ while(1):
 
     if perc > white_threshold:
         inst_speed = speedCalc(distance, cam_angle, drain_d, frame_rate, frame_width)
-
-        if var_mean_size > mean_size:
-            var_mean_size = mean_size
-
-        if frame_count > 20:
-            print (frame_count)
-            var_mean_size = 1
+        if black_frame_count > black_threshold:
+            white_frame_count = 1
 
         values+=[inst_speed]
         i+=1
         x = range(0,i)
-        vals_for_mean = values[-1 * var_mean_size:]
-        print (vals_for_mean)
+        vals_for_mean = values[-1 * white_frame_count:]
+       # print(vals_for_mean)
         m = np.mean(vals_for_mean)
         means += [m]
         
         speed = m
-        frame_count = 0
-        var_mean_size = var_mean_size + 1
+        black_frame_count = 0
+        if white_frame_count < mean_size:
+            white_frame_count = white_frame_count + 1
 
     else:
-        frame_count = frame_count + 1
+        black_frame_count = black_frame_count + 1
 
         
     if len(values) < 1:
