@@ -1,4 +1,5 @@
 import cv2
+from cv2 import *
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -23,7 +24,7 @@ try:
     if video_src.isdigit():
         video_src = int(video_src)
 except:
-    video_src = "01.mp4"
+    video_src = "..\\01.mp4"
     
 c = cv2.VideoCapture(video_src)
 
