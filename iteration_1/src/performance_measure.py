@@ -6,8 +6,7 @@ import sys
 import math
 import datetime
 import os
-
-
+import time
 
 def quit_figure(event):
     if event.key == 'v':
@@ -52,6 +51,11 @@ videoMode = True
 record = False
 speed = 0
 
+execution_times_outer = np.zeros((20, 8))
+performance_graph_titles = ['Reading\n_Frames','GrayScale\n_Image','Removing\n_Background','MorphologyEx\nfunction','Selecting\n_template','Counting\n_white_pixels','Template\n_matching','MinMax\n_locate']
+average_time_values = []
+outer_loop = 0
+
 if record:
     try:
         os.mkdir('records')
@@ -61,35 +65,93 @@ if record:
     out = cv2.VideoWriter('records\\' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.avi', fourcc,
                           frame_rate, (frame_width, frame_hieght))
 
-while (1):
-    rect, frame = c.read()
+
+while (outer_loop<20):                                               #changed
+
+    print outer_loop
+    inner_loop=0
+
+    start = time.clock()
+    rect, frame = c.read()                                          #reading the frames
+    span = round((time.clock() - start),2)
+    execution_times_outer[outer_loop,inner_loop] = span
+
+    inner_loop+=1
+
     if not rect:
         break
 
     raw_frame = frame
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    fgmask = fgbg.apply(frame)
-    fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)
+    start = time.clock()
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)                  #gray the image
+    span = round((time.clock() - start), 2)
+    execution_times_outer[outer_loop, inner_loop] = span
+    inner_loop+=1
+
+    start = time.clock()
+    fgmask = fgbg.apply(frame)                                       #apply the background remover
+    span = round((time.clock() - start), 2)
+    execution_times_outer[outer_loop, inner_loop] = span
+    inner_loop += 1
+    #print span
+
+    start = time.clock()
+    fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)       #morphologyEx function
+    span = round((time.clock() - start), 2)
+    execution_times_outer[outer_loop, inner_loop] = span
+    inner_loop += 1
+
     current = fgmask
-    template = prev[20:-20, -300:-100]
+
+    start = time.clock()
+    template = prev[20:-20, -300:-100]                                #selecting the template
+    span = round((time.clock() - start), 2)
+    execution_times_outer[outer_loop, inner_loop] = span
+    inner_loop += 1
+
     a = (template > 250)
-    white = cv2.countNonZero(template[a])
+
+    start = time.clock()
+    white = cv2.countNonZero(template[a])                             #Counting White pixels
+    span = round((time.clock() - start), 2)
+    execution_times_outer[outer_loop, inner_loop] = span
+    inner_loop += 1
+
     tot = template.shape[:2][0] * template.shape[:2][1]
     perc = white * 1000.0 / tot
 
-    diff = cv2.matchTemplate(current, template, method=cv2.TM_CCOEFF_NORMED)
-    loc = cv2.minMaxLoc(diff)
+    start = time.clock()
+    diff = cv2.matchTemplate(current, template, method=cv2.TM_CCOEFF_NORMED)        #template matching algorithm
+    span = round((time.clock() - start), 2)
+    execution_times_outer[outer_loop, inner_loop] = span
+    inner_loop += 1
+
+    start = time.clock()
+    loc = cv2.minMaxLoc(diff)                                           #minMax locate algo
+    span = round((time.clock() - start), 2)
+    execution_times_outer[outer_loop, inner_loop] = span
+
+    inner_loop += 1
+    outer_loop += 1
+
     minVal, maxVal, minLoc, maxLoc = loc
 
     ref_point = prev.shape[:2][1] - 300
     distance = ref_point - maxLoc[0]
 
     if perc > white_threshold:
-        inst_speed = speedCalc(distance, cam_angle, drain_d, frame_rate, frame_width)
+
+
+        inst_speed = speedCalc(distance, cam_angle, drain_d, frame_rate, frame_width)       #instant speed calculating function
+
+
         values += [inst_speed]
         i += 1
         x = range(0, i)
-        vals_for_mean = values[-1 * mean_size:]
+
+        vals_for_mean = values[-1 * mean_size:]                           #re-arrange the array
+
+
         m = np.mean(vals_for_mean)
         means += [m]
 
@@ -146,4 +208,15 @@ c.release()
 if record:
     out.release()
 
+                  # plot the graph execution_time vs case
 
+average_time_values = execution_times_outer.mean(axis=0)
+
+x_numbers = [0,1,2,3,4,5,6,7]
+plt.xticks(x_numbers, performance_graph_titles, rotation='vertical',fontsize='7')
+
+plt.plot(x_numbers,average_time_values)
+plt.ylabel('Time taken(s)')
+plt.margins(0.2)
+plt.subplots_adjust(bottom=0.15)
+plt.show()
