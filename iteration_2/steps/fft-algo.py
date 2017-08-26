@@ -1,11 +1,10 @@
-#!/usr/bin/env python
-'''
+"""
     2D FFT and histogram based angle calculation algorithm
     Input:  A spatio temporal image
     Output: Approximation for average pattern angle
 
     python fft-algo.py gradients/60.jpg 10
-'''
+"""
 
 from __future__ import print_function
 import numpy as np
