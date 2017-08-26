@@ -38,7 +38,8 @@ frame_hieght, frame_width = prev.shape[:2]
 
 prev=cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
 fgbg = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=False)
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
+#kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
 values = []
 means = []
 mean_size = 10
