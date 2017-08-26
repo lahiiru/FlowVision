@@ -35,10 +35,9 @@ def getMaximumOccurenceInterval(points):
     return maximumOccurenceBin
 
 def getMagnitudeFFT(image):
-    img_float32 = np.float32(image)
-    dft = cv2.dft(img_float32, flags=cv2.DFT_COMPLEX_OUTPUT)
-    dft_shift = np.fft.fftshift(dft)
-    spectrum = 20 * np.log(cv2.magnitude(dft_shift[:, :, 0], dft_shift[:, :, 1]))
+    f = np.fft.fft2(image)
+    fshift = np.fft.fftshift(f)
+    spectrum = 20 * np.log(np.abs(fshift))
     return spectrum
 
 h, w = gray.shape[:2]
