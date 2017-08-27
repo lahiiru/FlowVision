@@ -28,7 +28,8 @@ gray = cv2.imread(video_src, 0)
 
 # TODO: should be implemented in less complexity
 def getMaximumOccurenceInterval(points):
-    hist = plt.hist(points, np.arange(0, 90, 1));
+
+    hist = np.histogram(points, np.arange(0, 90, 1))
     maxBinUpper = np.argmax(hist[0])
     maximumOccurenceBin = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
     return maximumOccurenceBin
