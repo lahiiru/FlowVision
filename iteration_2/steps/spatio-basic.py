@@ -20,7 +20,7 @@ class App:
         
     def run(self):
             cv2.namedWindow('vis')
-            cv2.setMouseCallback('vis',draw_circle)
+            cv2.setMouseCallback('vis', callback)
             ret, frame = self.cam.read()
             empty = np.empty_like(frame)
             height, width, c = empty.shape
@@ -52,7 +52,7 @@ class App:
                 if ch == 27:
                         break
 
-def draw_circle(event,x,y,flags,param):
+def callback(event,x,y,flags,param):
     global mouseX, mouseY
     if event == 4:
         mouseX, mouseY = x, y
