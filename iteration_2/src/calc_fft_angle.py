@@ -6,7 +6,7 @@ import numpy as np
 
 frame_rate=30
 
-selected_line=350 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
+selected_line=260 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
 
 
 # this main function for read the video stream and calculate the angle from FFT method
@@ -22,7 +22,7 @@ def main():
     c = cv2.VideoCapture(video_src)
 
     rect, frame = c.read()
-    frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC);
+    frame = cv2.resize(frame, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC);
     sp = Spatio(frame, selected_line) # initialize the Spatio object
     ft = FastFourierTransform()# initialize the FastFourierTransform object
     cycle_start = 0
@@ -31,10 +31,11 @@ def main():
         cycle_time = time.time() - cycle_start
         cycle_start = time.time()
         print (1 / cycle_time)
-        frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC);
+
         if not rect:
             cv2.destroyAllWindows()
             break
+        frame = cv2.resize(frame, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC);
 
         spatio_image = sp.getSpatioImage(frame) # get the spatio image (grayscale) from the  frame
 
@@ -53,6 +54,8 @@ def main():
         ch = cv2.waitKey(int(1000.0 / frame_rate))
 
         if ch == 27:
+            cv2.imwrite('fft_ms_03MOV_01.png', ft.magnitude_spectrum)
+            cv2.imwrite('spatio_ms_03MOV_01.png', view)
             break
 
 
