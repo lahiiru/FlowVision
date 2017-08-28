@@ -51,7 +51,7 @@ videoMode = True
 record = False
 speed = 0
 
-execution_times_outer = np.zeros((20, 8))
+execution_times_outer = np.zeros((100, 8))
 performance_graph_titles = ['Reading\n_Frames','GrayScale\n_Image','Removing\n_Background','MorphologyEx\nfunction','Selecting\n_template','Counting\n_white_pixels','Template\n_matching','MinMax\n_locate']
 average_time_values = []
 outer_loop = 0
@@ -66,7 +66,7 @@ if record:
                           frame_rate, (frame_width, frame_hieght))
 
 
-while (outer_loop<20):                                               #changed
+while (outer_loop<100):                                               #changed
 
     print outer_loop
     inner_loop=0
@@ -163,7 +163,10 @@ while (outer_loop<20):                                               #changed
 
     if videoMode:
         backtorgb = cv2.cvtColor(current, cv2.COLOR_GRAY2RGB)
+
+
         vis = np.hstack((raw_frame, backtorgb))
+
 
         font = cv2.FONT_HERSHEY_SIMPLEX
         text = 'Speed: %d cm/s\nWhite count: %d' % (speed, round(perc, 2))
@@ -173,9 +176,9 @@ while (outer_loop<20):                                               #changed
         if perc > white_threshold:
             vis = cv2.putText(vis, 'Detected: %d cm/s' % inst_speed, (10, 50 + 25 * (row + 1)), font, 0.8,
                               (100, 255, 128), 2)
-
         cv2.imshow('preview window', vis)
         ch = cv2.waitKey(int(1000.0 / frame_rate))
+
         if ch == 118:
             cv2.destroyAllWindows()
             videoMode = False
