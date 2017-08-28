@@ -1,11 +1,24 @@
 """
     Prospective projection manual inspection helper
+    
 """
 import cv2
 import math
 import numpy as np
 
 def findPoints(f, x, y, z, theta, phi, eeta):
+    """
+    3D real world to 2D image plane projection
+
+    :param f: focal length of camera*
+    :param x: real world distance along the horizontal axis parallel to the image plane
+    :param y: real world distance along the axis which is perpendicular to the image plane
+    :param z: real world distance along the vertical axis parallel to the image plane
+    :param theta: camera rotation in degrees around vertical axis
+    :param phi: camera rotation in degrees around horizontal axis
+    :param eeta: camera rotation in degrees around axis through optical center
+    :return: image plane coordinates (image center as the origin) of the projected point (x,y,z)
+    """
     A = np.deg2rad(theta)
     B = np.deg2rad(phi)
     C = np.deg2rad(eeta)
