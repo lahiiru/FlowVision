@@ -22,3 +22,23 @@ def findPoints(f, x, y, z, theta, phi, eeta):
     z_star = -x_bar * math.sin(C) + z_bar * math.cos(C)
     return x_star, z_star
 
+
+cap = cv2.VideoCapture(0)
+
+while (1):
+    ret, frame = cap.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    x, y = findPoints(20, 10, 10, 10, 30, 0, 0)
+    print x, y
+
+    # print frame.shape
+    cv2.imshow('frame', gray)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        cv2.destroyAllWindows()
+        break
+
+    break
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+cap.release()
