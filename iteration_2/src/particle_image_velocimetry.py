@@ -14,13 +14,16 @@ try:
 except:
     video_src = "..\\01.mp4"
 
+#removing the background
 fgbg = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=False)
 kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
 
 c = cv2.VideoCapture(video_src)
 flag, prev = c.read()
+#resizing the frame to a fixed size of (640, 480)
 prev = cv2.resize(prev, (640, 480))
 frame_hieght, frame_width = prev.shape[:2]
+#converting the frame to gray scale
 prev = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
 print prev.shape
 
@@ -29,28 +32,28 @@ frame_rate = 7
 drain_d = 30
 
 ratio = 0.7
+#no:of columns the frame should be divided into
 grid_columns = 5
+#no:of rows the frame should be divided into
 grid_rows = 2
 grid_height = frame_hieght / grid_rows
 grid_width = frame_width / grid_columns
 spot_height = int(grid_height * ratio)
 spot_width = int(grid_width * ratio)
-
+#threshold on white count
 white_threshold = 5
 
-
+#this function calculates the speed of flow (cm/s)
 def speedCalc(avg_d, angle, drain_d, frame_rate, frame_width):
     speed = (avg_d * 2 * drain_d * math.tan(math.radians(angle / 2)) * frame_rate) / frame_width
     return speed
 
-
+#this function returns a region of interest
 def gridDetails(img, grid_columns, grid_rows, i, j):
     frame_hieght, frame_width = img.shape[:2]
     grid_height = frame_hieght / grid_rows
     grid_width = frame_width / grid_columns
     return img[j * grid_height:(j + 1) * grid_height, i * grid_width:(i + 1) * grid_width]
-
-#print grid_height, grid_width
 
 while (1):
 
@@ -64,9 +67,9 @@ while (1):
     fgmask = fgbg.apply(frame)
     fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)
     frame = fgmask
-    raw_frame = frame
+    #raw_frame = frame
 
-
+    #this function matches the selcted template in the selected grid from previous frame
     def spotMatching(i, j, spot_height, spot_width, grid_rows, grid_columns):
         startIndex_h = (grid_height / 2) - spot_height / 2
         endIndex_h = (grid_height / 2) + spot_height / 2
@@ -77,7 +80,7 @@ while (1):
         minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
         return maxLoc, startIndex_w, startIndex_h, endIndex_h, endIndex_w, template
 
-
+    #draw vertical and horizontal lines in the frames showing the grid selection
     for i in range(1, grid_columns):
         frame = cv2.line(frame, (grid_width * i, 0), (grid_width * i, frame_hieght), (255, 255, 0), 1, cv2.LINE_AA)
     for i in range(1, grid_rows):
@@ -106,9 +109,10 @@ while (1):
 
             font = cv2.FONT_HERSHEY_SIMPLEX
             if (perc > white_threshold):
+                #calculate the speed for both x and y directions
                 inst_x_speed = speedCalc(x_distance, cam_angle, drain_d, frame_rate, frame_width)
                 inst_y_speed = speedCalc(y_distance, cam_angle, drain_d, frame_rate, frame_hieght)
-                # print inst_x_speed, inst_y_speed
+                #visualize the speed value and speed vectors in each grid
                 text = 'Speed_x: %d cm/s\nSpeed_y: %d cm/s' % (inst_x_speed, inst_y_speed)
                 for row, txt in enumerate(text.split('\n')):
                     vis = cv2.putText(vis, txt, (grid_width * i + 1, (grid_height * j + 20) + 25 * row), font, 0.4,

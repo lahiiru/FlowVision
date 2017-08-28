@@ -145,23 +145,23 @@ def main():
         if sp.initial_spatio:
             # if True:
             if type(spatio_image)==type(None):
-                ch = cv2.waitKey(int(1000.0 / frame_rate))
+                ch = cv2.waitKey(int(1000.0 / frame_rate)+1)
                 continue
 
             view = spatio_image.copy()[:, :]
-            ft_image = ft.getTransformedImage(spatio_image)
+            #ft_image = ft.getTransformedImage(spatio_image)
             # vis = np.hstack((spatio_image, ft_image))
+            #spatio_image = np.ones_like(spatio_image) * 255
+
             print spatio_image
-            cv2.imshow('spatio image', spatio_image)
+            cv2.imshow('spatio image', spatio_image*2)
             print str(ft.globalDirection)
             # plt.imshow(ft.magnitude_spectrum, cmap="gray")
             # plt.pause(0.0001)
             frame[selected_line, :, :] = np.ones_like(frame[selected_line, :, :]) * 255
             cv2.imshow('imamge',frame)
 
-
-
-        ch = cv2.waitKey(int(1000.0 / frame_rate))
+        ch = cv2.waitKey(int(1000.0 / frame_rate)+1)
 
         if ch == 27:
             break
