@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 import sys
 import time
 
-debug = False
+debug = True
 gray = None
 
 print ("[INFO] Imports done.")
@@ -21,7 +21,8 @@ print ("[INFO] Imports done.")
 try:
     video_src = sys.argv[1]
 except:
-    video_src = '../resources/gradients/60.jpg'
+    #video_src = '../resources/gradients/60.jpg'
+    video_src = 'sti/Const.jpg'
     sigma = 0.1
 
 gray = cv2.imread(video_src, 0)
