@@ -20,7 +20,7 @@ def findPoints(f, x, y, z, theta, phi, eeta):
     return x_star, z_star
 
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
 h, w = frame.shape[:2]
 
