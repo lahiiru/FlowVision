@@ -3,10 +3,13 @@ from spatio import Spatio
 import cv2
 import time
 import numpy as np
+from matplotlib import pyplot as plt
 
 frame_rate=30
 
 selected_line=260 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
+resize_fx=0.5
+resize_fy=0.5
 
 
 # this main function for read the video stream and calculate the angle from FFT method
@@ -22,7 +25,7 @@ def main():
     c = cv2.VideoCapture(video_src)
 
     rect, frame = c.read()
-    frame = cv2.resize(frame, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC);
+    frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
     sp = Spatio(frame, selected_line) # initialize the Spatio object
     ft = FastFourierTransform()# initialize the FastFourierTransform object
     cycle_start = 0
@@ -35,7 +38,7 @@ def main():
         if not rect:
             cv2.destroyAllWindows()
             break
-        frame = cv2.resize(frame, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC);
+        frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
 
         spatio_image = sp.getSpatioImage(frame) # get the spatio image (grayscale) from the  frame
 
@@ -44,9 +47,10 @@ def main():
             view = spatio_image.copy()[:, :]
             ft_image = ft.getTransformedImage(spatio_image) # transformed spatio image to fft
             vis = np.hstack((spatio_image, ft_image))
-            cv2.imshow('spatio imamge', view)
-            print str(ft.globalDirection) # direction calculated in fft method
-            # plt.imshow(ft.magnitude_spectrum,cmap="gray")
+            cv2.imshow('spatio imamge', spatio_image)
+
+            # print str(ft.globalDirection) # direction calculated in fft method
+            # p/lt.imshow(ft.magnitude_spectrum,cmap="gray")
             # plt.pause(0.01)
             frame[selected_line, :, :] = np.ones_like(frame[selected_line, :, :]) * 255
             cv2.imshow('imamge',frame)
@@ -54,8 +58,8 @@ def main():
         ch = cv2.waitKey(int(1000.0 / frame_rate))
 
         if ch == 27:
-            cv2.imwrite('fft_ms_03MOV_01.png', ft.magnitude_spectrum)
-            cv2.imwrite('spatio_ms_03MOV_01.png', view)
+            # cv2.imwrite('fft_ms_03MOV_01.png', ft.magnitude_spectrum)
+            # cv2.imwrite('spatio_ms_03MOV_01.png', view)
             break
 
 
