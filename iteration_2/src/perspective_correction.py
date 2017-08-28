@@ -3,12 +3,14 @@
 """
 import cv2
 import math
-
+import numpy as np
 
 def findPoints(f, x, y, z, theta, phi, eeta):
-    A = theta
-    B = phi
-    C = eeta
+    A = np.deg2rad(theta)
+    B = np.deg2rad(phi)
+    C = np.deg2rad(eeta)
+
+    if y==0: y=0.001 # y can't be zero because point can't be on the lense
 
     x_bar = f * (x * math.cos(A) + y * math.sin(A)) / (
     -x * math.cos(B) * math.sin(A) + y * math.cos(B) * math.cos(A) + z * math.sin(B))
@@ -23,9 +25,9 @@ def findPoints(f, x, y, z, theta, phi, eeta):
 cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
 h, w = frame.shape[:2]
-
-p = findPoints(20, 10, 10, 10, 30, 0, 0)
-print (p)
+#               f    x   y   z   th ph et  (angles in degrees, y is the axis through optical center
+p = findPoints(1350, 10, 300, 0, 0, 0, 0)
+print (p, h,w)
 # Translating points to image coordinate system
 center = w/2, h/2
 x, y = (i+j for i,j in zip(p,center))
