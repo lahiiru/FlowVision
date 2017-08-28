@@ -62,7 +62,7 @@ def main():
     try:
         video_src = sys.argv[1]
     except:
-        video_src = 0
+        video_src = '../../01.mp4'
 
     print(__doc__)
     App(video_src).run()

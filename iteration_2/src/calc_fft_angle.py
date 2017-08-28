@@ -17,7 +17,7 @@ def main():
         if video_src.isdigit():
             video_src = int(video_src)
     except:
-        video_src = "../03.MOV"
+        video_src = "../../03.MOV"
 
     c = cv2.VideoCapture(video_src)
 
