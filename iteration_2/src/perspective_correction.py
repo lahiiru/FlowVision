@@ -1,11 +1,8 @@
+"""
+    Prospective projection manual inspection helper
+"""
 import cv2
-from cv2 import *
-import numpy as np
-import matplotlib.pyplot as plt
-import sys
 import math
-import datetime
-import os
 
 
 def findPoints(f, x, y, z, theta, phi, eeta):
@@ -23,22 +20,34 @@ def findPoints(f, x, y, z, theta, phi, eeta):
     return x_star, z_star
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
+ret, frame = cap.read()
+h, w = frame.shape[:2]
+
+p = findPoints(20, 10, 10, 10, 30, 0, 0)
+print (p)
+# Translating points to image coordinate system
+center = w/2, h/2
+x, y = (i+j for i,j in zip(p,center))
+# Checking and constraining into image bounds
+if x < 0: x = 0
+if x > w: x = w
+if y > h: y = h
+# Rounding off to nearest pixel
+x, y = int(x), int(y)
 
 while (1):
     ret, frame = cap.read()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    x, y = findPoints(20, 10, 10, 10, 30, 0, 0)
-    print x, y
-
     # print frame.shape
-    cv2.imshow('frame', gray)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    vis = frame
+    # marking the center - white
+    vis = cv2.circle(vis, center, 2, (255, 255, 255), thickness=2)
+    # marking projected point - yellow
+    vis = cv2.circle(vis, (x,y), 3, (0,255,255), thickness=1)
+    cv2.imshow('frame', vis)
+    if cv2.waitKey(1) & 0xFF == 27:
         cv2.destroyAllWindows()
         break
 
-    break
-cv2.waitKey(0)
 cv2.destroyAllWindows()
 cap.release()
