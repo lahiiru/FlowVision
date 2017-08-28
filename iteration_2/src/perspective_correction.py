@@ -36,11 +36,11 @@ def findPoints(f, x, y, z, theta, phi, eeta):
     return x_star, z_star
 
 
-cap = cv2.VideoCapture(DevConfig.WEB_CAM)
+cap = cv2.VideoCapture(DevConfig.WEB_CAM_INDEX)
 ret, frame = cap.read()
 h, w = frame.shape[:2]
 #               f    x   y   z   th ph et  (angles in degrees, y is the axis through optical center
-p = findPoints(1350, 10, 300, 0, 0, 0, 0)
+p = findPoints(DevConfig.WEB_CAM_F, 10, 300, 0, 0, 0, 0)
 print (p, h,w)
 # Translating points to image coordinate system
 center = w/2, h/2
