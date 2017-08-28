@@ -5,6 +5,7 @@
 import cv2
 import math
 import numpy as np
+from config import DevConfig
 
 def findPoints(f, x, y, z, theta, phi, eeta):
     """
@@ -35,7 +36,7 @@ def findPoints(f, x, y, z, theta, phi, eeta):
     return x_star, z_star
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(DevConfig.WEB_CAM)
 ret, frame = cap.read()
 h, w = frame.shape[:2]
 #               f    x   y   z   th ph et  (angles in degrees, y is the axis through optical center
