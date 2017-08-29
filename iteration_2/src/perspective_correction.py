@@ -35,22 +35,53 @@ def findPoints(f, x, y, z, theta, phi, eeta):
     z_star = -x_bar * math.sin(C) + z_bar * math.cos(C)
     return x_star, z_star
 
+def translateToImageCoords(point, center):
+    # Translating points to image coordinate system
+    x, y = (i + j for i, j in zip(point, center))
+    # Checking and constraining into image bounds
+    if x < 0: x = 0
+    if x > w: x = w
+    if y > h: y = h
+    # Rounding off to nearest pixel
+    x, y = int(x), int(y)
+    return x, y
 
 cap = cv2.VideoCapture(DevConfig.WEB_CAM_INDEX)
 ret, frame = cap.read()
 h, w = frame.shape[:2]
-#               f    x   y   z   th ph et  (angles in degrees, y is the axis through optical center
-p = findPoints(DevConfig.WEB_CAM_F, 10, 300, 0, 0, 0, 0)
-print (p, h,w)
-# Translating points to image coordinate system
-center = w/2, h/2
-x, y = (i+j for i,j in zip(p,center))
-# Checking and constraining into image bounds
-if x < 0: x = 0
-if x > w: x = w
-if y > h: y = h
-# Rounding off to nearest pixel
-x, y = int(x), int(y)
+center = w / 2, h / 2
+#                                      f  x   y  z  th ph et  (angles in degrees, y is the axis through optical center
+rh, rw = 10, 10 # rectangle dimensions
+th, ph, et = 0,0,45 # are to determined by accelerometer
+
+p0_ = findPoints(DevConfig.WEB_CAM_F, 0, 300, 0, 0, 0, 0)
+p1_ = findPoints(DevConfig.WEB_CAM_F, rw, 300, 0, 0, 0, 0)
+p2_ = findPoints(DevConfig.WEB_CAM_F, rw, 300, rh, 0, 0, 0)
+p3_ = findPoints(DevConfig.WEB_CAM_F, 0, 300, rh, 0, 0, 0)
+
+p0t_ = findPoints(DevConfig.WEB_CAM_F, 0, 300, 0, th, ph, et)
+p1t_ = findPoints(DevConfig.WEB_CAM_F, rw, 300, 0, th, ph, et)
+p2t_ = findPoints(DevConfig.WEB_CAM_F, rw, 300, rh, th, ph, et)
+p3t_ = findPoints(DevConfig.WEB_CAM_F, 0, 300, rh, th, ph, et)
+
+p0 = translateToImageCoords(p0_,center)
+p1 = translateToImageCoords(p1_,center)
+p2 = translateToImageCoords(p2_,center)
+p3 = translateToImageCoords(p3_,center)
+
+p0t = translateToImageCoords(p0t_,center)
+p1t = translateToImageCoords(p1t_,center)
+p2t = translateToImageCoords(p2t_,center)
+p3t = translateToImageCoords(p3t_,center)
+
+print (p1, h, w)
+
+rect = np.array([p0t, p1t, p2t, p3t],np.float32)
+dst = np.array([p0, p1, p2, p3],np.float32)
+print (rect)
+
+# transform matrix
+T = cv2.getPerspectiveTransform(rect, dst)
 
 while (1):
     ret, frame = cap.read()
@@ -59,8 +90,11 @@ while (1):
     # marking the center - white
     vis = cv2.circle(vis, center, 2, (255, 255, 255), thickness=2)
     # marking projected point - yellow
-    vis = cv2.circle(vis, (x,y), 3, (0,255,255), thickness=1)
+    vis = cv2.circle(vis, p1[::-1], 3, (0,255,255), thickness=1)
+    warp = cv2.warpPerspective(frame, T, frame.shape[:2][::-1])
+
     cv2.imshow('frame', vis)
+    cv2.imshow('warp', warp)
     if cv2.waitKey(1) & 0xFF == 27:
         cv2.destroyAllWindows()
         break
