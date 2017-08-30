@@ -45,14 +45,9 @@ def main():
 
         # new_frame_count==0 when correct(history and new frame count is correct) image is constructed
         if (sp.new_frame_count == 0):
-            # if True:
-            if type(spatio_image) == type(None):
-                ch = cv2.waitKey(int(1000.0 / frame_rate) + 1)
-                continue
 
             view = spatio_image.copy()[:, :]
             ft_image = ft.getTransformedImage(spatio_image)
-            # spatio_image = np.ones_like(spatio_image) * 255
 
             print spatio_image.shape
             # cv2.imshow('spatio image', spatio_image)
