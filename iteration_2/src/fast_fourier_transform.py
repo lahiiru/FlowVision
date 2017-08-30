@@ -20,7 +20,7 @@ class FastFourierTransform:
         dft_shift = np.fft.fftshift(dft)
         self.magnitude_spectrum = 20 * np.log(cv2.magnitude(dft_shift[:, :, 0], dft_shift[:, :, 1]))
 
-        print("[INFO] @ FFT2D completed.")
+        # print("[INFO] @ FFT2D completed.")
 
         filtered_spectrum = self.magnitude_spectrum.copy()[:, :]
         filtered_spectrum = np.zeros_like(filtered_spectrum)
