@@ -36,10 +36,10 @@ class FastFourierTransform:
         maxBinUpper = np.argmax(hist[0])
         self.globalDirection = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
-        plt.xlabel('mode = '+str(self.globalDirection)+'deg')
-        plt.vlines([self.globalDirection], 0, 100, label = str(self.globalDirection))
-        plt.pause(0.001)
-        plt.imshow(filtered_spectrum, cmap='gray')
-        plt.title(str)
-        plt.pause(0.001)
+        # plt.xlabel('mode = '+str(self.globalDirection)+'deg')
+        # plt.vlines([self.globalDirection], 0, 100, label = str(self.globalDirection))
+        # plt.pause(0.001)
+        # plt.imshow(filtered_spectrum, cmap='gray')
+        # plt.title(str)
+        # plt.pause(0.001)
         return filtered_spectrum
