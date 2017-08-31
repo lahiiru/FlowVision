@@ -1,5 +1,5 @@
 from fast_fourier_transform import FastFourierTransform
-from spatio import Spatio
+from spatio import STIBuilder
 import cv2
 import time
 import numpy as np
@@ -10,6 +10,8 @@ frame_rate=30
 selected_line=260 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
 resize_fx=0.5
 resize_fy=0.5
+history_ratio = 0.6
+scale_factor = 2
 
 
 # this main function for read the video stream and calculate the angle from FFT method
@@ -26,40 +28,42 @@ def main():
 
     rect, frame = c.read()
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
-    sp = Spatio(frame, selected_line) # initialize the Spatio object
+    sp = STIBuilder( selected_line, history_ratio, scale_factor) # initialize the Spatio object
     ft = FastFourierTransform()# initialize the FastFourierTransform object
     cycle_start = 0
     while (1):
         rect, frame = c.read()
-        cycle_time = time.time() - cycle_start
-        cycle_start = time.time()
-        print (1 / cycle_time)
+        # cycle_time=time.time()-cycle_start
+        # cycle_start=time.time()
+        # print (1/cycle_time)
 
         if not rect:
             cv2.destroyAllWindows()
             break
         frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
+        spatio_image = sp.buildImage(frame)
 
-        spatio_image = sp.getSpatioImage(frame) # get the spatio image (grayscale) from the  frame
+        # new_frame_count==0 when correct(history and new frame count is correct) image is constructed
+        if (sp.new_frame_count == 0):
 
-        if (sp.frame_idx > sp.height):
-            # if True:
             view = spatio_image.copy()[:, :]
-            ft_image = ft.getTransformedImage(spatio_image) # transformed spatio image to fft
-            vis = np.hstack((spatio_image, ft_image))
-            cv2.imshow('spatio imamge', spatio_image)
+            ft_image = ft.getTransformedImage(spatio_image)
 
-            # print str(ft.globalDirection) # direction calculated in fft method
-            # p/lt.imshow(ft.magnitude_spectrum,cmap="gray")
-            # plt.pause(0.01)
+            print spatio_image.shape
+            # cv2.imshow('spatio image', spatio_image)
+            plt.imshow(spatio_image,cmap="gray")
+            # print np.argwhere(spatio_image > 255)
+            # cv2.imwrite("spatio_03MOV_1.png",spatio_image)
+            plt.pause(0.0001)
+            print str(ft.globalDirection)
+            # plt.imshow(ft.magnitude_spectrum, cmap="gray")
+            # plt.pause(0.0001)
             frame[selected_line, :, :] = np.ones_like(frame[selected_line, :, :]) * 255
-            cv2.imshow('imamge',frame)
+            # cv2.imshow('imamge', frame)
 
-        ch = cv2.waitKey(int(1000.0 / frame_rate))
+        ch = cv2.waitKey(int(1000.0 / frame_rate) + 1)
 
         if ch == 27:
-            # cv2.imwrite('fft_ms_03MOV_01.png', ft.magnitude_spectrum)
-            # cv2.imwrite('spatio_ms_03MOV_01.png', view)
             break
 
 
