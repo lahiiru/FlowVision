@@ -43,7 +43,7 @@ def getBlurLength(image, debug=False):
 
 cap = cv2.VideoCapture('../../01.mp4')
 
-vals = [0]
+vals = []
 while True:
     r, image = cap.read()
     vals += [getBlurLength(image)]
