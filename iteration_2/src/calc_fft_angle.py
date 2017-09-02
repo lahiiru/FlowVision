@@ -7,9 +7,9 @@ from matplotlib import pyplot as plt
 
 frame_rate=30
 
-selected_line=260 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
-resize_fx=0.5
-resize_fy=0.5
+selected_line=250 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
+resize_fx=0.2
+resize_fy=0.2
 history_ratio = 0.6
 scale_factor = 2
 
@@ -22,13 +22,13 @@ def main():
         if video_src.isdigit():
             video_src = int(video_src)
     except:
-        video_src = "../../03.MOV"
+        video_src = "../04.mp4"
 
     c = cv2.VideoCapture(video_src)
 
     rect, frame = c.read()
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
-    sp = STIBuilder( selected_line, history_ratio, scale_factor) # initialize the Spatio object
+    sp = STIBuilder( selected_line, history_ratio, scale_factor,0,100,200) # initialize the Spatio object
     ft = FastFourierTransform()# initialize the FastFourierTransform object
     cycle_start = 0
     while (1):
@@ -53,13 +53,13 @@ def main():
             # cv2.imshow('spatio image', spatio_image)
             plt.imshow(spatio_image,cmap="gray")
             # print np.argwhere(spatio_image > 255)
-            # cv2.imwrite("spatio_03MOV_1.png",spatio_image)
+            # cv2.imwrite("spatio_04mp4_1.png",spatio_image)
             plt.pause(0.0001)
             print str(ft.globalDirection)
             # plt.imshow(ft.magnitude_spectrum, cmap="gray")
             # plt.pause(0.0001)
             frame[selected_line, :, :] = np.ones_like(frame[selected_line, :, :]) * 255
-            # cv2.imshow('imamge', frame)
+            cv2.imshow('imamge', frame)
 
         ch = cv2.waitKey(int(1000.0 / frame_rate) + 1)
 
