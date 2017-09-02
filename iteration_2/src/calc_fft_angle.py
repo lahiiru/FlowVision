@@ -12,6 +12,9 @@ resize_fx=0.2
 resize_fy=0.2
 history_ratio = 0.6
 scale_factor = 2
+horizontal_start_index=0 # parameter for set starting index of the frame for build the spatio image (spatio image started from this index)
+horizontal_end_index=100 # parameter for set ending index of the frame for build the spatio image (spatio image end from this index)
+height=200 # enter the desired spatio image height (how many consecutive frames are needed to build the image)
 
 
 # this main function for read the video stream and calculate the angle from FFT method
@@ -28,7 +31,7 @@ def main():
 
     rect, frame = c.read()
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
-    sp = STIBuilder( selected_line, history_ratio, scale_factor,0,100,200) # initialize the Spatio object
+    sp = STIBuilder( selected_line, history_ratio, scale_factor,horizontal_start_index,horizontal_end_index,height) # initialize the Spatio object
     ft = FastFourierTransform()# initialize the FastFourierTransform object
     cycle_start = 0
     while (1):
