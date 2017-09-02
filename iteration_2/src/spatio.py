@@ -5,6 +5,8 @@ import cv2
 class STIBuilder:
     height = 0
     width=0
+    horizontal_start_index=0
+    horizontal_end_index=0
     ref_point = 0
     spatio_image = []
     history_ratio = 0.6
@@ -19,14 +21,17 @@ class STIBuilder:
     new_frame_count=0 # new_frame_count is 0 only if  correct spatio image constructed with correct history and new frame count. new_frame_count >0 for other return values
 
 
-    def __init__(self,ref_point,history_ratio,scale_factor):
+    def __init__(self,ref_point,history_ratio,scale_factor,horizontal_start_index,horizontal_end_index,height):
         self.ref_point = ref_point
         self.history_ratio= history_ratio
         self.scale_factor= scale_factor
+        self.horizontal_start_index=horizontal_start_index
+        self.horizontal_end_index=horizontal_end_index
+        self.width =horizontal_end_index-horizontal_start_index+1
+        self.height=height
 
     def initConfiguration(self, frame):
-        self.height = frame.shape[0]
-        self.width=frame.shape[1]
+        # self.height = frame.shape[0]
         self.array_size = self.height * self.scale_factor
         self.spatio_image = np.zeros((self.array_size, self.width), dtype=np.int)
         self.next_index = self.height - 1
@@ -42,7 +47,7 @@ class STIBuilder:
         self.new_frame_count +=1
 
         self.index = (self.index + 1) % self.array_size
-        self.spatio_image[self.index, :] = frame[self.ref_point,:]
+        self.spatio_image[self.index, :] = frame[self.ref_point,self.horizontal_start_index: self.horizontal_end_index+1]
         if self.first_round:
 
             if (self.index == self.array_size - 1):
