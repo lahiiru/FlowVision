@@ -20,7 +20,7 @@ class FastFourierTransform:
         dft_shift = np.fft.fftshift(dft)
         self.magnitude_spectrum = 20 * np.log(cv2.magnitude(dft_shift[:, :, 0], dft_shift[:, :, 1]))
 
-        print("[INFO] @ FFT2D completed.")
+        # print("[INFO] @ FFT2D completed.")
 
         filtered_spectrum = self.magnitude_spectrum.copy()[:, :]
         filtered_spectrum = np.zeros_like(filtered_spectrum)
@@ -36,8 +36,8 @@ class FastFourierTransform:
         maxBinUpper = np.argmax(hist[0])
         self.globalDirection = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
-        # plt.xlabel('mode = '+str(globalDirection)+'deg')
-        # plt.vlines([globalDirection], 0, 100, label = str(globalDirection))
+        # plt.xlabel('mode = '+str(self.globalDirection)+'deg')
+        # plt.vlines([self.globalDirection], 0, 100, label = str(self.globalDirection))
         # plt.pause(0.001)
         # plt.imshow(filtered_spectrum, cmap='gray')
         # plt.title(str)
