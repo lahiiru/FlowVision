@@ -57,20 +57,21 @@ def main():
             # cv2.imshow('spatio image', spatio_image)
             if debug:
                 print ft.globalDirection
-
+                plt.clf()
                 plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
                 m = np.tan(np.deg2rad(ft.globalDirection))
                 h, w = ft_image.shape[:2]
                 x = np.arange(h/10)
                 y = m * x
-                plt.subplot(132), plt.plot(x + w/2,y), plt.imshow(ft_image, cmap="gray")
-                plt.subplot(133), plt.plot(x,y)
+                plt.subplot(132), plt.plot(x + w/2, y), plt.imshow(ft_image, cmap="gray")
+                plt.subplot(133), plt.plot(x, y)
                 plt.pause(0.0001)
                 # print np.argwhere(spatio_image > 255)
                 # cv2.imwrite("spatio_04mp4_1.png",spatio_image)
                 # plt.imshow(ft.magnitude_spectrum, cmap="gray")
-                frame[selected_line, :, :] = np.ones_like(frame[selected_line, :, :]) * 255
-                cv2.imshow('imamge', frame)
+        if debug:
+            frame[selected_line, :, :] = np.ones_like(frame[selected_line, :, :]) * 255
+            cv2.imshow('imamge', frame)
 
         ch = cv2.waitKey(int(1000.0 / frame_rate) + 1)
 
