@@ -93,6 +93,10 @@ while (1):
     vis = cv2.circle(vis, p1[::-1], 3, (0,255,255), thickness=1)
     warp = cv2.warpPerspective(frame, T, frame.shape[:2][::-1])
 
+    a3 = np.array([[p0, p1, p2, p3]], dtype=np.int32)
+    vis = cv2.fillPoly(vis, a3, 255)
+    a3 = np.array([[p0t, p1t, p2t, p3t]], dtype=np.int32)
+    vis = cv2.fillPoly(vis, a3, 128)
     cv2.imshow('frame', vis)
     cv2.imshow('warp', warp)
     if cv2.waitKey(1) & 0xFF == 27:
