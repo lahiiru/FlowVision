@@ -5,7 +5,7 @@ import time
 import numpy as np
 from matplotlib import pyplot as plt
 
-frame_rate=60
+frame_rate=29
 
 selected_line=150 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
 resize_fx=0.2
@@ -26,7 +26,7 @@ def main():
         if video_src.isdigit():
             video_src = int(video_src)
     except:
-        video_src = "../03.mov"
+        video_src = "../../03.mov"
 
     c = cv2.VideoCapture(video_src)
 
@@ -60,6 +60,8 @@ def main():
                 plt.clf()
                 plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
                 m = np.tan(np.deg2rad(ft.globalDirection))
+                pixel_ditance = frame_rate/(m*resize_fx)
+                print pixel_ditance
                 h, w = ft_image.shape[:2]
                 x = np.arange(h/10)
                 y = m * x
