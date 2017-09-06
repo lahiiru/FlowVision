@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-from matplotlib import pyplot as plt
 
 # this class for make the fourier transform from a spatio image and calculate the angle
 class FastFourierTransform:
