@@ -1,5 +1,5 @@
 from fast_fourier_transform import FastFourierTransform
-from spatio import STIBuilder
+from  flow_vision import STIBuilder
 import cv2
 import time
 import numpy as np
@@ -17,6 +17,7 @@ horizontal_end_index=100 # parameter for set ending index of the frame for build
 height=200 # enter the desired spatio image height (how many consecutive frames are needed to build the image)
 
 debug = True
+
 
 # this main function for read the video stream and calculate the angle from FFT method
 def main():
