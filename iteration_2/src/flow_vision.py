@@ -102,7 +102,7 @@ class STIBuilder:
 
 
 # this class for make the fourier transform from a spatio image and calculate the angle
-class Analyzer:
+class STIAnalyzer:
     _globalDirection = 0
     # this function get a grayscale spatio image as a input and process the fourier transformed image of it.
     # Angle also calculated and store in the variable called globalDirection

@@ -1,4 +1,4 @@
-from flow_vision import Analyzer
+from flow_vision import STIAnalyzer
 from  flow_vision import STIBuilder
 import cv2
 import numpy as np
@@ -35,7 +35,7 @@ def main():
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
     selected_line = frame.shape[0]/2
     sp = STIBuilder( selected_line, history_ratio, scale_factor,horizontal_start_index,horizontal_end_index,height) # initialize the Spatio object
-    ft = Analyzer()
+    ft = STIAnalyzer()
     while (1):
         rect, frame = c.read()
         if not rect:
