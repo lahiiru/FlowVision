@@ -4,12 +4,13 @@ import cv2
 import time
 import numpy as np
 from matplotlib import pyplot as plt
+from config import DevConfig
 
 frame_rate=29
 
-selected_line=150 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
-resize_fx=0.2
-resize_fy=0.2
+selected_line=0 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
+resize_fx=1
+resize_fy=1
 history_ratio = 0.6
 scale_factor = 2
 horizontal_start_index=0 # parameter for set starting index of the frame for build the spatio image (spatio image started from this index)
@@ -26,12 +27,13 @@ def main():
         if video_src.isdigit():
             video_src = int(video_src)
     except:
-        video_src = "../../03.mov"
+        video_src = DevConfig.VIDEO_DIR + "03.mov"
 
     c = cv2.VideoCapture(video_src)
 
     rect, frame = c.read()
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
+    selected_line = frame.shape[0]/2
     sp = STIBuilder( selected_line, history_ratio, scale_factor,horizontal_start_index,horizontal_end_index,height) # initialize the Spatio object
     ft = FastFourierTransform()# initialize the FastFourierTransform object
     cycle_start = 0
@@ -56,18 +58,17 @@ def main():
             # print spatio_image.shape
             # cv2.imshow('spatio image', spatio_image)
             if debug:
-                print ft.globalDirection
                 plt.clf()
                 plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
                 m = np.tan(np.deg2rad(ft.globalDirection))
                 pixel_ditance = frame_rate/(m*resize_fx)
-                print pixel_ditance
                 h, w = ft_image.shape[:2]
                 x = np.arange(h/10)
                 y = m * x
                 plt.subplot(132), plt.plot(x + w/2, y), plt.imshow(ft_image, cmap="gray")
                 plt.subplot(133), plt.plot(x, y)
                 plt.pause(0.0001)
+                print ft.globalDirection, pixel_ditance
                 # print np.argwhere(spatio_image > 255)
                 # cv2.imwrite("spatio_04mp4_1.png",spatio_image)
                 # plt.imshow(ft.magnitude_spectrum, cmap="gray")
