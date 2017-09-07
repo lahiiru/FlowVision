@@ -97,3 +97,53 @@ class STIBuilder:
                 else:
                     return self.spatio_image[self.index - (self.height - 1):self.index + 1, ]
 
+
+
+
+
+# this class for make the fourier transform from a spatio image and calculate the angle
+class Analyzer:
+    _globalDirection = 0
+    # this function get a grayscale spatio image as a input and process the fourier transformed image of it.
+    # Angle also calculated and store in the variable called globalDirection
+    # Filtered spectrem also stored in filtered_spectrum
+    def process(self, frame):
+        height, width = frame.shape[:2]
+
+        s = min(height, width)
+        frame = frame[:s, :s]
+        height, width = s, s
+        # frame = cv2.adaptiveThreshold(frame,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,15,2)
+        img_float32 = np.float32(frame)
+        dft = cv2.dft(img_float32, flags=cv2.DFT_COMPLEX_OUTPUT)
+        dft_shift = np.fft.fftshift(dft)
+        self._magnitude_spectrum = 20 * np.log(cv2.magnitude(dft_shift[:, :, 0], dft_shift[:, :, 1]))
+
+
+
+        self._filtered_spectrum = self._magnitude_spectrum.copy()[:, :]
+        self._filtered_spectrum = np.zeros_like(self._filtered_spectrum)
+        self._filtered_spectrum[np.arange(len(self._magnitude_spectrum)), self._magnitude_spectrum.argmax(1)] = 255
+        fs = np.argwhere(self._filtered_spectrum == 255)
+        yy = np.absolute(fs[:, 0] - height / 2)
+        xx = np.absolute(fs[:, 1] - width / 2)
+        polar = np.arctan2(yy, xx)
+        polar = polar * 180 / np.pi
+
+        # hist = plt.hist(polar, np.arange(0,90,1));
+        hist = np.histogram(polar, np.arange(0, 90, 1))
+        maxBinUpper = np.argmax(hist[0])
+        self._globalDirection = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
+
+
+
+    def getFFTImage(self):
+        return self._magnitude_spectrum
+
+
+    def getFilteredSpectrum(self):
+        return self._filtered_spectrum
+
+    def getDirection(self):
+        return self._globalDirection
+
