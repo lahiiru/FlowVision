@@ -1,7 +1,6 @@
-from fast_fourier_transform import FastFourierTransform
+from flow_vision import Analyzer
 from  flow_vision import STIBuilder
 import cv2
-import time
 import numpy as np
 from matplotlib import pyplot as plt
 from config import DevConfig
@@ -36,14 +35,9 @@ def main():
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
     selected_line = frame.shape[0]/2
     sp = STIBuilder( selected_line, history_ratio, scale_factor,horizontal_start_index,horizontal_end_index,height) # initialize the Spatio object
-    ft = FastFourierTransform()# initialize the FastFourierTransform object
-    cycle_start = 0
+    ft = Analyzer()
     while (1):
         rect, frame = c.read()
-        # cycle_time=time.time()-cycle_start
-        # cycle_start=time.time()
-        # print (1/cycle_time)
-
         if not rect:
             cv2.destroyAllWindows()
             break
@@ -53,15 +47,13 @@ def main():
         # new_frame_count==0 when correct(history and new frame count is correct) image is constructed
         if (sp.new_frame_count == 0):
 
-            view = spatio_image.copy()[:, :]
-            ft_image = ft.getTransformedImage(spatio_image)
-
-            # print spatio_image.shape
+            ft.process(spatio_image)
+            ft_image =ft.getFilteredSpectrum()
             # cv2.imshow('spatio image', spatio_image)
             if debug:
                 plt.clf()
                 plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
-                m = np.tan(np.deg2rad(ft.globalDirection))
+                m = np.tan(np.deg2rad(ft.getDirection()))
                 pixel_ditance = frame_rate/(m*resize_fx)
                 h, w = ft_image.shape[:2]
                 x = np.arange(h/10)
@@ -69,8 +61,7 @@ def main():
                 plt.subplot(132), plt.plot(x + w/2, y), plt.imshow(ft_image, cmap="gray")
                 plt.subplot(133), plt.plot(x, y)
                 plt.pause(0.0001)
-                print ft.globalDirection, pixel_ditance
-                # print np.argwhere(spatio_image > 255)
+                print ft.getDirection(), pixel_ditance
                 # cv2.imwrite("spatio_04mp4_1.png",spatio_image)
                 # plt.imshow(ft.magnitude_spectrum, cmap="gray")
         if debug:
