@@ -23,7 +23,7 @@ args = vars(ap.parse_args())
 # created a *threaded *video stream, allow the camera senor to warmup,
 # and start the FPS counter
 print("[INFO] sampling THREADED frames from webcam...")
-vs = WebcamVideoStream(src=2).start()
+vs = WebcamVideoStream(src=1).start()
 fps = FPS().start()
   
 i = 0
@@ -38,7 +38,7 @@ while fps._numFrames < args["num_frames"]:
 	if args["display"] > 0:
 		cv2.imshow("Frame", frame)
 		key = cv2.waitKey(1) & 0xFF
-		#cv2.imwrite('./fps/'+str(i)+'.jpg',frame)
+		cv2.imwrite('./fps/'+str(i)+'.jpg',frame)
 		
 	# update the FPS counter
 	fps.update()
