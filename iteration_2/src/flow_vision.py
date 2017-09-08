@@ -39,8 +39,7 @@ class sti_builder:
         self.array_size = self.height * self.scale_factor
         self.spatio_image = np.zeros((self.array_size, self.width), dtype=np.int)
         self.next_pointer = self.height - 1
-        self.history_count = int(self.history_ratio * self.height)
-        self.new_frame_count = self.height - self.history_count
+        self.new_frame_count = self.height - int(self.history_ratio * self.height)
         self.is_configured = True
 
     def build_image(self, frame):
