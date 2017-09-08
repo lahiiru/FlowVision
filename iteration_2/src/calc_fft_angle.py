@@ -34,6 +34,7 @@ def main():
     rect, frame = c.read()
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
     selected_line = frame.shape[0]/2
+    horizontal_end_index=frame.shape[1]-1
     sp = STIBuilder( selected_line, history_ratio, scale_factor,horizontal_start_index,horizontal_end_index,height) # initialize the Spatio object
     ft = STIAnalyzer()
     while (1):
@@ -62,10 +63,9 @@ def main():
                 plt.subplot(133), plt.plot(x, y)
                 plt.pause(0.0001)
                 print ft.getDirection(), pixel_ditance
-                # cv2.imwrite("spatio_04mp4_1.png",spatio_image)
-                # plt.imshow(ft.magnitude_spectrum, cmap="gray")
+                print "calculated pixel Distancce",ft.getPixelDistance()
         if debug:
-            frame[selected_line, :, :] = np.ones_like(frame[selected_line, :, :]) * 255
+            frame[selected_line, horizontal_start_index:horizontal_end_index, :] = np.ones_like(frame[selected_line, horizontal_start_index:horizontal_end_index, :]) * 255
             cv2.imshow('imamge', frame)
 
         ch = cv2.waitKey(int(1000.0 / frame_rate) + 1)

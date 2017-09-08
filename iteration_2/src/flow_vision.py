@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from matplotlib import pyplot as plt
 
 
 # class for build the spatio temporal image
@@ -104,6 +105,7 @@ class STIBuilder:
 # this class for make the fourier transform from a spatio image and calculate the angle
 class STIAnalyzer:
     _globalDirection = 0
+    _pixelDistance=0
     # this function get a grayscale spatio image as a input and process the fourier transformed image of it.
     # Angle also calculated and store in the variable called globalDirection
     # Filtered spectrem also stored in filtered_spectrum
@@ -129,12 +131,19 @@ class STIAnalyzer:
         xx = np.absolute(fs[:, 1] - width / 2)
         polar = np.arctan2(yy, xx)
         polar = polar * 180 / np.pi
-
-        # hist = plt.hist(polar, np.arange(0,90,1));
         hist = np.histogram(polar, np.arange(0, 90, 1))
         maxBinUpper = np.argmax(hist[0])
         self._globalDirection = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
+
+
+        tan_value=yy/xx
+        tan_value=tan_value[np.where(tan_value>0)]
+        tan_hist = plt.hist(tan_value, np.arange(0,50,1));
+        maxBinUpper = np.argmax(tan_hist[0])
+        self._pixelDistance = (tan_hist[1][maxBinUpper + 1] + tan_hist[1][maxBinUpper]) / 2.0
+
+        # plt.pause(0.001)
 
 
     def getFFTImage(self):
@@ -146,4 +155,7 @@ class STIAnalyzer:
 
     def getDirection(self):
         return self._globalDirection
+
+    def getPixelDistance(self):
+        return self._pixelDistance
 
