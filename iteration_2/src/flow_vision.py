@@ -20,11 +20,12 @@ class STIBuilder:
     initial_spatio=False
     is_configured=False
     partition_count=0
-    new_frame_count=0 # new_frame_count is 0 only if  correct spatio image constructed with correct history and new frame count. new_frame_count >0 for other return values
+    ref_point_ratio=0
+    new_frame_count=0
 
 
-    def __init__(self,ref_point,history_ratio,scale_factor,horizontal_start_index,horizontal_end_index,height):
-        self.ref_point = ref_point
+    def __init__(self,ref_point_ratio,history_ratio,scale_factor,horizontal_start_index,horizontal_end_index,height):
+        self.ref_point_ratio=ref_point_ratio
         self.history_ratio= history_ratio
         self.scale_factor= scale_factor
         self.horizontal_start_index=horizontal_start_index
@@ -34,6 +35,7 @@ class STIBuilder:
 
     def initConfiguration(self, frame):
         # self.height = frame.shape[0]
+        self.ref_point = int(self.ref_point_ratio * (frame.shape[0] - 1))
         self.array_size = self.height * self.scale_factor
         self.spatio_image = np.zeros((self.array_size, self.width), dtype=np.int)
         self.next_index = self.height - 1
