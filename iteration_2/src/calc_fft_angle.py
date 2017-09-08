@@ -1,5 +1,5 @@
-from flow_vision import STIAnalyzer
-from  flow_vision import STIBuilder
+from flow_vision import sti_analyzer
+from  flow_vision import sti_builder
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -34,38 +34,39 @@ def main():
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
     hor_end_index=int((frame.shape[1]-1)*hor_end_ratio)
     hor_start_index=int((frame.shape[1]-1)*hor_start_ratio)
-    sp = STIBuilder( ref_line_ratio, history_ratio, scale_factor,hor_start_index,hor_end_index,height)
-    ft = STIAnalyzer()
+    sp = sti_builder( ref_line_ratio, history_ratio, scale_factor,hor_start_index,hor_end_index,height)
+    ft = sti_analyzer()
     while (1):
         rect, frame = c.read()
         if not rect:
             cv2.destroyAllWindows()
             break
         frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
-        spatio_image = sp.buildImage(frame)
+        spatio_image = sp.build_image(frame)
 
 
-        if (sp.new_frame_count == 0):
+        if (sp.can_analyze):
+            print "fft calculated at ",sp.index
 
             ft.process(spatio_image)
-            ft_image =ft.getFilteredSpectrum()
+            ft_image =ft.get_filtered_spectrum()
             if debug:
                 plt.clf()
                 plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
-                m = np.tan(np.deg2rad(ft.getDirection()))
+                m = np.tan(np.deg2rad(ft.get_direction()))
                 pixel_ditance = frame_rate/(m*resize_fx)
                 h, w = ft_image.shape[:2]
                 x = np.arange(h/10)
                 y = m * x
                 plt.subplot(132), plt.plot(x + w/2, y), plt.imshow(ft_image, cmap="gray")
                 plt.subplot(133), plt.plot(x, y)
-                plt.pause(0.0001)
-                print ft.getDirection(), pixel_ditance
-                print "calculated pixel Distancce",ft.getPixelDistance()
+                # plt.pause(0.0001)
+                print ft.get_direction(), pixel_ditance
+                print "calculated pixel Distancce",ft.get_pixel_distance()
         if debug:
             selected_line_index=sp.ref_point
             frame[selected_line_index, hor_start_index:hor_end_index, :] = np.ones_like(frame[selected_line_index, hor_start_index:hor_end_index, :]) * 255
-            cv2.imshow('imamge', frame)
+            # cv2.imshow('imamge', frame)
 
         ch = cv2.waitKey(1)
 
