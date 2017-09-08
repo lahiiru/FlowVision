@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
+from config import DevConfig
 
 print ("[INFO] Imports done.")
 
@@ -41,7 +42,7 @@ def getBlurLength(image, debug=False):
 
     return blength
 
-cap = cv2.VideoCapture('../../01.mp4')
+cap = cv2.VideoCapture(DevConfig.VIDEO_DIR + "01.mp4")
 
 vals = []
 while True:
