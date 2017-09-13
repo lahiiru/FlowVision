@@ -1,5 +1,5 @@
-from flow_vision import STIAnalyzer
-from  flow_vision import STIBuilder
+from flow_vision import sti_analyzer
+from  flow_vision import sti_builder
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -7,19 +7,16 @@ from config import DevConfig
 
 frame_rate=29
 
-selected_line=0 # variable for select the line to make the spatio image .Spatio image construct using this line pixels in every frame
-resize_fx=1
-resize_fy=1
+resize_width=640
 history_ratio = 0.6
+ref_line_ratio=0.5
+hor_start_ratio=0
+hor_end_ratio=1
 scale_factor = 2
-horizontal_start_index=0 # parameter for set starting index of the frame for build the spatio image (spatio image started from this index)
-horizontal_end_index=100 # parameter for set ending index of the frame for build the spatio image (spatio image end from this index)
-height=200 # enter the desired spatio image height (how many consecutive frames are needed to build the image)
+height=200
 
 debug = True
 
-
-# this main function for read the video stream and calculate the angle from FFT method
 def main():
     import sys
     try:
@@ -32,43 +29,49 @@ def main():
     c = cv2.VideoCapture(video_src)
 
     rect, frame = c.read()
+    org_frame_width=frame.shape[1]
+    org_frame_height=frame.shape[0]
+    resize_height=(resize_width*org_frame_height)/org_frame_width
+    resize_fx=resize_width/float(org_frame_width)
+    resize_fy=resize_height/float(org_frame_height)
+    # print  org_frame_width,org_frame_height,resize_width,resize_height,resize_fx,resize_fy
     frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
-    selected_line = frame.shape[0]/2
-    horizontal_end_index=frame.shape[1]-1
-    sp = STIBuilder( selected_line, history_ratio, scale_factor,horizontal_start_index,horizontal_end_index,height) # initialize the Spatio object
-    ft = STIAnalyzer()
+
+    hor_end_index=int((frame.shape[1]-1)*hor_end_ratio)
+    hor_start_index=int((frame.shape[1]-1)*hor_start_ratio)
+    sp = sti_builder( ref_line_ratio, history_ratio, scale_factor,hor_start_index,hor_end_index,height)
+    ft = sti_analyzer()
     while (1):
         rect, frame = c.read()
         if not rect:
             cv2.destroyAllWindows()
             break
         frame = cv2.resize(frame, None, fx=resize_fx, fy=resize_fy, interpolation=cv2.INTER_CUBIC);
-        spatio_image = sp.buildImage(frame)
+        spatio_image = sp.build_image(frame)
 
-        # new_frame_count==0 when correct(history and new frame count is correct) image is constructed
-        if (sp.new_frame_count == 0):
 
+        if (sp.can_analyze):
             ft.process(spatio_image)
-            ft_image =ft.getFilteredSpectrum()
-            # cv2.imshow('spatio image', spatio_image)
+            ft_image =ft.get_filtered_spectrum()
             if debug:
                 plt.clf()
                 plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
-                m = np.tan(np.deg2rad(ft.getDirection()))
+                m = np.tan(np.deg2rad(ft.get_direction()))
                 pixel_ditance = frame_rate/(m*resize_fx)
                 h, w = ft_image.shape[:2]
                 x = np.arange(h/10)
                 y = m * x
                 plt.subplot(132), plt.plot(x + w/2, y), plt.imshow(ft_image, cmap="gray")
                 plt.subplot(133), plt.plot(x, y)
-                plt.pause(0.0001)
-                print ft.getDirection(), pixel_ditance
-                print "calculated pixel Distancce",ft.getPixelDistance()
+                # plt.pause(0.0001)
+                print ft.get_direction(), pixel_ditance
+                print "calculated pixel Distancce",ft.get_pixel_distance()
         if debug:
-            frame[selected_line, horizontal_start_index:horizontal_end_index, :] = np.ones_like(frame[selected_line, horizontal_start_index:horizontal_end_index, :]) * 255
+            selected_line_index=sp.ref_point
+            frame[selected_line_index, hor_start_index:hor_end_index, :] = np.ones_like(frame[selected_line_index, hor_start_index:hor_end_index, :]) * 255
             cv2.imshow('imamge', frame)
 
-        ch = cv2.waitKey(int(1000.0 / frame_rate) + 1)
+        ch = cv2.waitKey(1)
 
         if ch == 27:
             break
