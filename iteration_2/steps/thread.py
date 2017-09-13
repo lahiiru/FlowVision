@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import threading
 import time
 import cv2
