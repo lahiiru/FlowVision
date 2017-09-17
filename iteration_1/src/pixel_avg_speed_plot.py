@@ -37,7 +37,7 @@ rect, prev = c.read()
 frame_hieght, frame_width = prev.shape[:2]
 
 prev=cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
-fgbg = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=False)
+fgbg = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=True)
 #kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
 kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
 values = []
@@ -70,6 +70,9 @@ while(1):
     fgmask = fgbg.apply(frame)
     fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)
     current = fgmask
+    fg = cv2.cvtColor(current, cv2.COLOR_GRAY2RGB)
+    fg = fg/255
+    fg = np.multiply(fg,raw_frame)
     template = prev[20:-20,-300:-100]
     a = (template > 250)
     white = cv2.countNonZero(template[a])
@@ -111,7 +114,8 @@ while(1):
     
     if videoMode:
         backtorgb = cv2.cvtColor(current,cv2.COLOR_GRAY2RGB)
-        vis = np.hstack((raw_frame,backtorgb))
+
+        vis = np.hstack((raw_frame,fg))
         
         font = cv2.FONT_HERSHEY_SIMPLEX
         text = 'Speed: %d cm/s\nWhite count: %d' % (speed, round(perc,2))
