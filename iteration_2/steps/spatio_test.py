@@ -149,12 +149,15 @@ def main():
                 continue
 
             view = spatio_image.copy()[:, :]
-            #ft_image = ft.getTransformedImage(spatio_image)
+            ft_image = ft.getTransformedImage(spatio_image)
             # vis = np.hstack((spatio_image, ft_image))
             #spatio_image = np.ones_like(spatio_image) * 255
 
-            print spatio_image
-            cv2.imshow('spatio image', spatio_image*2)
+            print spatio_image.shape
+            cv2.imshow('spatio image', spatio_image)
+            # plt.imshow(spatio_image,cmap="gray")
+            print np.argwhere(spatio_image > 255)
+            # plt.show()
             print str(ft.globalDirection)
             # plt.imshow(ft.magnitude_spectrum, cmap="gray")
             # plt.pause(0.0001)

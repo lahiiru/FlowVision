@@ -22,6 +22,7 @@ try:
     video_src = sys.argv[1]
 except:
     video_src = '../resources/gradients/60.jpg'
+    #video_src = 'sti/330.jpg'
     sigma = 0.1
 
 gray = cv2.imread(video_src, 0)
