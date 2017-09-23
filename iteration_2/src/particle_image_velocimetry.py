@@ -56,6 +56,17 @@ def gridDetails(img, grid_columns, grid_rows, i, j):
     grid_width = frame_width / grid_columns
     return img[j * grid_height:(j + 1) * grid_height, i * grid_width:(i + 1) * grid_width]
 
+#this function matches the selcted template in the selected grid from previous frame
+def spotMatching(i, j, spot_height, spot_width, grid_rows, grid_columns, current_frame, prev):
+    startIndex_h = (grid_height / 2) - spot_height / 2
+    endIndex_h = (grid_height / 2) + spot_height / 2
+    startIndex_w = (grid_width / 2) - spot_width / 2
+    endIndex_w = (grid_width / 2) + spot_width / 2
+    template = gridDetails(current_frame, grid_columns, grid_rows, i, j)[startIndex_h:endIndex_h, startIndex_w:endIndex_w]
+    res = cv2.matchTemplate(gridDetails(prev, grid_columns, grid_rows, i, j), template, cv2.TM_CCOEFF_NORMED)
+    minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
+    return maxLoc, startIndex_w, startIndex_h, endIndex_h, endIndex_w, template
+
 while (1):
 
     rect, frame = c.read()
@@ -69,17 +80,6 @@ while (1):
     fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)
     frame = fgmask
     #raw_frame = frame
-
-    #this function matches the selcted template in the selected grid from previous frame
-    def spotMatching(i, j, spot_height, spot_width, grid_rows, grid_columns):
-        startIndex_h = (grid_height / 2) - spot_height / 2
-        endIndex_h = (grid_height / 2) + spot_height / 2
-        startIndex_w = (grid_width / 2) - spot_width / 2
-        endIndex_w = (grid_width / 2) + spot_width / 2
-        template = gridDetails(frame, grid_columns, grid_rows, i, j)[startIndex_h:endIndex_h, startIndex_w:endIndex_w]
-        res = cv2.matchTemplate(gridDetails(prev, grid_columns, grid_rows, i, j), template, cv2.TM_CCOEFF_NORMED)
-        minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
-        return maxLoc, startIndex_w, startIndex_h, endIndex_h, endIndex_w, template
 
     #draw vertical and horizontal lines in the frames showing the grid selection
     for i in range(1, grid_columns):
@@ -95,7 +95,7 @@ while (1):
 
             maxLoc, startIndex_w, startIndex_h, endIndex_h, endIndex_w, spot = spotMatching(i, j, spot_height,
                                                                                             spot_width, grid_rows,
-                                                                                            grid_columns)
+                                                                                            grid_columns, frame, prev)
             ref_point_x = startIndex_w
             ref_point_y = startIndex_h
             x_distance = maxLoc[0] - ref_point_x
