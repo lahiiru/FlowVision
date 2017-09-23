@@ -6,13 +6,14 @@ import sys
 import math
 import datetime
 import os
+from config import DevConfig
 
 try:
     video_src = sys.argv[1]
     if video_src.isdigit():
         video_src = int(video_src)
 except:
-    video_src = "..\\01.mp4"
+    video_src = DevConfig.VIDEO_DIR+"01.mp4"
 
 #removing the background
 fgbg = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=False)
