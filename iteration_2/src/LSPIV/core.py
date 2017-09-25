@@ -28,9 +28,8 @@ class Comparator:
 
 class PointAroundComparator(object, Comparator):
 
-    def __init__(self, name):
+    def __init__(self):
         Comparator.__init__(self)
-        self.name = name
 
     def compare(self, current_frame, prev_frame, **kwargs):
         self.center= kwargs['center'] #(x,y)
@@ -68,14 +67,11 @@ class PointAroundComparator(object, Comparator):
         template_hieght, template_width = template.shape[:2]
 
         reference_point=[rof_width/2-template_width/2, rof_hieght/2-template_hieght/2]
-        # print  region_of_intreest.shape,template.shape,reference_point
-        # print maxLoc
 
         original_matched_point=[w_start+maxLoc[0], h_start+maxLoc[1]]
         original_start_point=[w_start+reference_point[0], h_start+reference_point[1]]
 
-        print 'X - '+ str(maxLoc[1]-reference_point[1]) +', Y -'+ str(maxLoc[0]-reference_point[0])
-
+        distance = (maxLoc[1] - reference_point[1], maxLoc[0] - reference_point[0])
         if self.debug :
             current_frame=cv2.cvtColor(current_frame,cv2.COLOR_GRAY2BGR)
             prev_frame = cv2.cvtColor(prev_frame, cv2.COLOR_GRAY2BGR)
@@ -84,15 +80,11 @@ class PointAroundComparator(object, Comparator):
             prev_frame= cv2.rectangle(prev_frame, (original_start_point[0], original_start_point[1]), (original_start_point[0]+2*self.template_radius, original_start_point[1]+2*self.template_radius), (255, 0, 0), 1)
             current_frame = cv2.rectangle(current_frame, (original_start_point[0], original_start_point[1]), (original_start_point[0]+2*self.template_radius, original_start_point[1]+2*self.template_radius), (255, 0, 0), 1)
             prev_frame=cv2.circle(prev_frame, (x,y),1, (255, 0, 255), thickness=3)
-
             vis = np.hstack((current_frame,prev_frame))
-            cv2.imshow('frame', vis)
-            cv2.waitKey(0)
-
-
-
-
-
+            vis = cv2.putText(vis, "%i, %i"%distance, (20, 20), cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 1)
+            return vis
+        else:
+            return distance
 
 
 class GriddedFrameComparator(object, Comparator):
