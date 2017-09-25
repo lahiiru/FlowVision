@@ -80,6 +80,7 @@ class PointAroundComparator(object, Comparator):
             prev_frame= cv2.rectangle(prev_frame, (original_start_point[0], original_start_point[1]), (original_start_point[0]+2*self.template_radius, original_start_point[1]+2*self.template_radius), (255, 0, 0), 1)
             current_frame = cv2.rectangle(current_frame, (original_start_point[0], original_start_point[1]), (original_start_point[0]+2*self.template_radius, original_start_point[1]+2*self.template_radius), (255, 0, 0), 1)
             prev_frame=cv2.circle(prev_frame, (x,y),1, (255, 0, 255), thickness=3)
+            current_frame = cv2.circle(current_frame, (original_matched_point[0]+self.template_radius, original_matched_point[1]+self.template_radius), 1, (255, 0, 255), thickness=3)
             vis = np.hstack((current_frame,prev_frame))
             vis = cv2.putText(vis, "%i, %i"%distance, (20, 20), cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 1)
             return vis
