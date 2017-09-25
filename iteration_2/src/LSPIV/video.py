@@ -39,7 +39,7 @@ while (1):
         cv2.destroyAllWindows()
         break
 
-    ret = frame_comparator.compare(frame, prev, debug)
+    ret = frame_comparator.compare(frame, prev)
     if debug:
         # function returned vis frame
         cv2.imshow('frame', ret)

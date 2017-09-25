@@ -10,8 +10,8 @@ for no in [7,12,14,16,20,22]:
     b,g,r = cv2.split(frame)
     prev,frame = b,r
     frame_hieght, frame_width = frame.shape[:2]
-    frame_comparator = GriddedFrameComparator(frame_hieght, frame_width, grid_columns=2, grid_rows=2, ratio=0.7, white_threshold=0, raw_values=True)
-    ret = frame_comparator.compare(frame, prev, debug)
+    frame_comparator = GriddedFrameComparator(frame_hieght, frame_width, grid_columns=2, grid_rows=2, ratio=0.7, white_threshold=0)
+    ret = frame_comparator.compare(frame, prev)
     prev = cv2.cvtColor(prev, cv2.COLOR_GRAY2RGB)
     frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
     vis = np.hstack((frame,prev))

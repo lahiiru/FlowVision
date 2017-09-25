@@ -12,7 +12,7 @@ class Comparator:
         self.drain_d = 30
         self.cam_angle = 28
 
-    def compare(self, current_frame, prev_frame, debug=True):
+    def compare(self, current_frame, prev_frame, **kwargs):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def setSystemParams(self, frame_rate, drain_d, cam_angle, raw_values = True):
@@ -29,17 +29,17 @@ class Comparator:
 class PointAroundComparator(object, Comparator):
 
     def __init__(self, name):
-        super(PointAroundComparator, self).__init__()
+        Comparator.__init__(self)
         self.name = name
 
-    def compare(self, current_frame, prev_frame, debug=True):
+    def compare(self, current_frame, prev_frame, **kwargs):
         pass
 
 
 class GriddedFrameComparator(object, Comparator):
 
     def __init__(self, frame_height, frame_width, grid_columns, grid_rows, ratio=0.7, white_threshold=5):
-        super(GriddedFrameComparator, self).__init__()
+        Comparator.__init__(self)
         self.frame_height = frame_height
         self.frame_width = frame_width
         self.grid_columns = grid_columns
@@ -70,7 +70,7 @@ class GriddedFrameComparator(object, Comparator):
         minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
         return maxLoc, startIndex_w, startIndex_h, endIndex_h, endIndex_w, template
 
-    def compare(self, current_frame, prev_frame, debug=True):
+    def compare(self, current_frame, prev_frame, **kwargs):
         # draw vertical and horizontal lines in the frames showing the grid selection
         for i in range(1, self.grid_columns):
             current_frame = cv2.line(current_frame, (self.grid_width * i, 0), (self.grid_width * i, self.frame_height), (255, 255, 0),
@@ -123,6 +123,6 @@ class GriddedFrameComparator(object, Comparator):
                 distance_matrix[count, 1] += y_distance
                 count += 1
 
-        if debug:
+        if self.debug:
             return vis
         return distance_matrix
