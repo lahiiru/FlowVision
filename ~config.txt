@@ -12,7 +12,9 @@ class DevConfig:
     WEB_CAM_INDEX = 
     WEB_CAM_F = 
     VIDEO_DIR = 
-    TEST_VIDEO = 
+    TEST_VIDEO =
+    REAL_FRAME_DIR =
+    RB_FRAME_DIR
 
 
 class ProdConfig:

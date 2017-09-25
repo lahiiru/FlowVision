@@ -1,10 +1,11 @@
 import sys
-from from_file_camera import FromFileCamera
+from from_video_camera import FromVideoCamera
+from from_folder_camera import FromFolderCamera
 from web_camera import WebCamera
 
-c = ['FromFileCamera', 'WebCamera']
+c = ['FromVideoCamera', 'WebCamera', 'FromFolderCamera']
 
-if sys.platform=='linux2':
+if sys.platform == 'linux2':
     from rpi_camera import RPiCamera
     c += ['RPiCamera']
 

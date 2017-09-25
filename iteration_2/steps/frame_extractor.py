@@ -41,7 +41,7 @@ while True:
         r[:, :, 0] = 0
         r[:, :, 1] = 0
         vis = np.vstack((np.hstack((img,g)),np.hstack((b,r))))
-    cv2.imshow('Press S to switch view. C to %s capturing frames'%(['start','stop'][int(isWrite)]),vis)
+    cv2.imshow('Press S to switch view. C to %s capturing real_frames'%(['start','stop'][int(isWrite)]),vis)
 
     ch = cv2.waitKey(1)
 
@@ -53,12 +53,12 @@ while True:
         cv2.destroyAllWindows()
         if isWrite:
             frameNo = 0
-            if not os.path.isdir('frames'):
-                os.mkdir('frames')
+            if not os.path.isdir('real_frames'):
+                os.mkdir('real_frames')
             else:
-                shutil.rmtree('frames')
+                shutil.rmtree('real_frames')
                 time.sleep(2)
-                os.mkdir('frames')
+                os.mkdir('real_frames')
         else:
             out.release()
     if isWrite:
@@ -67,5 +67,5 @@ while True:
             out = cv2.VideoWriter('records\\' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.avi', fourcc,
                                   frame_rate, (img.shape[1], img.shape[0]))
         out.write(img)
-        cv2.imwrite('frames/' + str(frameNo) + '.jpg', img)
+        cv2.imwrite('real_frames/' + str(frameNo) + '.jpg', img)
         frameNo += 1

@@ -123,7 +123,7 @@ class GriddedFrameComparator(object, Comparator):
         return maxLoc, startIndex_w, startIndex_h, endIndex_h, endIndex_w, template
 
     def compare(self, current_frame, prev_frame, **kwargs):
-        # draw vertical and horizontal lines in the frames showing the grid selection
+        # draw vertical and horizontal lines in the real_frames showing the grid selection
         for i in range(1, self.grid_columns):
             current_frame = cv2.line(current_frame, (self.grid_width * i, 0), (self.grid_width * i, self.frame_height), (255, 255, 0),
                                      1, cv2.LINE_AA)

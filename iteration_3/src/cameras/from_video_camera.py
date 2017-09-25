@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger()
 
 
-class FromFileCamera(AbstractCamera):
+class FromVideoCamera(AbstractCamera):
 
     def __init__(self, path):
         AbstractCamera.__init__(self)

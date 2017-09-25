@@ -17,7 +17,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
     def __init__(self, frame_rate):
         Algorithm.__init__(self)
         self.direction_filter= DirectionFilter()
-        self.frame_wallet=FrameWallet(3)
+        self.frame_wallet=FrameWallet(2)
         self.frame_rate = frame_rate
         self.white_threshold = 0.8
         self.x_offset = 20
@@ -40,7 +40,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.masked_frames=self.frame_wallet.get_masked_frames()
 
         if len(self.original_frames) < self.frame_wallet.wallet_size:
-            logger.warn("trying to update before receiving frames. returning 0.")
+            logger.warn("trying to update before receiving real_frames. returning 0.")
             return UNKNOWN_SPEED
 
         self._process_pre_filters()
@@ -51,6 +51,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
                     # clear debug text for the current frame
                     self.debug_vis_text = ""
 
+        self.pixels_per_second= UNKNOWN_SPEED
         for i in range(self.frame_wallet.wallet_size - 1) :
             pixels_per_second = self._match_template(i, i + 1)
 
