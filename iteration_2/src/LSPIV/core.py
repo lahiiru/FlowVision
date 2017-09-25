@@ -4,9 +4,42 @@ import numpy as np
 import math
 
 
-class FrameComparator:
+class Comparator:
+    def __init__(self):
+        self.debug = True
+        self.raw_values = True
+        self.frame_rate = 7
+        self.drain_d = 30
+        self.cam_angle = 28
 
-    def __init__(self, frame_height, frame_width, grid_columns, grid_rows, ratio=0.7, white_threshold=5, cam_angle=28, frame_rate=7, drain_d=30, raw_values=False , debug=True):
+    def compare(self, current_frame, prev_frame, debug=True):
+        raise NotImplementedError("Subclass must implement abstract method")
+
+    def setSystemParams(self, frame_rate, drain_d, cam_angle, raw_values = True):
+        self.frame_rate = frame_rate
+        self.drain_d = drain_d
+        self.cam_angle = cam_angle
+
+    # this function calculates the speed of flow (cm/s)
+    def speedCalc(self, avg_d, angle, drain_d, frame_rate, frame_width):
+        speed = (avg_d * 2 * drain_d * math.tan(math.radians(angle / 2)) * frame_rate) / frame_width
+        return speed
+
+
+class PointAroundComparator(object, Comparator):
+
+    def __init__(self, name):
+        super(PointAroundComparator, self).__init__()
+        self.name = name
+
+    def compare(self, current_frame, prev_frame, debug=True):
+        pass
+
+
+class GriddedFrameComparator(object, Comparator):
+
+    def __init__(self, frame_height, frame_width, grid_columns, grid_rows, ratio=0.7, white_threshold=5):
+        super(GriddedFrameComparator, self).__init__()
         self.frame_height = frame_height
         self.frame_width = frame_width
         self.grid_columns = grid_columns
@@ -16,16 +49,6 @@ class FrameComparator:
         self.spot_height = int(self.grid_height * ratio)
         self.spot_width = int(self.grid_width * ratio)
         self.white_threshold = white_threshold
-        self.debug = debug
-        self.cam_angle = cam_angle
-        self.frame_rate = frame_rate
-        self.drain_d = drain_d
-        self.raw_values = raw_values
-
-    # this function calculates the speed of flow (cm/s)
-    def speedCalc(self, avg_d, angle, drain_d, frame_rate, frame_width):
-        speed = (avg_d * 2 * drain_d * math.tan(math.radians(angle / 2)) * frame_rate) / frame_width
-        return speed
 
     # this function returns a region of interest
     def gridDetails(self, img, grid_columns, grid_rows, i, j):
@@ -33,7 +56,6 @@ class FrameComparator:
         grid_height = frame_height / grid_rows
         grid_width = frame_width / grid_columns
         return img[j * grid_height:(j + 1) * grid_height, i * grid_width:(i + 1) * grid_width]
-
 
     # this function matches the selected template in the selected grid from previous frame
     def spotMatching(self, i, j, spot_height, spot_width, grid_rows, grid_columns, current_frame, prev_frame):
@@ -104,4 +126,3 @@ class FrameComparator:
         if debug:
             return vis
         return distance_matrix
-

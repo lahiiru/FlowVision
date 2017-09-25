@@ -1,7 +1,7 @@
 from config import DevConfig
 import sys
 import cv2
-from core import FrameComparator
+from core import GriddedFrameComparator
 
 debug = True
 frame_rate = 7
@@ -25,7 +25,7 @@ frame_hieght, frame_width = prev.shape[:2]
 # converting the frame to gray scale
 prev = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
 
-frame_comparator = FrameComparator(frame_hieght, frame_width, 5, 2)
+frame_comparator = GriddedFrameComparator(frame_hieght, frame_width, 5, 2)
 
 while (1):
     rect, frame = c.read()
