@@ -5,9 +5,15 @@ from iteration_2.src.LSPIV.core import PointAroundComparator
 
 debug = False
 
-path = 'iteration_2/resources/double_exposed_webcam/'
-for no in [12, 14, 16, 20, 22]:
+path = '../resources/double_exposed_webcam/'
+# TODO: 20, 26 images give unfair values. Check.
+for no in [20, 26, 8, 9, 10, 12, 14, 16, 22]:
     img = cv2.imread(path + str(no) + '.jpg')
+
+    if debug:
+        cv2.imshow('img', img)
+        cv2.waitKey(0)
+
     b, g, r = cv2.split(img)
 
     cr = cv2.goodFeaturesToTrack(r, 50, 0.01, 5)

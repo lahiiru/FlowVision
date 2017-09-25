@@ -52,7 +52,7 @@ h, w = frame.shape[:2]
 center = w / 2, h / 2
 #                                      f  x   y  z  th ph et  (angles in degrees, y is the axis through optical center
 rh, rw = 10, 10 # rectangle dimensions
-th, ph, et = 0,0,45 # are to determined by accelerometer
+th, ph, et = 2,10,0 # are to determined by accelerometer
 
 p0_ = findPoints(DevConfig.WEB_CAM_F, 0, 300, 0, 0, 0, 0)
 p1_ = findPoints(DevConfig.WEB_CAM_F, rw, 300, 0, 0, 0, 0)
