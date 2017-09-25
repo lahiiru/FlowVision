@@ -33,7 +33,66 @@ class PointAroundComparator(object, Comparator):
         self.name = name
 
     def compare(self, current_frame, prev_frame, **kwargs):
-        pass
+        self.center= kwargs['center'] #(x,y)
+        self.template_radius=kwargs['template_radius']
+        self.matching_radius=kwargs['matching_radius']
+        x,y=self.center[0],self.center[1]
+
+        if y < self.template_radius :
+            h_start=0
+        else :
+            h_start=y-self.template_radius
+
+        if x < self.template_radius:
+            w_start = 0
+        else:
+            w_start = x-self.template_radius
+
+        template=prev_frame[ h_start: y+self.template_radius , w_start : x+self.template_radius]
+
+        if y < self.matching_radius :
+            h_start=0
+        else :
+            h_start=y-self.matching_radius
+
+        if x < self.matching_radius:
+            w_start = 0
+        else:
+            w_start = x-self.matching_radius
+        region_of_intreest=current_frame[ h_start: y+self.matching_radius , w_start : x+self.matching_radius]
+
+        res = cv2.matchTemplate(region_of_intreest, template, cv2.TM_CCOEFF_NORMED)
+        minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
+
+        rof_hieght, rof_width = region_of_intreest.shape[:2]
+        template_hieght, template_width = template.shape[:2]
+
+        reference_point=[rof_width/2-template_width/2, rof_hieght/2-template_hieght/2]
+        # print  region_of_intreest.shape,template.shape,reference_point
+        # print maxLoc
+
+        original_matched_point=[w_start+maxLoc[0], h_start+maxLoc[1]]
+        original_start_point=[w_start+reference_point[0], h_start+reference_point[1]]
+
+        print 'X - '+ str(maxLoc[1]-reference_point[1]) +', Y -'+ str(maxLoc[0]-reference_point[0])
+
+        if self.debug :
+            current_frame=cv2.cvtColor(current_frame,cv2.COLOR_GRAY2BGR)
+            prev_frame = cv2.cvtColor(prev_frame, cv2.COLOR_GRAY2BGR)
+            current_frame = cv2.rectangle(current_frame, (original_matched_point[0], original_matched_point[1]), (original_matched_point[0]+2*self.template_radius, original_matched_point[1]+2*self.template_radius), (255, 255, 0), 1)
+            current_frame = cv2.rectangle(current_frame, (w_start,h_start), (w_start + 2 * self.matching_radius, h_start + 2 * self.matching_radius),(255, 0, 0), 1)
+            prev_frame= cv2.rectangle(prev_frame, (original_start_point[0], original_start_point[1]), (original_start_point[0]+2*self.template_radius, original_start_point[1]+2*self.template_radius), (255, 0, 0), 1)
+            current_frame = cv2.rectangle(current_frame, (original_start_point[0], original_start_point[1]), (original_start_point[0]+2*self.template_radius, original_start_point[1]+2*self.template_radius), (255, 0, 0), 1)
+            prev_frame=cv2.circle(prev_frame, (x,y),1, (255, 0, 255), thickness=3)
+
+            vis = np.hstack((current_frame,prev_frame))
+            cv2.imshow('frame', vis)
+            cv2.waitKey(0)
+
+
+
+
+
 
 
 class GriddedFrameComparator(object, Comparator):
