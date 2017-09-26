@@ -5,7 +5,7 @@ from iteration_2.src.LSPIV.core import PointAroundComparator
 
 debug = False
 
-path = 'iteration_2/resources/double_exposed_webcam/'
+path = '../resources/double_exposed_webcam/'
 for no in [12, 14, 16, 20, 22]:
     img = cv2.imread(path + str(no) + '.jpg')
     b, g, r = cv2.split(img)
