@@ -7,7 +7,7 @@ debug = False
 
 path = '../resources/double_exposed_webcam/'
 # TODO: 20, 26 images give unfair values. Check.
-for no in [20, 26, 8, 9, 10, 12, 14, 16, 22]:
+for no in [14, 20, 26, 8, 9, 10, 12, 16, 22]:
     img = cv2.imread(path + str(no) + '.jpg')
 
     if debug:
@@ -30,11 +30,6 @@ for no in [20, 26, 8, 9, 10, 12, 14, 16, 22]:
     plt.imshow(img), plt.show()
     comparator = PointAroundComparator()
 
-    if debug:
-        vis = comparator.compare(r, b, center=(x, y), template_radius=20, matching_radius=60)
-        cv2.imshow('vis', vis)
-        cv2.waitKey(0)
-
     comparator.debug = False
     distances = []
     for i in corners:
@@ -48,6 +43,14 @@ for no in [20, 26, 8, 9, 10, 12, 14, 16, 22]:
     print (no, dist)
     plt.show()
 
+    if debug:
+        comparator.debug = True
+        for i in corners:
+            x, y = i.ravel()
+
+            vis = comparator.compare(r, b, center=(x, y), template_radius=20, matching_radius=60)
+            cv2.imshow('debug preview', vis)
+            cv2.waitKey(0)
 
     # offset = 50
     # w_min, h_min = tuple(np.min(corners, 0)[0])
