@@ -3,11 +3,13 @@ import cv2
 from matplotlib import pyplot as plt
 from iteration_2.src.LSPIV.core import PointAroundComparator
 
-debug = False
+debug = True
+
+
 
 path = '../resources/double_exposed_webcam/'
 # TODO: 20, 26 images give unfair values. Check.
-for no in [14, 20, 26, 8, 9, 10, 12, 16, 22]:
+for no in [197, 14, 20, 26, 8, 9, 10, 12, 16, 22]:
     img = cv2.imread(path + str(no) + '.jpg')
 
     if debug:
@@ -16,10 +18,22 @@ for no in [14, 20, 26, 8, 9, 10, 12, 16, 22]:
 
     b, g, r = cv2.split(img)
 
-    cr = cv2.goodFeaturesToTrack(r, 50, 0.01, 5)
+    s = np.stack((b, r))
+    idxR = np.argmax(s, 0) == 1
+    idxB = np.argmax(s, 0) == 0
+    b[idxR] = 0
+    r[idxB] = 0
+
+    # vis = np.hstack((r,b))
+    # cv2.imshow('img', vis)
+    # cv2.waitKey(0)
+    #
+    # continue
+
+    cr = cv2.goodFeaturesToTrack(r, 50, 0.1, 5)
     cr = np.int0(cr)
 
-    cb = cv2.goodFeaturesToTrack(b, 50, 0.01, 5)
+    cb = cv2.goodFeaturesToTrack(b, 50, 0.1, 5)
     cb = np.int0(cb)
 
     corners = np.concatenate((cb, cr), 0)

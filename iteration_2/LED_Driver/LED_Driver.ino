@@ -38,11 +38,11 @@ void Sync(){
 }
 void PulseTwo(){
   digitalWrite(red_pin, HIGH);
-  delayMicroseconds(1000);
+  delayMicroseconds(500);
   digitalWrite(red_pin, LOW);
   delay(10);
   digitalWrite(blue_pin, HIGH);
-  delayMicroseconds(1000);
+  delayMicroseconds(500);
   digitalWrite(blue_pin, LOW);
   delay(100);
 }
