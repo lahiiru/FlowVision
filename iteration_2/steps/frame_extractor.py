@@ -13,7 +13,7 @@ cap.set(4, frame_height)
 # see whether camera has adjusted the resolution
 print cap.get(3),cap.get(4)
 
-frameNo=0
+frameNo = 0
 isWrite = False
 separateChannels = False
 record = True
@@ -47,7 +47,7 @@ while True:
     if ch & 0xFF == ord('s'):
         separateChannels = not separateChannels
 
-    if ch & 0xFF==ord('c'):
+    if ch & 0xFF == ord('c'):
         isWrite = not isWrite
         cv2.destroyAllWindows()
         if isWrite:
