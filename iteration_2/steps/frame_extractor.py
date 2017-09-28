@@ -6,7 +6,7 @@ import datetime
 import time
 
 cap = cv2.VideoCapture(0)
-frame_height, frame_width = 640, 480#2048, 1536
+frame_height, frame_width = 640, 480 #2048, 1536 or 640, 480
 
 # say camera to adjust resolution
 cap.set(3, frame_width)
