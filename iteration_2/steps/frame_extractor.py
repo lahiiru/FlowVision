@@ -3,15 +3,16 @@ import os
 import shutil
 import numpy as np
 import datetime
+import time
 
 cap = cv2.VideoCapture(0)
-frame_height, frame_width = 2048, 1536
+frame_height, frame_width = 640, 480#2048, 1536
 
 # say camera to adjust resolution
 cap.set(3, frame_width)
 cap.set(4, frame_height)
 # see whether camera has adjusted the resolution
-print cap.get(3),cap.get(4)
+print (cap.get(3),cap.get(4))
 
 frameNo = 0
 isWrite = False
@@ -56,6 +57,7 @@ while True:
                 os.mkdir('frames')
             else:
                 shutil.rmtree('frames')
+                time.sleep(2)
                 os.mkdir('frames')
         else:
             out.release()
