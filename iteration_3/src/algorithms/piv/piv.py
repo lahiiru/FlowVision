@@ -14,6 +14,7 @@ class PIVAlgorithm(object, Algorithm):
         self.end_y = -20
         self.start_x = -300
         self.end_x = -100
+        self.frame_rate = 27
 
 
     def receive_frame(self, frame):
@@ -21,7 +22,7 @@ class PIVAlgorithm(object, Algorithm):
         self.latest_frame = frame
 
     def update(self,**kwargs):
-        print("to be implemented")
+        self.matchTemplate(self)
 
     def matchTemplate(self):
 
@@ -34,4 +35,17 @@ class PIVAlgorithm(object, Algorithm):
             self.prev_fg_mask = self.background_subtract.apply(self.prev_frame)
             self.prev_frame = cv2.morphologyEx(self.prev_fg_mask, cv2.MORPH_OPEN, self.kernel)
             template = self.prev_frame[self.start_y:self.end_y, self.start_x:self.end_x]
+            template = self.prev_frame[20:-20, -300:-100]
+            features = (template > 250)
+            white_pixel_count = cv2.countNonZero(template[features])
+            total = template.shape[:2][0] * template.shape[:2][1]
+            white_percentage = white_pixel_count * 1000.0 / total
+            correlation_values = cv2.matchTemplate(self.current_frame, template, method=cv2.TM_CCOEFF_NORMED)
+            minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
+            ref_point_x = self.start_x
+            ref_point_y = self.start_y
+            x_distance = maxLoc[0] - ref_point_x
+            y_distance = maxLoc[1] - ref_point_y
 
+            self.pixels_per_second = x_distance*self.frame_rate
+            return self.pixels_per_second
