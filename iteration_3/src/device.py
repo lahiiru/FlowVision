@@ -2,9 +2,9 @@ import logging
 from algorithms.algorithm import *
 from logging.config import fileConfig
 
-fileConfig('logging.ini')
-logger = logging.getLogger()
-
+if __name__ == '__main__':
+    logger = logging.getLogger()
+    fileConfig('logging.ini')
 
 class Device:
 
@@ -12,14 +12,17 @@ class Device:
     algorithm = Algorithm()
     communicator = None
     id = ""
+    logger = None
 
     def __init__(self, id):
         self.id = id
-        logger.info("Device with id {0} initiated.".format(self.id))
 
     def start(self):
         logger.info("Device with id {0} started.".format(self.id))
         # TODO: add your test code
+
+    def return_one(self):
+        return 1
 
     @staticmethod
     def main():
