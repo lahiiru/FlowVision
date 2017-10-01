@@ -1,6 +1,5 @@
 import cv2
 from cv2 import *
-import numpy as np
 from iteration_3.src.algorithms.piv import piv
 
 try:
@@ -12,7 +11,7 @@ except:
 
 
 pivInstance = piv.PIVAlgorithm()
-
+pivInstance.debug=True
 c = cv2.VideoCapture(video_src)
 
 rect, prev = c.read()
