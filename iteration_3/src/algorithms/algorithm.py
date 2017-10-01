@@ -1,7 +1,7 @@
 class Algorithm:
 
     def __init__(self):
-        self.debug = True
+        self.debug = False
         self.pixels_per_second=0
 
     def get_pixels_per_second(self):
