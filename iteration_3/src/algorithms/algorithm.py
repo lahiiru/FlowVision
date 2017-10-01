@@ -7,7 +7,7 @@ class Algorithm:
     def get_pixels_per_second(self):
         return self.pixels_per_second
 
-    def receive_frames(self, frame):
+    def receive_frame(self, frame):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def update(self,**kwargs):
