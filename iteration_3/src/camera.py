@@ -9,10 +9,10 @@ import io
 
 class Camera(threading.Thread):
     def __init__(self, img_buf_size=120):
-        threading.Thread.__init__(self)
-        self.frames = Queue.Queue(maxsize=self.img_buf_size*4)
-        self.latest_frame = None
         self.img_buf_size = img_buf_size
+        threading.Thread.__init__(self)
+        self.frames = Queue.Queue(maxsize=self.img_buf_size * 4)
+        self.latest_frame = None
         self.preview = False
 
     def run(self):
@@ -25,10 +25,14 @@ class Camera(threading.Thread):
                 print (self.frames.qsize())
 
     def get_frame(self):
-        return self.frames.get()
+        if not self.frames.empty():
+            return self.frames.get()
+        return None
 
-    def seek_frame(self):
-        return self.frames[0]
+    def peek_frame(self):
+        if not self.frames.empty():
+            return self.frames.queue[0]
+        return None
 
     def get_latest_frame(self):
         return self.latest_frame
@@ -43,6 +47,9 @@ class Camera(threading.Thread):
             # cv2.waitKey(1)
             if not self.preview and self.frames.full():
                 self.frames.put(image)
+            else:
+                if not self.frames.full():
+                    self.frames.put(image)
             self.latest_frame = image
             stream.seek(0)
             stream.truncate()
@@ -50,7 +57,9 @@ class Camera(threading.Thread):
 
 camera = Camera()
 camera.start()
-frame = camera.get_frame()
+
+time.sleep(10)
+frame = camera.peek_frame()
 cv2.imshow('image', frame)
 cv2.waitKey(0)
 print('main thread finished')
