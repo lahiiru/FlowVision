@@ -11,22 +11,24 @@ class PIVAlgorithm(object, Algorithm):
         self.background_subtract = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=True)
         self.kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
         self.start_y = 20
-        self.end_y = -20
-        self.start_x = -300
-        self.end_x = -100
+        self.end_y = 460
+        self.start_x = 340
+        self.end_x = 540
         self.frame_rate = 27
-
+        self.count = 0
 
     def receive_frame(self, frame):
         self.prev_frame = self.latest_frame
         self.latest_frame = frame
+        self.count += 1
+        print("arrived receive frames")
 
     def update(self,**kwargs):
-        self.matchTemplate(self)
+        self.matchTemplate()
 
     def matchTemplate(self):
 
-        if(self.latest_frame != None and self.prev_frame !=None):
+        if(self.count>1):
             self.prev_frame = cv2.cvtColor(self.prev_frame, cv2.COLOR_BGR2GRAY)
             self.raw_frame = self.latest_frame
             self.current_frame = cv2.cvtColor(self.latest_frame, cv2.COLOR_BGR2GRAY)
@@ -48,4 +50,5 @@ class PIVAlgorithm(object, Algorithm):
             y_distance = maxLoc[1] - ref_point_y
 
             self.pixels_per_second = x_distance*self.frame_rate
+            print self.pixels_per_second
             return self.pixels_per_second
