@@ -50,8 +50,9 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
     def match_template(self):
 
+        np.zeros_like(self.latest_frame.shape)
         if self.prev_frame is None:
-            return self.pixels_per_second, np.zeros_like(self.latest_frame.shape)
+            return self.pixels_per_second
         self.previous_raw_frame = self.prev_frame
         self.raw_frame = self.latest_frame
 
@@ -90,6 +91,10 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
                                                  cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 2)
                 return self.pixels_per_second
 
+        if self.debug:
+            self.visualization = np.hstack((self.raw_frame, self.previous_raw_frame))
+            self.visualization = cv2.putText(self.visualization,'Template rejected', (10, 50),
+                                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 2)
         return self.pixels_per_second
 
     def cluster(self):
