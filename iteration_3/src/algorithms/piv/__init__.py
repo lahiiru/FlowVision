@@ -1,3 +1,3 @@
-from piv import ParticleImageVelocimetryAlgorithm
+from piv_algorithm import ParticleImageVelocimetryAlgorithm
 
 __all__=['ParticleImageVelocimetryAlgorithm']
