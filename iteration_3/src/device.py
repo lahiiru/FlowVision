@@ -1,7 +1,6 @@
 import logging
 from logging.config import fileConfig
 from cameras import *
-import cv2
 import time
 from config import DevConfig
 from algorithms import *
