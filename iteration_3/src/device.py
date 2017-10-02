@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
 class Device:
 
-    camera = FromFileCamera(DevConfig.VIDEO_DIR+ "01.mp4")
+    camera = FromFileCamera(DevConfig.VIDEO_DIR + "01.mp4")
     algorithm = ParticleImageVelocimetryAlgorithm()
     communicator = None
     id = ""

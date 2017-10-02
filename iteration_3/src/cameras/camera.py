@@ -9,6 +9,7 @@ class AbstractCamera(threading.Thread):
         self.frames = Queue.Queue(maxsize=self.img_buf_size * 4)
         self.latest_frame = None
         self.preview = False
+        self.resolution = (640, 480)
 
     def run(self):
         raise NotImplementedError("Subclass must implement abstract method")
