@@ -29,7 +29,7 @@ class Device:
         # TODO: add your test code
 
         self.debugger = DisplayDebugger(self)
-        
+
         self.camera.start()
         time.sleep(5)
         self.algorithm.debug = True
