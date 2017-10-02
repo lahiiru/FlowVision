@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 import logging
 from iteration_3.src.algorithms.algorithm import Algorithm
+from iteration_3.src.utilities import *
 
 logger = logging.getLogger()
 
@@ -14,8 +15,6 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.latest_frame = None
         self.current_masked_frame = None
         self.current_fg_mask = None
-        self.background_subtract = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=False)
-        self.kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         self.start_y = 50
         self.end_y = 250
         self.start_x = 340
@@ -37,13 +36,12 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.prev_frame = self.latest_frame
         self.latest_frame = frame
 
-        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         self.prev_fg_mask = self.current_fg_mask
-        self.current_fg_mask = self.background_subtract.apply(gray_frame)
+        self.current_fg_mask = Filters.background_substractor_filter(frame)
 
         self.prev_masked_frame = self.current_masked_frame
-        gray_frame = cv2.morphologyEx(self.current_fg_mask, cv2.MORPH_OPEN, self.kernel)
-        self.current_masked_frame = gray_frame
+        self.current_masked_frame =Filters.morphological_opening_filter(self.current_fg_mask)
+
 
     def update(self, **kwargs):
         return self.match_template()
