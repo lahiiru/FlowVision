@@ -27,7 +27,6 @@ class Device:
         # TODO: add your test code
 
         self.camera.start()
-        time.sleep(10)
         self.algorithm.debug=True
         while True :
             frame = self.camera.get_frame()

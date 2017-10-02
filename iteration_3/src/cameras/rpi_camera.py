@@ -7,7 +7,10 @@ import io
 
 
 class RPiCamera(AbstractCamera):
-    def run(self):
+    def _release(self):
+        pass
+
+    def _process(self):
         with picamera.PiCamera(sensor_mode=7, resolution='VGA') as camera:
             time.sleep(2)
             while True:

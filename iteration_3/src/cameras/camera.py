@@ -12,6 +12,13 @@ class AbstractCamera(threading.Thread):
         self.resolution = (640, 480)
 
     def run(self):
+        self._process()
+        self._release()
+
+    def _process(self):
+        raise NotImplementedError("Subclass must implement abstract method")
+
+    def _release(self):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def get_frame(self):
@@ -34,3 +41,4 @@ class AbstractCamera(threading.Thread):
             if not self.frames.full():
                 self.frames.put(frame)
         self.latest_frame = frame
+
