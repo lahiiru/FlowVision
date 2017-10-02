@@ -1,23 +1,25 @@
 import logging
-from algorithms.algorithm import *
 from logging.config import fileConfig
 from cameras import *
 import cv2
 import time
 from config import DevConfig
 from algorithms import *
+from debuggers import *
 
 if __name__ == '__main__':
     logger = logging.getLogger()
     fileConfig('logging.ini')
 
+
 class Device:
 
-    camera = FromFileCamera(DevConfig.VIDEO_DIR + "01.mp4")
-    algorithm = ParticleImageVelocimetryAlgorithm()
+    camera = FromFileCamera(DevConfig.TEST_VIDEO)
+    algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
     communicator = None
     id = ""
     logger = None
+    debugger = None
 
     def __init__(self, id):
         self.id = id
@@ -26,13 +28,13 @@ class Device:
         logger.info("Device with id {0} started.".format(self.id))
         # TODO: add your test code
 
+        self.debugger = DisplayDebugger(self)
+        
         self.camera.start()
-        self.algorithm.debug=True
-        while True :
-            frame = self.camera.get_frame()
-            if not frame is None:
-                self.algorithm.receive_frame(frame)
-                self.algorithm.update()
+        time.sleep(5)
+        self.algorithm.debug = True
+
+        self.debugger.start()
 
     def return_one(self):
         return 1
@@ -41,6 +43,8 @@ class Device:
     def main():
         device = Device(1)
         device.start()
+
+
 
 if __name__ == '__main__':
     Device.main()

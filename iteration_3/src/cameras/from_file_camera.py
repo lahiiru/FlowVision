@@ -8,8 +8,10 @@ logger = logging.getLogger()
 
 class FromFileCamera(AbstractCamera):
 
-    def _release(self):
-        self.cap.release()
+    def __init__(self, path):
+        AbstractCamera.__init__(self)
+        self.path = path
+        self.frame_rate = 7
 
     def _process(self):
         self.cap = cv2.VideoCapture(self.path)
@@ -27,7 +29,6 @@ class FromFileCamera(AbstractCamera):
             time.sleep(1.0 / self.frame_rate)
             self._put_frame(img)
 
-    def __init__(self, path):
-        AbstractCamera.__init__(self)
-        self.path = path
-        self.frame_rate = 30
+    def _release(self):
+        self.cap.release()
+

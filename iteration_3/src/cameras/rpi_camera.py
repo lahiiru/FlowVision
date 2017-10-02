@@ -7,8 +7,6 @@ import io
 
 
 class RPiCamera(AbstractCamera):
-    def _release(self):
-        pass
 
     def _process(self):
         with picamera.PiCamera(sensor_mode=7, resolution='VGA') as camera:
@@ -16,8 +14,7 @@ class RPiCamera(AbstractCamera):
             while True:
                 start = time.time()
                 camera.capture_sequence(self.__receiver(), format='jpeg', use_video_port=True)
-                print('Captured 120 images at %.2ffps' % (self.img_buf_size / (time.time() - start)))
-                print (self.frames.qsize())
+                self.frame_rate = (self.img_buf_size / (time.time() - start))
 
     def __receiver(self):
         stream = io.BytesIO()
@@ -30,3 +27,6 @@ class RPiCamera(AbstractCamera):
             self._put_frame(image)
             stream.seek(0)
             stream.truncate()
+
+    def _release(self):
+        pass
