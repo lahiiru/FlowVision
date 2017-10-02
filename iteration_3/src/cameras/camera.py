@@ -11,6 +11,7 @@ class AbstractCamera(threading.Thread):
         self.preview = False
         self.resolution = (640, 480)
         self.frame_rate = 7
+        self.setName('camera')
 
     def run(self):
         self._process()

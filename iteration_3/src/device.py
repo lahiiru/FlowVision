@@ -1,7 +1,6 @@
 import logging
 from logging.config import fileConfig
 from cameras import *
-import cv2
 import time
 from config import DevConfig
 from algorithms import *
@@ -29,7 +28,7 @@ class Device:
         # TODO: add your test code
 
         self.debugger = DisplayDebugger(self)
-        
+
         self.camera.start()
         time.sleep(5)
         self.algorithm.debug = True
