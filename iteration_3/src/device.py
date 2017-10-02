@@ -5,6 +5,7 @@ from cameras import *
 import cv2
 import time
 from config import DevConfig
+from algorithms import *
 
 if __name__ == '__main__':
     logger = logging.getLogger()
@@ -13,7 +14,7 @@ if __name__ == '__main__':
 class Device:
 
     camera = FromFileCamera(DevConfig.VIDEO_DIR+ "01.mp4")
-    algorithm = Algorithm()
+    algorithm = ParticleImageVelocimetryAlgorithm()
     communicator = None
     id = ""
     logger = None
@@ -27,8 +28,12 @@ class Device:
 
         self.camera.start()
         time.sleep(10)
-        frame = self.camera.get_frame()
-
+        self.algorithm.debug=True
+        while True :
+            frame = self.camera.get_frame()
+            if not frame is None:
+                self.algorithm.receive_frame(frame)
+                self.algorithm.update()
 
     def return_one(self):
         return 1
