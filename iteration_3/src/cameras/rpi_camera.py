@@ -12,11 +12,11 @@ class RPiCamera(AbstractCamera):
             time.sleep(2)
             while True:
                 start = time.time()
-                camera.capture_sequence(self.receiver(), format='jpeg', use_video_port=True)
+                camera.capture_sequence(self.__receiver(), format='jpeg', use_video_port=True)
                 print('Captured 120 images at %.2ffps' % (self.img_buf_size / (time.time() - start)))
                 print (self.frames.qsize())
 
-    def receiver(self):
+    def __receiver(self):
         stream = io.BytesIO()
         for i in range(self.img_buf_size):
             yield stream

@@ -1,6 +1,10 @@
 import logging
 from algorithms.algorithm import *
 from logging.config import fileConfig
+from cameras import *
+import cv2
+import time
+from config import DevConfig
 
 if __name__ == '__main__':
     logger = logging.getLogger()
@@ -8,7 +12,7 @@ if __name__ == '__main__':
 
 class Device:
 
-    camera = None
+    camera = FromFileCamera(DevConfig.VIDEO_DIR+ "01.mp4")
     algorithm = Algorithm()
     communicator = None
     id = ""
@@ -20,6 +24,11 @@ class Device:
     def start(self):
         logger.info("Device with id {0} started.".format(self.id))
         # TODO: add your test code
+
+        self.camera.start()
+        time.sleep(10)
+        frame = self.camera.get_frame()
+
 
     def return_one(self):
         return 1
