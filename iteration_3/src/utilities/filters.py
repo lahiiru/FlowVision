@@ -1,5 +1,5 @@
 import cv2
-
+import numpy as np
 
 class Filters:
 
@@ -19,3 +19,7 @@ class Filters:
         return cv2.morphologyEx(frame, cv2.MORPH_OPEN,Filters.morphological_opening_kernel)
 
 
+    @staticmethod
+    def illumiationFilter(original_frame,backSub_frame):
+        illumination_removed_frame = backSub_frame[original_frame>250]=0
+        return illumination_removed_frame
