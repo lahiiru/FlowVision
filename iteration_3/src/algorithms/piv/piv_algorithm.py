@@ -12,9 +12,8 @@ logger = logging.getLogger()
 class ParticleImageVelocimetryAlgorithm(object, Algorithm):
     def __init__(self, frame_rate):
         Algorithm.__init__(self)
-        self.latest_frame = None
-        self.current_masked_frame = None
-        self.current_fg_mask = None
+        self.current = None
+        self.current_mask = None
         self.start_y = 50
         self.end_y = 250
         self.start_x = 340
@@ -33,65 +32,60 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         logger.info("PIV Algorithm configured.")
 
     def receive_frame(self, frame):
-        self.prev_frame = self.latest_frame
-        self.latest_frame = frame
+        self.prev = self.current
+        self.current = frame
 
-        # self.prev_fg_mask = self.current_fg_mask
+        self.prev_mask = self.current_mask
         current_fg_mask = Filters.background_substractor_filter(frame)
-
-        self.prev_masked_frame = self.current_masked_frame
-        self.current_masked_frame = Filters.morphological_opening_filter(current_fg_mask)
+        self.current_mask = Filters.morphological_opening_filter(current_fg_mask)
 
     def update(self, **kwargs):
         return self.match_template()
 
     def match_template(self):
-        if self.prev_frame is None:
+        if self.prev is None:
             return self.pixels_per_second
-        self.previous_raw_frame = self.prev_frame
-        self.raw_frame = self.latest_frame
 
-        temp = Filters.illumination_filter(self.raw_frame, self.current_masked_frame)
-        self.raw_frame = Filters.apply_mask_filter(self.raw_frame,temp)
+        self.current_mask = Filters.illumination_filter(self.current, self.current_mask)
 
-        self.prev_masked_frame = Filters.illumination_filter(self.previous_raw_frame, self.prev_masked_frame)
-        self.previous_raw_frame=Filters.apply_mask_filter(self.previous_raw_frame,self.prev_masked_frame)
-
-        template = self.prev_masked_frame[self.start_y:self.end_y, self.start_x:self.end_x]
+        template = self.prev_mask[self.start_y:self.end_y, self.start_x:self.end_x]
         features = (template > 0)
         white_pixel_count = cv2.countNonZero(template[features])
         total = template.shape[:2][0] * template.shape[:2][1]
         white_percentage = white_pixel_count * 100.0 / total
 
+        if self.debug:
+            self.prev_display = self.prev
+            self.current_display = self.current
+            self.current_display = Filters.apply_mask_filter(self.current_display, self.current_mask)
+            self.prev_display = Filters.apply_mask_filter(self.prev_display, self.prev_mask)
+
         if white_percentage > self.white_threshold:
-            correlation_values = cv2.matchTemplate(temp, template, method=cv2.TM_CCOEFF_NORMED)
+            correlation_values = cv2.matchTemplate(self.current_mask, template, method=cv2.TM_CCOEFF_NORMED)
             minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
             ref_point_x = self.start_x
-            ref_point_y = self.start_y
             x_distance = maxLoc[0] - ref_point_x
-            y_distance = maxLoc[1] - ref_point_y
             self.pixels_per_second = x_distance * self.frame_rate
             self.cluster()
 
             if self.debug:
-                self.previous_raw_frame = cv2.rectangle(self.previous_raw_frame, (self.start_x, self.start_y),
-                                                        (self.end_x, self.end_y), (255, 255, 0), 1)
-                self.raw_frame = cv2.rectangle(self.raw_frame, (maxLoc[0], maxLoc[1]), (
+                self.prev_display = cv2.rectangle(self.prev_display, (self.start_x, self.start_y),
+                                                  (self.end_x, self.end_y), (255, 255, 0), 1)
+                self.current_display = cv2.rectangle(self.current_display, (maxLoc[0], maxLoc[1]), (
                     maxLoc[0] + (self.end_x - self.start_x), maxLoc[1] + (self.end_y - self.start_y)),
-                                               (255, 255, 0), 1)
-                self.visualization = np.hstack((self.raw_frame, self.previous_raw_frame))
-                self.visualization = cv2.putText(self.visualization, str(x_distance), (10, 50),
-                                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 2)
-                return self.pixels_per_second
+                                                     (255, 255, 0), 1)
+                display_text=str(x_distance)
+        else:
+                display_text='Template rejected'
 
         if self.debug:
-            self.visualization = np.hstack((self.raw_frame, self.previous_raw_frame))
-            self.visualization = cv2.putText(self.visualization, 'Template rejected', (10, 50),
+            self.visualization = np.hstack((self.current_display, self.prev_display))
+            self.visualization = cv2.putText(self.visualization,display_text , (10, 50),
                                              cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 2)
         return self.pixels_per_second
 
     def cluster(self):
-        data_set = np.argwhere(self.prev_masked_frame > 0)
+        data_set = np.argwhere(self.prev_mask > 0)
         db = DBSCAN(eps=3, min_samples=10).fit(data_set)
         labels = db.labels_
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
@@ -99,6 +93,5 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         i = 0
         for c in clusters:
             for p in c:
-                cv2.circle(self.previous_raw_frame, tuple(p[::-1]), 1, (255, 0, 0), -1)
+                cv2.circle(self.prev_display, tuple(p[::-1]), 1, (255, 0, 0), -1)
 
-                # logger.info("No of clusters : "+str(n_clusters_))
