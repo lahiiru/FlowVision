@@ -22,3 +22,4 @@ class DisplayDebugger(AbstractDebugger):
 
                 else:
                     cv2.destroyAllWindows()
+                    break

@@ -10,7 +10,7 @@ logger = logging.getLogger()
 
 
 class ParticleImageVelocimetryAlgorithm(object, Algorithm):
-    def __init__(self,frame_rate):
+    def __init__(self, frame_rate):
         Algorithm.__init__(self)
         self.latest_frame = None
         self.current_masked_frame = None
@@ -24,7 +24,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.count = 0
         logger.info("PIV Algorithm initiated.")
 
-    def configure(self, frame_rate,start_y=20, end_y=440, start_x=340, end_x=520):
+    def configure(self, frame_rate, start_y=20, end_y=440, start_x=340, end_x=520):
         self.frame_rate = frame_rate
         self.start_y = start_y
         self.end_y = end_y
@@ -36,31 +36,26 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.prev_frame = self.latest_frame
         self.latest_frame = frame
 
-        self.prev_fg_mask = self.current_fg_mask
-        self.current_fg_mask = Filters.background_substractor_filter(frame)
+        # self.prev_fg_mask = self.current_fg_mask
+        current_fg_mask = Filters.background_substractor_filter(frame)
 
         self.prev_masked_frame = self.current_masked_frame
-        self.current_masked_frame =Filters.morphological_opening_filter(self.current_fg_mask)
-
+        self.current_masked_frame = Filters.morphological_opening_filter(current_fg_mask)
 
     def update(self, **kwargs):
         return self.match_template()
 
     def match_template(self):
-
-        np.zeros_like(self.latest_frame.shape)
         if self.prev_frame is None:
             return self.pixels_per_second
         self.previous_raw_frame = self.prev_frame
         self.raw_frame = self.latest_frame
 
-        updated_fg_mask = self.current_fg_mask / 255
-        rgb_mask = np.dstack((updated_fg_mask, updated_fg_mask, updated_fg_mask))
-        self.raw_frame = (self.raw_frame * rgb_mask)
+        temp = Filters.illumination_filter(self.raw_frame, self.current_masked_frame)
+        self.raw_frame = Filters.apply_mask_filter(self.raw_frame,temp)
 
-        self.prev_fg_mask = self.prev_fg_mask / 255
-        rgb_mask = np.dstack((self.prev_fg_mask, self.prev_fg_mask, self.prev_fg_mask))
-        self.previous_raw_frame = (self.previous_raw_frame * rgb_mask)
+        self.prev_masked_frame = Filters.illumination_filter(self.previous_raw_frame, self.prev_masked_frame)
+        self.previous_raw_frame=Filters.apply_mask_filter(self.previous_raw_frame,self.prev_masked_frame)
 
         template = self.prev_masked_frame[self.start_y:self.end_y, self.start_x:self.end_x]
         features = (template > 0)
@@ -69,7 +64,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         white_percentage = white_pixel_count * 100.0 / total
 
         if white_percentage > self.white_threshold:
-            correlation_values = cv2.matchTemplate(self.current_masked_frame, template, method=cv2.TM_CCOEFF_NORMED)
+            correlation_values = cv2.matchTemplate(temp, template, method=cv2.TM_CCOEFF_NORMED)
             minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
             ref_point_x = self.start_x
             ref_point_y = self.start_y
@@ -91,8 +86,8 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
         if self.debug:
             self.visualization = np.hstack((self.raw_frame, self.previous_raw_frame))
-            self.visualization = cv2.putText(self.visualization,'Template rejected', (10, 50),
-                                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 2)
+            self.visualization = cv2.putText(self.visualization, 'Template rejected', (10, 50),
+                                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 2)
         return self.pixels_per_second
 
     def cluster(self):
@@ -106,4 +101,4 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             for p in c:
                 cv2.circle(self.previous_raw_frame, tuple(p[::-1]), 1, (255, 0, 0), -1)
 
-        # logger.info("No of clusters : "+str(n_clusters_))
+                # logger.info("No of clusters : "+str(n_clusters_))
