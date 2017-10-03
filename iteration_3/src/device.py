@@ -44,6 +44,5 @@ class Device:
         device.start()
 
 
-
 if __name__ == '__main__':
     Device.main()

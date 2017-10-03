@@ -7,7 +7,6 @@ class Filters:
     background_substractor = cv2.createBackgroundSubtractorMOG2(history=20, varThreshold=10, detectShadows=False)
     morphological_opening_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
 
-
     def __init__(self):
         pass
 
@@ -24,7 +23,7 @@ class Filters:
         updated_mask = mask / 255
         rgb_mask = np.dstack((updated_mask, updated_mask, updated_mask))
         masked_image = (frame * rgb_mask)
-        return  masked_image
+        return masked_image
 
     @staticmethod
     def illumination_filter(original_frame, backSub_frame):

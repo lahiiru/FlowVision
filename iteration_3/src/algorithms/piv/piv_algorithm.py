@@ -21,6 +21,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.frame_rate = frame_rate
         self.white_threshold = 0.8
         self.count = 0
+        self.n_clusters_ = 0
         logger.info("PIV Algorithm initiated.")
 
     def configure(self, frame_rate, start_y=20, end_y=440, start_x=340, end_x=520):
@@ -88,10 +89,20 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         data_set = np.argwhere(self.prev_mask > 0)
         db = DBSCAN(eps=3, min_samples=10).fit(data_set)
         labels = db.labels_
-        n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-        clusters = [data_set[labels == i] for i in xrange(n_clusters_)]
+        self.n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+        self.clusters = [data_set[labels == i] for i in xrange(self.n_clusters_)]
         i = 0
-        for c in clusters:
+
+        max_cluster = self.clusters[np.argmax(self.clusters)]
+        y_min_loc, x_min_loc = np.argmin(max_cluster, axis=0)
+        y_max_loc, x_max_loc = np.argmax(max_cluster, axis=0)
+        y_min, x_min = max_cluster[[x_min_loc, y_min_loc]]
+        y_max, x_max = max_cluster[[x_max_loc, y_max_loc]]
+
+        return x_min[0], x_max[0], y_min[1], y_max[1]
+
+        
+        for c in self.clusters:
             for p in c:
                 cv2.circle(self.prev_display, tuple(p[::-1]), 1, (255, 0, 0), -1)
 
