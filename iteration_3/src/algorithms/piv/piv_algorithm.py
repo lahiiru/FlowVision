@@ -14,22 +14,14 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         Algorithm.__init__(self)
         self.current = None
         self.current_mask = None
-        self.start_y = 50
-        self.end_y = 250
-        self.start_x = 340
-        self.end_x = 520
         self.frame_rate = frame_rate
         self.white_threshold = 0.8
-        self.count = 0
-        self.n_clusters_ = 0
+        self.x_offset = 20
+        self.y_offset = 5
         logger.info("PIV Algorithm initiated.")
 
-    def configure(self, frame_rate, start_y=20, end_y=440, start_x=340, end_x=520):
+    def configure(self, frame_rate):
         self.frame_rate = frame_rate
-        self.start_y = start_y
-        self.end_y = end_y
-        self.start_x = start_x
-        self.end_x = end_x
         logger.info("PIV Algorithm configured.")
 
     def receive_frame(self, frame):
@@ -49,10 +41,24 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
         self.current_mask = Filters.illumination_filter(self.current, self.current_mask)
 
-        template = self.prev_mask[self.start_y:self.end_y, self.start_x:self.end_x]
+        x_min,x_max,y_min,y_max=self.find_template(self.prev_mask)
+        y_max = y_max + self.y_offset
+        x_max = x_max + self.x_offset
+        if y_min - self.y_offset  < 0:
+            y_min = 0
+        else:
+            y_min = y_min - self.y_offset
+        if x_min - self.x_offset  < 0:
+            x_min = 0
+        else:
+            x_min = x_min - self.x_offset
+
+        template = self.prev_mask[y_min:y_max, x_min:x_max]
         features = (template > 0)
         white_pixel_count = cv2.countNonZero(template[features])
-        total = template.shape[:2][0] * template.shape[:2][1]
+        total = template.size
+        if total == 0:
+            pass
         white_percentage = white_pixel_count * 100.0 / total
 
         if self.debug:
@@ -64,45 +70,59 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         if white_percentage > self.white_threshold:
             correlation_values = cv2.matchTemplate(self.current_mask, template, method=cv2.TM_CCOEFF_NORMED)
             minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
-            ref_point_x = self.start_x
+            ref_point_x = x_min
             x_distance = maxLoc[0] - ref_point_x
             self.pixels_per_second = x_distance * self.frame_rate
-            self.cluster()
 
             if self.debug:
-                self.prev_display = cv2.rectangle(self.prev_display, (self.start_x, self.start_y),
-                                                  (self.end_x, self.end_y), (255, 255, 0), 1)
+                self.prev_display = cv2.rectangle(self.prev_display, (x_min, y_min),
+                                                  (x_max, y_max), (255, 255, 0), 1)
                 self.current_display = cv2.rectangle(self.current_display, (maxLoc[0], maxLoc[1]), (
-                    maxLoc[0] + (self.end_x - self.start_x), maxLoc[1] + (self.end_y - self.start_y)),
+                    maxLoc[0] + (x_max - x_min), maxLoc[1] + (y_max - y_min)),
                                                      (255, 255, 0), 1)
-                display_text=str(x_distance)
+                display_text='Distance   : ' + str(x_distance) + '\nMax Score : '+ str(maxVal*10)
         else:
                 display_text='Template rejected'
 
         if self.debug:
-            self.visualization = np.hstack((self.current_display, self.prev_display))
-            self.visualization = cv2.putText(self.visualization,display_text , (10, 50),
-                                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 2)
+            self.visualization = np.hstack(( self.prev_display,self.current_display))
+            for row, txt in enumerate(display_text.split('\n')):
+                self.visualization = cv2.putText(self.visualization, txt, (10, 25 + 25 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 1)
+
         return self.pixels_per_second
 
-    def cluster(self):
-        data_set = np.argwhere(self.prev_mask > 0)
+    def find_template(self,frame):
+        x_min, x_max, y_min, y_max =self.cluster(frame)
+        return x_min,x_max,y_min,y_max
+
+    def cluster(self,frame):
+        data_set = np.argwhere(frame > 0)
+        if not len(data_set) :
+            return 0, 0, 0,0
         db = DBSCAN(eps=3, min_samples=10).fit(data_set)
         labels = db.labels_
         self.n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
         self.clusters = [data_set[labels == i] for i in xrange(self.n_clusters_)]
+        if self.n_clusters_ == 0:
+            return 0, 0, 0,0
+
+        cluster_index=0
+        cluster_size=0
         i = 0
-
-        max_cluster = self.clusters[np.argmax(self.clusters)]
-        y_min_loc, x_min_loc = np.argmin(max_cluster, axis=0)
-        y_max_loc, x_max_loc = np.argmax(max_cluster, axis=0)
-        y_min, x_min = max_cluster[[x_min_loc, y_min_loc]]
-        y_max, x_max = max_cluster[[x_max_loc, y_max_loc]]
-
-        return x_min[0], x_max[0], y_min[1], y_max[1]
-
-        
         for c in self.clusters:
-            for p in c:
-                cv2.circle(self.prev_display, tuple(p[::-1]), 1, (255, 0, 0), -1)
+            if cluster_size < c.size:
+                cluster_size=c.size
+                cluster_index=i
+            i+=1
+        max_cluster = self.clusters[cluster_index]
+        y_min, x_min = np.min(max_cluster, axis=0)
+        y_max, x_max = np.max(max_cluster, axis=0)
+        # for c in self.clusters:
+        #     for p in c:
+        #         cv2.circle(self.prev_display, tuple(p[::-1]), 1, (255, 0, 0), -1)
+
+        return x_min, x_max, y_min, y_max
+
+
+
 
