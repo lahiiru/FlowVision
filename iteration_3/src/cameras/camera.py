@@ -1,5 +1,8 @@
 import threading
 import Queue
+import logging
+
+logger = logging.getLogger()
 
 
 class AbstractCamera(threading.Thread):
@@ -12,8 +15,10 @@ class AbstractCamera(threading.Thread):
         self.resolution = (640, 480)
         self.frame_rate = 7
         self.setName('camera')
+        logger.info("Camera initiated.")
 
     def run(self):
+        logger.info("Camera started.")
         self._process()
         self._release()
 
