@@ -2,7 +2,11 @@
     Configuration parameters
     once you pulled this file change as your configuration then exclude from git
 """
+
+
 class DevConfig:
+    def __init__(self):
+        raise NotImplementedError
     BUILD_IN_CAM_INDEX = 
     BUILD_IN_CAM_F = 
     WEB_CAM_INDEX = 
@@ -10,7 +14,10 @@ class DevConfig:
     VIDEO_DIR = 
     TEST_VIDEO = 
 
+
 class ProdConfig:
+    def __init__(self):
+        raise NotImplementedError
     BUILD_IN_CAM_INDEX = 
     BUILD_IN_CAM_F = 
     WEB_CAM_INDEX = 

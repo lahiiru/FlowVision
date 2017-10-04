@@ -8,8 +8,11 @@ from iteration_3.src.utilities import *
 
 logger = logging.getLogger()
 
+UNKNOWN_SPEED = None
+
 
 class ParticleImageVelocimetryAlgorithm(object, Algorithm):
+
     def __init__(self, frame_rate):
         Algorithm.__init__(self)
         self.current = None
@@ -18,6 +21,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.white_threshold = 0.8
         self.x_offset = 20
         self.y_offset = 5
+        self.debug_vis_text = ""
         logger.info("PIV Algorithm initiated.")
 
     def configure(self, frame_rate):
@@ -33,67 +37,116 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.current_mask = Filters.morphological_opening_filter(current_fg_mask)
 
     def update(self, **kwargs):
-        return self.match_template()
+        if self.current is None:
+            logger.warn("trying to update before receiving frames. returning 0.")
+            return UNKNOWN_SPEED
 
-    def match_template(self):
         if self.prev is None:
-            return self.pixels_per_second
+            logger.warn("trying to update while empty previous frame, returning 0.")
+            return UNKNOWN_SPEED
 
+        self.process_pre_filters()
+
+        if self.debug:
+            self.current_display = Filters.apply_mask_filter(self.current, self.current_mask)
+            self.prev_display = Filters.apply_mask_filter(self.prev, self.prev_mask)
+
+        pixels_per_second = self.match_template()
+
+        if self.debug:
+            for row, txt in enumerate(self.debug_vis_text.split('\n')):
+                self.visualization = cv2.putText(self.visualization, txt, (10, 25 + 25 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 1)
+
+        return pixels_per_second
+
+    def process_pre_filters(self):
         self.current_mask = Filters.illumination_filter(self.current, self.current_mask)
 
-        x_min,x_max,y_min,y_max=self.find_template(self.prev_mask)
-        y_max = y_max + self.y_offset
-        x_max = x_max + self.x_offset
-        if y_min - self.y_offset  < 0:
-            y_min = 0
-        else:
-            y_min = y_min - self.y_offset
-        if x_min - self.x_offset  < 0:
-            x_min = 0
-        else:
-            x_min = x_min - self.x_offset
+    def match_template(self):
 
-        template = self.prev_mask[y_min:y_max, x_min:x_max]
-        features = (template > 0)
-        white_pixel_count = cv2.countNonZero(template[features])
-        total = template.size
-        if total == 0:
-            pass
-        white_percentage = white_pixel_count * 100.0 / total
+        template_top_conner_pairs = self.find_good_templates()
+
+        if len(template_top_conner_pairs) == 0:
+            logger.info("no good templates found, skipping frame")
+            return UNKNOWN_SPEED
+
+        # TODO: Extensible to several templates by iterating bounds array
+        (x_min, y_min), template = template_top_conner_pairs[0]
+
+        correlation_values = cv2.matchTemplate(self.current_mask, template, method=cv2.TM_CCOEFF_NORMED)
+        minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
+        ref_point_x = x_min
+        x_distance = maxLoc[0] - ref_point_x
+
+        self.pixels_per_second = x_distance * self.frame_rate
 
         if self.debug:
-            self.prev_display = self.prev
-            self.current_display = self.current
-            self.current_display = Filters.apply_mask_filter(self.current_display, self.current_mask)
-            self.prev_display = Filters.apply_mask_filter(self.prev_display, self.prev_mask)
+            self.prev_display = cv2.rectangle(self.prev_display, (x_min, y_min),
+                                              (x_min+template.shape[1], y_min+template.shape[0]), (255, 255, 0), 1)
+            self.current_display = cv2.rectangle(self.current_display, (maxLoc[0], maxLoc[1]), (
+                maxLoc[0] + (template.shape[1]), maxLoc[1] + (template.shape[0])),
+                                                 (255, 255, 0), 1)
+            self.debug_vis_text='Distance   : ' + str(x_distance) + '\nMax Score : '+ str(maxVal*10)
 
-        if white_percentage > self.white_threshold:
-            correlation_values = cv2.matchTemplate(self.current_mask, template, method=cv2.TM_CCOEFF_NORMED)
-            minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
-            ref_point_x = x_min
-            x_distance = maxLoc[0] - ref_point_x
-            self.pixels_per_second = x_distance * self.frame_rate
-
-            if self.debug:
-                self.prev_display = cv2.rectangle(self.prev_display, (x_min, y_min),
-                                                  (x_max, y_max), (255, 255, 0), 1)
-                self.current_display = cv2.rectangle(self.current_display, (maxLoc[0], maxLoc[1]), (
-                    maxLoc[0] + (x_max - x_min), maxLoc[1] + (y_max - y_min)),
-                                                     (255, 255, 0), 1)
-                display_text='Distance   : ' + str(x_distance) + '\nMax Score : '+ str(maxVal*10)
-        else:
-                display_text='Template rejected'
-
-        if self.debug:
             self.visualization = np.hstack(( self.prev_display,self.current_display))
-            for row, txt in enumerate(display_text.split('\n')):
-                self.visualization = cv2.putText(self.visualization, txt, (10, 25 + 25 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 1)
 
         return self.pixels_per_second
 
-    def find_template(self,frame):
-        x_min, x_max, y_min, y_max =self.cluster(frame)
-        return x_min,x_max,y_min,y_max
+    def find_good_templates(self):
+        # will store each template with global coordinates of it's top left conner.
+        template_top_conner_pairs = []
+
+        # calculate set of template bounds relative to the given image frame
+        bounds = self.calculate_template_bounds(self.prev_mask)
+
+        if len(bounds) == 0:
+            return []
+
+        # TODO: Extensible to several templates by iterating bounds array
+        x_min, x_max, y_min, y_max = bounds[0]
+
+        if (x_max - x_min) <= 0 or (y_max - y_min) <=0:
+            logger.warn("unexpected template bounds found. skipping template.")
+            return []
+
+        template = self.prev_mask[y_min:y_max, x_min:x_max]
+
+        if self.template_qa_passed(template):
+            template_top_conner_pairs += [[(x_min, y_min), template]]
+
+        return template_top_conner_pairs
+
+    def template_qa_passed(self, template):
+        total = template.size
+        if total == 0:
+            logger.warn("unexpected template size, 0.")
+            return False
+
+        features = (template > 0)
+        white_pixel_count = cv2.countNonZero(template[features])
+        white_percentage = white_pixel_count * 100.0 / total
+        if  white_percentage < self.white_threshold:
+            logger.info("template white percentage check failed.")
+            if  self.debug:
+                self.debug_vis_text = "Template rejected."
+            return False
+
+        return True
+
+    def calculate_template_bounds(self, frame):
+        # array of bounds of templates
+        bounds = []
+        # obtaining cluster bounds
+        cluster_x_min, cluster_x_max, cluster_y_min, cluster_y_max = self.cluster(frame)
+        # placing offsets
+        y_max = cluster_y_max + self.y_offset
+        x_max = cluster_x_max + self.x_offset
+        y_min = cluster_y_min - int(min(self.y_offset, cluster_y_min)[0][0])
+        x_min = cluster_x_min - int(min(self.x_offset, cluster_x_min)[0][0])
+        # appending bounds
+        bounds += [(x_min, x_max, y_min, y_max)]
+
+        return bounds
 
     def cluster(self,frame):
         data_set = np.argwhere(frame > 0)
