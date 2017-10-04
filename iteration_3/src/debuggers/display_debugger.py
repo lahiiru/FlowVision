@@ -1,5 +1,6 @@
 from debugger import AbstractDebugger
 import cv2
+import matplotlib.pyplot as plt
 
 
 class DisplayDebugger(AbstractDebugger):
@@ -10,16 +11,21 @@ class DisplayDebugger(AbstractDebugger):
     def run(self):
 
         if self.device.algorithm.debug:
-            while True:
-                frame = self.device.camera.get_frame()
-                if frame is not None:
-                    self.device.algorithm.receive_frame(frame)
-                    self.device.algorithm.update()
+
+            if self.device.algorithm.visualization_mode == 0:
+                while True:
                     vis = self.device.algorithm.get_visualization()
                     if vis is not None:
                         cv2.imshow('video', vis)
                         cv2.waitKey(1000/self.device.camera.frame_rate)
 
-                else:
-                    cv2.destroyAllWindows()
-                    break
+                    # else:
+                    #     cv2.destroyAllWindows()
+                    #     break
+
+            elif self.device.algorithm.visualization_mode == 1:
+                while True:
+                    point = self.device.algorithm.get_visualization()
+                    if point is not None:
+                        plt.scatter(*zip(point), s=1)
+                        plt.pause(0.01)

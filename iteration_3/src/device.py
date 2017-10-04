@@ -31,9 +31,17 @@ class Device:
 
         self.camera.start()
         time.sleep(5)
-        self.algorithm.debug = True
+
+        self.algorithm.debug = False
+        self.algorithm.visualization_mode = 1
 
         self.debugger.start()
+
+        while True:
+            frame = self.camera.get_frame()
+            if frame is not None:
+                self.algorithm.receive_frame(frame)
+                self.algorithm.update()
 
     def return_one(self):
         return 1
