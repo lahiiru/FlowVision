@@ -46,7 +46,7 @@ def translateToImageCoords(point, center):
     x, y = int(x), int(y)
     return x, y
 
-cap = cv2.VideoCapture(DevConfig.WEB_CAM_INDEX)
+cap = cv2.VideoCapture(DevConfig.BUILD_IN_CAM_INDEX)
 ret, frame = cap.read()
 h, w = frame.shape[:2]
 center = w / 2, h / 2

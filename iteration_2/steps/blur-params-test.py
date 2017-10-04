@@ -42,12 +42,13 @@ def getBlurLength(image, debug=False):
 
     return blength
 
-cap = cv2.VideoCapture(DevConfig.VIDEO_DIR + "01.mp4")
+cap = cv2.VideoCapture(DevConfig.VIDEO_DIR + "03.MOV")
 
 vals = []
 while True:
     r, image = cap.read()
-    vals += [getBlurLength(image)]
+    vals += [getBlurLength(image,True)]
+    print vals
     plt.plot(np.arange(len(vals)),vals)
     plt.pause(0.01)
     cv2.imshow('a',image)

@@ -10,16 +10,15 @@ except:
     video_src = "..\\..\\01.mp4"
 
 
-pivInstance = piv_algorithm.PIVAlgorithm()
-pivInstance.debug=True
+piv_instance = piv_algorithm.ParticleImageVelocimetryAlgorithm()
+piv_instance.debug=True
 c = cv2.VideoCapture(video_src)
 
 rect, prev = c.read()
-print prev.shape
 while (1):
     rect, frame = c.read()
     if not rect:
         break
+    piv_instance.receive_frame(frame)
+    piv_instance.update()
 
-    pivInstance.receive_frame(frame)
-    pivInstance.update()

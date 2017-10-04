@@ -82,13 +82,11 @@ class sti_builder:
 
 
 
-# this class for make the fourier transform from a spatio image and calculate the angle
+
 class sti_analyzer:
     _global_direction = 0
     _pixel_distance=0
-    # this function get a grayscale spatio image as a input and process the fourier transformed image of it.
-    # Angle also calculated and store in the variable called globalDirection
-    # Filtered spectrem also stored in filtered_spectrum
+
     def process(self, frame):
         height, width = frame.shape[:2]
 
