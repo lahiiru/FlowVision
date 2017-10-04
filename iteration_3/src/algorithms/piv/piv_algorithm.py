@@ -81,7 +81,8 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         ref_point_y = y_min
         x_distance = maxLoc[0] - ref_point_x
         y_distance = ref_point_y - maxLoc[1]
-        self.direction_filter.update((x_distance,y_distance))
+        self.matched_point = (x_distance, y_distance)
+        self.direction_filter.update((x_distance, y_distance))
         self.pixels_per_second = x_distance * self.frame_rate
         if self.debug:
             self.original_frames[pre_index] = cv2.rectangle(self.original_frames[pre_index], (x_min, y_min),

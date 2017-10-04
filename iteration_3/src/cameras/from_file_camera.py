@@ -11,7 +11,7 @@ class FromFileCamera(AbstractCamera):
     def __init__(self, path):
         AbstractCamera.__init__(self)
         self.path = path
-        self.frame_rate = 7
+        self.frame_rate = 30
 
     def _process(self):
         self.cap = cv2.VideoCapture(self.path)
