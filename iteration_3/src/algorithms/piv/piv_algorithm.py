@@ -15,6 +15,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
     def __init__(self, frame_rate):
         Algorithm.__init__(self)
+        self.direction_filter= DirectionFilter()
         self.current = None
         self.current_mask = None
         self.frame_rate = frame_rate
@@ -57,7 +58,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
         if self.debug:
             for row, txt in enumerate(self.debug_vis_text.split('\n')):
-                self.visualization = cv2.putText(self.visualization, txt, (10, 25 + 25 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 128), 1)
+                self.visualization = cv2.putText(self.visualization, txt, (10, 15+ 15 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 128), 1)
 
         return pixels_per_second
 
@@ -77,8 +78,10 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         correlation_values = cv2.matchTemplate(self.current_mask, template, method=cv2.TM_CCOEFF_NORMED)
         minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
         ref_point_x = x_min
+        ref_point_y = y_min
         x_distance = maxLoc[0] - ref_point_x
-
+        y_distance = ref_point_y - maxLoc[1]
+        self.direction_filter.update((x_distance,y_distance))
         self.pixels_per_second = x_distance * self.frame_rate
 
         if self.debug:
@@ -87,7 +90,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             self.current_display = cv2.rectangle(self.current_display, (maxLoc[0], maxLoc[1]), (
                 maxLoc[0] + (template.shape[1]), maxLoc[1] + (template.shape[0])),
                                                  (255, 255, 0), 1)
-            self.debug_vis_text='Distance   : ' + str(x_distance) + '\nMax Score : '+ str(maxVal*10)
+            self.debug_vis_text='Distance X : ' + str(x_distance) + '\nDistance Y : ' + str(y_distance) + '\nMax Score : '+ str(maxVal*10)
 
             self.visualization = np.hstack(( self.prev_display,self.current_display))
 
