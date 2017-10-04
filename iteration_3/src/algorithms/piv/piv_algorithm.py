@@ -50,6 +50,8 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         if self.debug:
             self.current_display = Filters.apply_mask_filter(self.current, self.current_mask)
             self.prev_display = Filters.apply_mask_filter(self.prev, self.prev_mask)
+            # clear debug text for the current frame
+            self.debug_vis_text = ""
 
         pixels_per_second = self.match_template()
 
@@ -63,7 +65,6 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.current_mask = Filters.illumination_filter(self.current, self.current_mask)
 
     def match_template(self):
-
         template_top_conner_pairs = self.find_good_templates()
 
         if len(template_top_conner_pairs) == 0:
