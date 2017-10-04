@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 import logging
 from iteration_3.src.algorithms.algorithm import Algorithm
+from frame_wallet import FrameWallet
 from iteration_3.src.utilities import *
 
 logger = logging.getLogger()
@@ -16,8 +17,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
     def __init__(self, frame_rate):
         Algorithm.__init__(self)
         self.direction_filter= DirectionFilter()
-        self.current = None
-        self.current_mask = None
+        self.frame_wallet=FrameWallet(3)
         self.frame_rate = frame_rate
         self.white_threshold = 0.8
         self.x_offset = 20
@@ -30,43 +30,43 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         logger.info("PIV Algorithm configured.")
 
     def receive_frame(self, frame):
-        self.prev = self.current
-        self.current = frame
-
-        self.prev_mask = self.current_mask
         current_fg_mask = Filters.background_substractor_filter(frame)
-        self.current_mask = Filters.morphological_opening_filter(current_fg_mask)
+        current_mask = Filters.morphological_opening_filter(current_fg_mask)
+        self.frame_wallet.put_masked_frame(current_mask)
+        self.frame_wallet.put_original_frame(frame)
 
     def update(self, **kwargs):
-        if self.current is None:
-            logger.warn("trying to update before receiving frames. returning 0.")
-            return UNKNOWN_SPEED
+        self.original_frames=self.frame_wallet.get_original_frames()
+        self.masked_frames=self.frame_wallet.get_masked_frames()
 
-        if self.prev is None:
-            logger.warn("trying to update while empty previous frame, returning 0.")
+        if len(self.original_frames) < self.frame_wallet.wallet_size:
+            logger.warn("trying to update before receiving frames. returning 0.")
             return UNKNOWN_SPEED
 
         self.process_pre_filters()
 
         if self.debug:
-            self.current_display = Filters.apply_mask_filter(self.current, self.current_mask)
-            self.prev_display = Filters.apply_mask_filter(self.prev, self.prev_mask)
-            # clear debug text for the current frame
-            self.debug_vis_text = ""
+            for i in range(self.frame_wallet.wallet_size):
+                    self.original_frames[i] = Filters.apply_mask_filter(self.original_frames[i], self.masked_frames[i])
+                    # clear debug text for the current frame
+                    self.debug_vis_text = ""
 
-        pixels_per_second = self.match_template()
+        for i in range(self.frame_wallet.wallet_size - 1) :
+            pixels_per_second = self.match_template(i,i+1)
 
         if self.debug:
+            self.visualization = np.hstack(self.original_frames)
             for row, txt in enumerate(self.debug_vis_text.split('\n')):
                 self.visualization = cv2.putText(self.visualization, txt, (10, 15+ 15 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 128), 1)
 
         return pixels_per_second
 
     def process_pre_filters(self):
-        self.current_mask = Filters.illumination_filter(self.current, self.current_mask)
+        for i in range(self.frame_wallet.wallet_size):
+            self.masked_frames[i] = Filters.illumination_filter(self.original_frames[i], self.masked_frames[i])
 
-    def match_template(self):
-        template_top_conner_pairs = self.find_good_templates()
+    def match_template(self,pre_index,current_index):
+        template_top_conner_pairs = self.find_good_templates(pre_index)
 
         if len(template_top_conner_pairs) == 0:
             logger.info("no good templates found, skipping frame")
@@ -75,7 +75,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         # TODO: Extensible to several templates by iterating bounds array
         (x_min, y_min), template = template_top_conner_pairs[0]
 
-        correlation_values = cv2.matchTemplate(self.current_mask, template, method=cv2.TM_CCOEFF_NORMED)
+        correlation_values = cv2.matchTemplate(self.masked_frames[current_index], template, method=cv2.TM_CCOEFF_NORMED)
         minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
         ref_point_x = x_min
         ref_point_y = y_min
@@ -83,25 +83,22 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         y_distance = ref_point_y - maxLoc[1]
         self.direction_filter.update((x_distance,y_distance))
         self.pixels_per_second = x_distance * self.frame_rate
-
         if self.debug:
-            self.prev_display = cv2.rectangle(self.prev_display, (x_min, y_min),
+            self.original_frames[pre_index] = cv2.rectangle(self.original_frames[pre_index], (x_min, y_min),
                                               (x_min+template.shape[1], y_min+template.shape[0]), (255, 255, 0), 1)
-            self.current_display = cv2.rectangle(self.current_display, (maxLoc[0], maxLoc[1]), (
+            self.original_frames[current_index] = cv2.rectangle(self.original_frames[current_index], (maxLoc[0], maxLoc[1]), (
                 maxLoc[0] + (template.shape[1]), maxLoc[1] + (template.shape[0])),
                                                  (255, 255, 0), 1)
-            self.debug_vis_text='Distance X : ' + str(x_distance) + '\nDistance Y : ' + str(y_distance) + '\nMax Score : '+ str(maxVal*10)
-
-            self.visualization = np.hstack(( self.prev_display,self.current_display))
+            self.debug_vis_text+='Indices :('+str(pre_index)+str(current_index)+')\nDistance X : ' + str(x_distance) + '\nDistance Y : ' + str(y_distance) + '\nMax Score : '+ str(maxVal*10)+'\n'
 
         return self.pixels_per_second
 
-    def find_good_templates(self):
+    def find_good_templates(self,pre_index):
         # will store each template with global coordinates of it's top left conner.
         template_top_conner_pairs = []
 
         # calculate set of template bounds relative to the given image frame
-        bounds = self.calculate_template_bounds(self.prev_mask)
+        bounds = self.calculate_template_bounds(self.masked_frames[pre_index])
 
         if len(bounds) == 0:
             return []
@@ -113,7 +110,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             logger.warn("unexpected template bounds found. skipping template.")
             return []
 
-        template = self.prev_mask[y_min:y_max, x_min:x_max]
+        template = (self.masked_frames[pre_index])[y_min:y_max, x_min:x_max]
 
         if self.template_qa_passed(template):
             template_top_conner_pairs += [[(x_min, y_min), template]]
