@@ -6,7 +6,6 @@ class Algorithm(Debuggable):
         self.debug = False
         self.pixels_per_second = 0
         self.visualization = None
-        self.tag='Frame'
         self.visualization_mode = 0
         self.matched_points = []
 
@@ -15,7 +14,7 @@ class Algorithm(Debuggable):
 
     def get_visualization(self):
         if self.visualization_mode == 0:
-            return self.visualization,self.tag
+            return self.visualization
         elif self.visualization_mode == 1:
             return self.matched_points
 

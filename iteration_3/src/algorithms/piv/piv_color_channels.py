@@ -12,7 +12,8 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
 
     def receive_frame(self, frame,tag):
         self.separate_channels(frame)
-        self.tag=tag
+        self.frame_wallet.put_tag(tag)
+        self.frame_wallet.put_tag(tag)
 
     def _process_pre_filters(self):
         pass
@@ -57,7 +58,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         maxBinUpper = np.argmax(hist[0])
         y_mode=(hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
-        self.debug_vis_text = 'Distance X: '+ str(x_mode)+ '  Distance Y:'+str(y_mode)
+        self.debug_vis_text = self.frame_wallet.get_tags()[0]+'\nDistance X: '+ str(x_mode)+ '  Distance Y:'+str(y_mode)
         print self.debug_vis_text
         return (x_mode,y_mode)
 

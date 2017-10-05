@@ -34,6 +34,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         current_mask = Filters.morphological_opening_filter(current_fg_mask)
         self.frame_wallet.put_masked_frame(current_mask)
         self.frame_wallet.put_original_frame(frame)
+        self.frame_wallet.put_tag(tag)
 
     def update(self, **kwargs):
         self.original_frames = self.frame_wallet.get_original_frames()
@@ -58,6 +59,8 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             self.get_mode_distance(self.matched_points)
 
         if self.debug:
+            for i in range(self.frame_wallet.wallet_size):
+                self.original_frames[i]=cv2.resize(self.original_frames[i],(640,480))
             self.visualization = np.hstack(self.original_frames)
             for row, txt in enumerate(self.debug_vis_text.split('\n')):
                 self.visualization = cv2.putText(self.visualization, txt, (10, 15 + 15 * row), cv2.FONT_HERSHEY_SIMPLEX,
