@@ -81,6 +81,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.matched_points = []
         for i in range(len(template_top_conner_pairs)):
             (x_min, y_min), template = template_top_conner_pairs[i]
+            matching_area = self.find_matching_area(self.masked_frames[current_index],ref_point=(x_min,y_min))
             correlation_values = cv2.matchTemplate(self.masked_frames[current_index], template,
                                                    method=cv2.TM_CCOEFF_NORMED)
             minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(correlation_values)
@@ -204,3 +205,8 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
     def get_mode_distance(self, distances):
         pass
+
+    def find_matching_area(self,frame,**kwargs):
+        ref_point=kwargs['ref_point']
+        return frame
+

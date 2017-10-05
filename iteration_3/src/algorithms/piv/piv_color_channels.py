@@ -6,11 +6,13 @@ logger = logging.getLogger()
 class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
     def __init__(self):
         ParticleImageVelocimetryAlgorithm.__init__(self, 7)
-        self.x_offset = 150
-        self.y_offset = 150
+        self.x_offset = 100
+        self.y_offset = 100
+        self.matching_x_offset=300
+        self.matching_y_offset=200
         logger.info('ColorChannelsPIV algorithm initiated')
 
-    def receive_frame(self, frame,tag):
+    def receive_frame(self, frame, tag):
         self.separate_channels(frame)
         self.frame_wallet.put_tag(tag)
         self.frame_wallet.put_tag(tag)
@@ -20,7 +22,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
 
     def _calculate_template_bounds(self, frame):
         bounds = []
-        feature_points = cv2.goodFeaturesToTrack(frame, 50, 0.1, 5)
+        feature_points = cv2.goodFeaturesToTrack(frame, 50, 0.01, 5)
         for i in feature_points:
             x, y = i.ravel()
             # placing offsets
@@ -29,6 +31,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
             y_min = int(y - np.min((self.y_offset, y)))
             x_min = int(x - np.min((self.x_offset, x)))
             bounds += [(x_min, x_max, y_min, y_max)]
+            self.original_frames[0]= cv2.circle(self.original_frames[0], (x,y), 1, (255, 255, 0), 5)
 
         return bounds
 
@@ -51,16 +54,21 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         x_distances = zip(*distances)[0]
         hist = np.histogram(list(x_distances), np.arange(np.min(x_distances), np.max(x_distances), 1))
         maxBinUpper = np.argmax(hist[0])
-        x_mode=(hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
+        x_mode = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
         y_distances = zip(*distances)[1]
-        hist = np.histogram(list(y_distances), np.arange(np.min(y_distances)-1, np.max(y_distances)+1, 1))
+        hist = np.histogram(list(y_distances), np.arange(np.min(y_distances) - 1, np.max(y_distances) + 1, 1))
         maxBinUpper = np.argmax(hist[0])
-        y_mode=(hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
+        y_mode = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
-        self.debug_vis_text = self.frame_wallet.get_tags()[0]+'\nDistance X: '+ str(x_mode)+ '  Distance Y:'+str(y_mode)
+        self.debug_vis_text = self.frame_wallet.get_tags()[0] + '\nDistance X: ' + str(x_mode) + '  Distance Y:' + str(
+            y_mode)
         print self.debug_vis_text
-        return (x_mode,y_mode)
+        return (x_mode, y_mode)
 
     def draw_templates(self, **kwargs):
         pass
+
+    def find_matching_area(self, frame, **kwargs):
+        left_corner = kwargs['ref_point']
+        return frame
