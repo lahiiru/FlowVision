@@ -15,7 +15,7 @@ hor_end_ratio=1
 scale_factor = 2
 height=200
 
-debug = True
+debug = False
 
 def main():
     import sys
@@ -53,6 +53,8 @@ def main():
         if (sp.can_analyze):
             ft.process(spatio_image)
             ft_image =ft.get_filtered_spectrum()
+            cv2.imshow('imamge', ft_image)
+            ch = cv2.waitKey(1)
             if debug:
                 plt.clf()
                 plt.subplot(131), plt.imshow(spatio_image,cmap="gray")

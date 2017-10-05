@@ -101,6 +101,7 @@ class sti_analyzer:
 
 
 
+
         self._filtered_spectrum = self._magnitude_spectrum.copy()[:, :]
         self._filtered_spectrum = np.zeros_like(self._filtered_spectrum)
         self._filtered_spectrum[np.arange(len(self._magnitude_spectrum)), self._magnitude_spectrum.argmax(1)] = 255
