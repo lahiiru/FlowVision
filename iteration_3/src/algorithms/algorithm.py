@@ -7,7 +7,7 @@ class Algorithm(Debuggable):
         self.pixels_per_second = 0
         self.visualization = None
         self.visualization_mode = 0
-        self.matched_point = None
+        self.matched_points = []
 
     def get_pixels_per_second(self):
         return self.pixels_per_second
@@ -16,7 +16,7 @@ class Algorithm(Debuggable):
         if self.visualization_mode == 0:
             return self.visualization
         elif self.visualization_mode == 1:
-            return self.matched_point
+            return self.matched_points
 
     def receive_frame(self, frame):
         raise NotImplementedError("Subclass must implement abstract method")
