@@ -14,7 +14,7 @@ with picamera.PiCamera(resolution=(1280, 720), framerate=30) as camera:
     camera.start_preview()
     start = time.time()
     camera.capture_sequence((
-        'frames/image%03d.jpg' % i
+        'real_frames/image%03d.jpg' % i
         for i in range(120)
         ), use_video_port=True)
     print('Captured 120 images at %.2ffps' % (120 / (time.time() - start)))

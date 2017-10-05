@@ -60,7 +60,7 @@ class ImageWriter(threading.Thread):
             finally:
                 mutex.release()
                 time.sleep(0.1)
-            cv2.imwrite('frames/' + str(local_frameNo) + '.jpg', img)
+            cv2.imwrite('real_frames/' + str(local_frameNo) + '.jpg', img)
 
 
 # Create new threads

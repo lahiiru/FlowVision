@@ -72,7 +72,7 @@ while (outer_loop<100):                                               #changed
     inner_loop=0
 
     start = time.clock()
-    rect, frame = c.read()                                          #reading the frames
+    rect, frame = c.read()                                          #reading the real_frames
     span = round((time.clock() - start),2)
     execution_times_outer[outer_loop,inner_loop] = span
 
@@ -192,8 +192,8 @@ while (outer_loop<100):                                               #changed
                                                     horizontalalignment='left', verticalalignment='center', fontsize=10,
                                                     color='red')
         plt.subplot(322), plt.imshow(current, 'gray'), plt.axvline(x=maxLoc[0]), plt.axvline(x=ref_point, color='red')
-        plt.subplot(323), plt.plot(x, values), plt.ylabel('speed'), plt.xlabel('frames')
-        plt.subplot(324), plt.plot(x, means, label='Mean'), plt.ylabel('avg speed'), plt.xlabel('frames')
+        plt.subplot(323), plt.plot(x, values), plt.ylabel('speed'), plt.xlabel('real_frames')
+        plt.subplot(324), plt.plot(x, means, label='Mean'), plt.ylabel('avg speed'), plt.xlabel('real_frames')
         plt.subplot(325), plt.imshow(template)
         plt.subplot(326), plt.imshow(
             current[maxLoc[1]:maxLoc[1] + template.shape[:2][0], maxLoc[0]:maxLoc[0] + template.shape[:2][1]])

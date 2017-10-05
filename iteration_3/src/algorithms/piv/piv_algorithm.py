@@ -40,7 +40,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.masked_frames=self.frame_wallet.get_masked_frames()
 
         if len(self.original_frames) < self.frame_wallet.wallet_size:
-            logger.warn("trying to update before receiving frames. returning 0.")
+            logger.warn("trying to update before receiving real_frames. returning 0.")
             return UNKNOWN_SPEED
 
         self._process_pre_filters()
