@@ -12,7 +12,8 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         pass
 
     def _calculate_template_bounds(self, frame):
-        pass
+        bounds = []
+        return bounds
 
     def _template_qa_passed(self, template):
-        pass
+        return True
