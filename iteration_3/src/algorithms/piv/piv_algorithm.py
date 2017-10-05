@@ -29,7 +29,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.frame_rate = frame_rate
         logger.info("PIV Algorithm configured.")
 
-    def receive_frame(self, frame):
+    def receive_frame(self, frame,tag):
         current_fg_mask = Filters.background_substractor_filter(frame)
         current_mask = Filters.morphological_opening_filter(current_fg_mask)
         self.frame_wallet.put_masked_frame(current_mask)
