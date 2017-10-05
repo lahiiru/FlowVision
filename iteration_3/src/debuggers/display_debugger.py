@@ -16,7 +16,7 @@ class DisplayDebugger(AbstractDebugger):
                 while True:
                     vis = self.device.algorithm.get_visualization()
                     if vis is not None:
-                        cv2.imshow('video', vis)
+                        cv2.imshow('frame', vis)
                         # cv2.waitKey(0)
                         cv2.waitKey(1000/self.device.camera.frame_rate)
 

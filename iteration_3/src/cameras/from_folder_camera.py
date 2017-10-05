@@ -20,7 +20,7 @@ class FromFolderCamera(AbstractCamera):
         for filename in os.listdir(self.path):
             img = cv2.imread(os.path.join(self.path, filename))
             if img is not None:
-                self._put_frame(img)
+                self._put_frame((img, filename))
 
     def _release(self):
         pass

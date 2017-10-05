@@ -6,8 +6,8 @@ logger = logging.getLogger()
 class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
     def __init__(self):
         ParticleImageVelocimetryAlgorithm.__init__(self, 7)
-        self.x_offset = 20
-        self.y_offset = 30
+        self.x_offset = 150
+        self.y_offset = 150
         logger.info('ColorChannelsPIV algorithm initiated')
 
     def receive_frame(self, frame,tag):
@@ -43,7 +43,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         self.frame_wallet.put_masked_frame(channels[0])
         self.frame_wallet.put_masked_frame(channels[2])
         self.frame_wallet.put_original_frame(np.dstack((channels[0], channels[0], channels[0])))
-        self.frame_wallet.put_original_frame(np.dstack((channels[1], channels[1], channels[1])))
+        self.frame_wallet.put_original_frame(np.dstack((channels[2], channels[2], channels[2])))
         # self.frame_wallet.put_original_frame(frame)
         # self.frame_wallet.put_original_frame(frame)
 
@@ -54,7 +54,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         x_mode=(hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
         y_distances = zip(*distances)[1]
-        hist = np.histogram(list(y_distances), np.arange(np.min(y_distances), np.max(y_distances), 1))
+        hist = np.histogram(list(y_distances), np.arange(np.min(y_distances)-1, np.max(y_distances)+1, 1))
         maxBinUpper = np.argmax(hist[0])
         y_mode=(hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
