@@ -56,7 +56,9 @@ while True:
         break
         cv2.destroyAllWindows()
 
-cap.release()
+for dist in [0,1,2,10,20,50,100]:
+    image = cv2.imread('../resources/blur/lenna-'+str(dist)+'.jpg',1)
+    print dist ,':', getBlurLength(image,True)
 
 # for dist in [20,50,100]:
 #     image = cv2.imread('../resources/blur/lenna-'+str(dist)+'.jpg',1)
