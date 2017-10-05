@@ -1,6 +1,7 @@
 from piv_algorithm import *
 
-class ClolorChannelsPIV(ParticleImageVelocimetryAlgorithm):
+
+class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
     def __init__(self):
         ParticleImageVelocimetryAlgorithm.__init__(self, 7)
 
