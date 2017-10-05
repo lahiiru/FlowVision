@@ -32,8 +32,8 @@ class Device:
         self.camera.start()
         time.sleep(5)
 
-        self.algorithm.debug = False
-        self.algorithm.visualization_mode = 1
+        self.algorithm.debug = True
+        self.algorithm.visualization_mode = 0
 
         self.debugger.start()
 
