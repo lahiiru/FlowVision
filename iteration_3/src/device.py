@@ -14,10 +14,12 @@ if __name__ == '__main__':
 
 class Device:
 
-    # camera = FromVideoCamera(DevConfig.TEST_VIDEO)
-    camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
+    camera = FromVideoCamera(DevConfig.TEST_VIDEO)
+    # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
-    algorithm = ColorChannelsPIV()
+    # algorithm = ColorChannelsPIV()
+    algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
+    threeFrameAlgorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
     communicator = None
     id = ""
     logger = None
@@ -43,11 +45,12 @@ class Device:
         while True:
             frame = self.camera.get_frame()
             if frame is not None:
-                self.algorithm.receive_frame(frame[0], frame[1])
-                self.algorithm.update()
-
-                # cv2.imshow('frame', frame)
-                # cv2.waitKey(0)
+                # self.algorithm.receive_frame(frame)
+                # self.algorithm.update()
+                self.threeFrameAlgorithm.receive_frame(frame, "abc")
+                self.threeFrameAlgorithm.update()
+                # self.algorithm.receive_frame(frame[0], frame[1])
+                # self.algorithm.update()
 
     def return_one(self):
         return 1
