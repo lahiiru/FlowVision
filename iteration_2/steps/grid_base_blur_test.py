@@ -38,7 +38,7 @@ def drawGrid(frame) :
     frame_hieght, frame_width = frame.shape[:2]
     grid_height = frame_hieght / grid_rows
     grid_width = frame_width / grid_columns
-    # draw vertical and horizontal lines in the frames showing the grid selection
+    # draw vertical and horizontal lines in the real_frames showing the grid selection
     for i in range(1, grid_columns):
         frame = cv2.line(frame, (grid_width * i, 0), (grid_width * i, frame_hieght), (255, 255, 0), 1, cv2.LINE_AA)
     for i in range(1, grid_rows):
