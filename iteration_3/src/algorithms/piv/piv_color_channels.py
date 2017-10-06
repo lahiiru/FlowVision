@@ -61,9 +61,16 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         maxBinUpper = np.argmax(hist[0])
         y_mode = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
-        self.debug_vis_text = self.frame_wallet.get_tags()[0] + '\nDistance X: ' + str(x_mode) + '  Distance Y:' + str(
+        if self.debug:
+            file_name=self.frame_wallet.get_tags()[0].replace('-',' ')
+            file_name = file_name.replace('_', ' ')
+            file_name = file_name.replace('.jpg', '')
+            file_name = file_name.replace('x', 'X:')
+            file_name = file_name.replace('y', 'Y:')
+            file_name = file_name.replace('distance', 'Actual    ')
+            self.debug_vis_text = file_name+ '\nCalculated X: ' + str(x_mode) + '  Y:' + str(
             y_mode)
-        print self.debug_vis_text
+            print self.debug_vis_text
         return (x_mode, y_mode)
 
     def draw_templates(self, **kwargs):
