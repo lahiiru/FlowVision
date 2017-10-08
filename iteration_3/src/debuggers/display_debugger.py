@@ -27,6 +27,6 @@ class DisplayDebugger(AbstractDebugger):
             elif self.device.algorithm.visualization_mode == 1:
                 while True:
                     point = self.device.algorithm.get_visualization()
-                    if point is not None:
-                        plt.scatter(*zip(point), s=1)
+                    if point is not None and len(point)>0:
+                        plt.scatter(*zip(*point), s=2)
                         plt.pause(0.01)
