@@ -18,6 +18,7 @@ class Device:
     camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
     algorithm = ColorChannelsPIV()
+    # threeFrameAlgorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
     communicator = None
     id = ""
     logger = None
@@ -45,6 +46,9 @@ class Device:
             if frame is not None:
                 self.algorithm.receive_frame(frame[0], frame[1])
                 self.algorithm.update()
+
+                # self.threeFrameAlgorithm.receive_frame(frame, "abc")
+                # self.threeFrameAlgorithm.update()
 
                 # cv2.imshow('frame', frame)
                 # cv2.waitKey(0)

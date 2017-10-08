@@ -45,6 +45,7 @@ means = []
 mean_size = 10
 white_threshold = 5
 i=0
+frameIndex = 0
 videoMode = True
 record = True
 speed =0
@@ -59,7 +60,8 @@ if record:
         print("folder exist")
     fourcc = cv2.VideoWriter_fourcc(*'XVID')    
     out = cv2.VideoWriter('records\\'+datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")+'.avi', fourcc, frame_rate, (frame_width, frame_hieght))
-    
+
+
 while(1):
     rect, frame = c.read()
     if not rect:
@@ -144,9 +146,14 @@ while(1):
         cid = plt.gcf().canvas.mpl_connect('key_press_event', quit_figure)
         plt.pause(0.1)
 
+
     if record:
-        out.write(raw_frame)
-        
+        #out.write(raw_frame)
+        # out.write(fg)
+
+        cv2.imwrite('fg/' +str(frameIndex)+'.jpg', fg)
+        frameIndex += 1
+
     prev = current
 
 plt.close('all')
