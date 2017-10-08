@@ -1,0 +1,20 @@
+Removed Pin From Net: NetName=GND Pin=P12-2
+Removed Pin From Net: NetName=SDA Pin=P12-4
+Removed Pin From Net: NetName=BUCK_IN Pin=R4-2
+Removed Pin From Net: NetName=VCC Pin=R6-2
+Removed Pin From Net: NetName=RPI_LED Pin=R10-1
+Removed Pin From Net: NetName=NetD1_1 Pin=R10-2
+Added Component: Designator=P14(HDR1X4)
+Added Pin To Net: NetName=SDA Pin=P12-2
+Added Pin To Net: NetName=GND Pin=P12-4
+Added Pin To Net: NetName=VCC Pin=P14-1
+Added Pin To Net: NetName=3V3 Pin=P14-2
+Added Pin To Net: NetName=GND Pin=P14-3
+Added Pin To Net: NetName=GND Pin=P14-4
+Added Pin To Net: NetName=3V3 Pin=R4-2
+Added Pin To Net: NetName=BUCK_IN Pin=R6-2
+Added Pin To Net: NetName=NetD1_1 Pin=R10-1
+Added Pin To Net: NetName=RPI_LED Pin=R10-2
+Change Net Name : Old Net Name=BUCKIN_MON New Net Name=3V3_MON
+Change Net Name : Old Net Name=BUCKOUT_MON New Net Name=BUCK_IN_MON
+Added Member To Class: ClassName=Sheet1 Member=Component P14 Extra

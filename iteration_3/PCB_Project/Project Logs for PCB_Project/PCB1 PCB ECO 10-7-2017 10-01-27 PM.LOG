@@ -1,0 +1,148 @@
+Added Component: Designator=P1(RJ45)
+Added Component: Designator=P2(HDR1X4)
+Added Component: Designator=P3(HDR2X2)
+Added Component: Designator=P4(HDR1X5)
+Added Component: Designator=P5(USB_Female)
+Added Component: Designator=P6(HDR1X5)
+Added Component: Designator=P7(HDR2X20)
+Added Component: Designator=P8(HDR1X4)
+Added Component: Designator=P9(HDR2X3)
+Added Component: Designator=P10(RJ45)
+Added Component: Designator=P11(USB_Female)
+Added Component: Designator=R1(AXIAL-0.3)
+Added Component: Designator=R2(AXIAL-0.3)
+Added Component: Designator=R3(AXIAL-0.3)
+Added Component: Designator=R4(AXIAL-0.3)
+Added Component: Designator=R5(AXIAL-0.3)
+Added Component: Designator=R6(AXIAL-0.3)
+Added Component: Designator=R7(AXIAL-0.3)
+Added Component: Designator=R8(AXIAL-0.3)
+Added Component: Designator=R9(AXIAL-0.3)
+Added Component: Designator=U1(28P3)
+Added Pin To Net: NetName=VCC Pin=P2-1
+Added Pin To Net: NetName=VCC Pin=P3-1
+Added Pin To Net: NetName=VCC Pin=P4-2
+Added Pin To Net: NetName=VCC Pin=P8-1
+Added Pin To Net: NetName=VCC Pin=P11-1
+Added Pin To Net: NetName=VCC Pin=R1-2
+Added Pin To Net: NetName=VCC Pin=R2-2
+Added Pin To Net: NetName=VCC Pin=R6-2
+Added Pin To Net: NetName=VCC Pin=U1-7
+Added Pin To Net: NetName=VCC Pin=U1-20
+Added Pin To Net: NetName=BUCK_IN Pin=P1-2
+Added Pin To Net: NetName=BUCK_IN Pin=P3-3
+Added Pin To Net: NetName=BUCK_IN Pin=P6-1
+Added Pin To Net: NetName=BUCK_IN Pin=R4-2
+Added Net: Name=BUCK_IN
+Added Pin To Net: NetName=BUCKIN_MON Pin=R4-1
+Added Pin To Net: NetName=BUCKIN_MON Pin=R5-2
+Added Pin To Net: NetName=BUCKIN_MON Pin=U1-24
+Added Net: Name=BUCKIN_MON
+Added Pin To Net: NetName=BUCKOUT_MON Pin=R6-1
+Added Pin To Net: NetName=BUCKOUT_MON Pin=R7-2
+Added Pin To Net: NetName=BUCKOUT_MON Pin=U1-25
+Added Net: Name=BUCKOUT_MON
+Added Pin To Net: NetName=D+ Pin=P1-5
+Added Pin To Net: NetName=D+ Pin=P5-3
+Added Net: Name=D+
+Added Pin To Net: NetName=D- Pin=P1-4
+Added Pin To Net: NetName=D- Pin=P5-2
+Added Net: Name=D-
+Added Pin To Net: NetName=DHT11_D Pin=P2-2
+Added Pin To Net: NetName=DHT11_D Pin=U1-6
+Added Net: Name=DHT11_D
+Added Pin To Net: NetName=ECHO Pin=P8-3
+Added Pin To Net: NetName=ECHO Pin=R8-1
+Added Net: Name=ECHO
+Added Pin To Net: NetName=FLASH1_D Pin=P6-2
+Added Pin To Net: NetName=FLASH1_D Pin=U1-14
+Added Net: Name=FLASH1_D
+Added Pin To Net: NetName=FLASH2_D Pin=P6-3
+Added Pin To Net: NetName=FLASH2_D Pin=U1-15
+Added Net: Name=FLASH2_D
+Added Pin To Net: NetName=FLASH3_D Pin=P6-4
+Added Pin To Net: NetName=FLASH3_D Pin=U1-16
+Added Net: Name=FLASH3_D
+Added Pin To Net: NetName=GND Pin=P1-1
+Added Pin To Net: NetName=GND Pin=P2-4
+Added Pin To Net: NetName=GND Pin=P3-2
+Added Pin To Net: NetName=GND Pin=P3-4
+Added Pin To Net: NetName=GND Pin=P4-5
+Added Pin To Net: NetName=GND Pin=P5-4
+Added Pin To Net: NetName=GND Pin=P5-4
+Added Pin To Net: NetName=GND Pin=P6-5
+Added Pin To Net: NetName=GND Pin=P8-4
+Added Pin To Net: NetName=GND Pin=P9-6
+Added Pin To Net: NetName=GND Pin=P11-4
+Added Pin To Net: NetName=GND Pin=P11-4
+Added Pin To Net: NetName=GND Pin=R3-1
+Added Pin To Net: NetName=GND Pin=R5-1
+Added Pin To Net: NetName=GND Pin=R7-1
+Added Pin To Net: NetName=GND Pin=R9-1
+Added Pin To Net: NetName=GND Pin=U1-8
+Added Pin To Net: NetName=GND Pin=U1-22
+Added Net: Name=GND
+Added Pin To Net: NetName=MISO Pin=P9-1
+Added Pin To Net: NetName=MISO Pin=U1-18
+Added Net: Name=MISO
+Added Pin To Net: NetName=MOSI Pin=P9-4
+Added Pin To Net: NetName=MOSI Pin=U1-17
+Added Net: Name=MOSI
+Added Pin To Net: NetName=NetP7_13 Pin=P7-13
+Added Pin To Net: NetName=NetP7_13 Pin=R8-2
+Added Pin To Net: NetName=NetP7_13 Pin=R9-2
+Added Net: Name=NetP7_13
+Added Pin To Net: NetName=RESET Pin=P9-5
+Added Pin To Net: NetName=RESET Pin=R1-1
+Added Pin To Net: NetName=RESET Pin=U1-1
+Added Net: Name=RESET
+Added Pin To Net: NetName=RX+ Pin=P1-6
+Added Pin To Net: NetName=RX+ Pin=P10-6
+Added Net: Name=RX+
+Added Pin To Net: NetName=RX- Pin=P1-3
+Added Pin To Net: NetName=RX- Pin=P10-3
+Added Net: Name=RX-
+Added Pin To Net: NetName=RXD Pin=P4-4
+Added Pin To Net: NetName=RXD Pin=U1-2
+Added Net: Name=RXD
+Added Pin To Net: NetName=SCK Pin=P9-3
+Added Pin To Net: NetName=SCK Pin=U1-19
+Added Net: Name=SCK
+Added Pin To Net: NetName=TRIG Pin=P7-11
+Added Pin To Net: NetName=TRIG Pin=P8-2
+Added Net: Name=TRIG
+Added Pin To Net: NetName=TX+ Pin=P1-8
+Added Pin To Net: NetName=TX+ Pin=P10-8
+Added Net: Name=TX+
+Added Pin To Net: NetName=TX- Pin=P1-7
+Added Pin To Net: NetName=TX- Pin=P10-7
+Added Net: Name=TX-
+Added Pin To Net: NetName=TXD Pin=P4-3
+Added Pin To Net: NetName=TXD Pin=U1-3
+Added Net: Name=TXD
+Added Pin To Net: NetName=VCC_MON Pin=R2-1
+Added Pin To Net: NetName=VCC_MON Pin=R3-2
+Added Pin To Net: NetName=VCC_MON Pin=U1-23
+Added Net: Name=VCC_MON
+Added Member To Class: ClassName=Sheet1 Member=Component P1 RJ45 Power + Ethernet + USB
+Added Member To Class: ClassName=Sheet1 Member=Component P2 DHT11
+Added Member To Class: ClassName=Sheet1 Member=Component P3 Buck Conveter
+Added Member To Class: ClassName=Sheet1 Member=Component P4 USB to TTL
+Added Member To Class: ClassName=Sheet1 Member=Component P5 USB Type-A female
+Added Member To Class: ClassName=Sheet1 Member=Component P6 Header 5
+Added Member To Class: ClassName=Sheet1 Member=Component P7 IDE Male
+Added Member To Class: ClassName=Sheet1 Member=Component P8 JSN-SR04T
+Added Member To Class: ClassName=Sheet1 Member=Component P9 ICSP
+Added Member To Class: ClassName=Sheet1 Member=Component P10 RJ45 Ethernet
+Added Member To Class: ClassName=Sheet1 Member=Component P11 USB Power out
+Added Member To Class: ClassName=Sheet1 Member=Component R1 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R2 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R3 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R4 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R5 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R6 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R7 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R8 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R9 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component U1 ATmega328-PU
+Added Room: Name=Sheet1

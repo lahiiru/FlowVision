@@ -1,0 +1,32 @@
+Added Component: Designator=D1(LED-1)
+Added Component: Designator=D2(LED-1)
+Added Component: Designator=P13(HDR1X4)
+Added Component: Designator=R10(AXIAL-0.3)
+Added Component: Designator=R11(AXIAL-0.3)
+Added Pin To Net: NetName=GND Pin=D1-2
+Added Pin To Net: NetName=GND Pin=D2-2
+Added Pin To Net: NetName=VCC Pin=P13-1
+Added Pin To Net: NetName=GND Pin=P13-4
+Added Pin To Net: NetName=CHIP_LED Pin=R11-2
+Added Pin To Net: NetName=CHIP_LED Pin=U1-13
+Added Net: Name=CHIP_LED
+Added Pin To Net: NetName=CON_RXD Pin=P7-10
+Added Pin To Net: NetName=CON_RXD Pin=P13-3
+Added Net: Name=CON_RXD
+Added Pin To Net: NetName=CON_TXD Pin=P7-8
+Added Pin To Net: NetName=CON_TXD Pin=P13-2
+Added Net: Name=CON_TXD
+Added Pin To Net: NetName=NetD1_1 Pin=D1-1
+Added Pin To Net: NetName=NetD1_1 Pin=R10-2
+Added Net: Name=NetD1_1
+Added Pin To Net: NetName=NetD2_1 Pin=D2-1
+Added Pin To Net: NetName=NetD2_1 Pin=R11-1
+Added Net: Name=NetD2_1
+Added Pin To Net: NetName=RPI_LED Pin=P7-36
+Added Pin To Net: NetName=RPI_LED Pin=R10-1
+Added Net: Name=RPI_LED
+Added Member To Class: ClassName=Sheet1 Member=Component D1 Green
+Added Member To Class: ClassName=Sheet1 Member=Component D2 Red
+Added Member To Class: ClassName=Sheet1 Member=Component P13 RPi UART
+Added Member To Class: ClassName=Sheet1 Member=Component R10 Res1
+Added Member To Class: ClassName=Sheet1 Member=Component R11 Res1
