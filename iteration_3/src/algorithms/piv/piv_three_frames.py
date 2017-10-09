@@ -14,7 +14,6 @@ UNKNOWN_SPEED = None
 
 
 class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
-
     def __init__(self, frame_rate):
         ParticleImageVelocimetryAlgorithm.__init__(self, frame_rate)
         self.direction_filter = DirectionFilter()
@@ -43,7 +42,6 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         self.pixels_per_second = UNKNOWN_SPEED
         # for i in range(self.frame_wallet.wallet_size - 1) :
 
-
         pixels_per_second = self._match_template(0, 1)
 
         if self.debug:
@@ -55,7 +53,8 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
 
             self.visualization = np.hstack(displays)
             for row, txt in enumerate(self.debug_vis_text.split('\n')):
-                self.visualization = cv2.putText(self.visualization, txt, (10, 15+ 15 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 128), 1)
+                self.visualization = cv2.putText(self.visualization, txt, (10, 15 + 15 * row), cv2.FONT_HERSHEY_SIMPLEX,
+                                                 0.5, (255, 255, 128), 1)
 
         return pixels_per_second
 
@@ -65,7 +64,6 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         if len(template_top_conner_pairs) == 0:
             logger.info("no good templates found, skipping frame")
             return UNKNOWN_SPEED
-
 
         (x_min, y_min), template = template_top_conner_pairs[0]
 
@@ -123,11 +121,11 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
 
         return self.pixels_per_second
 
-    def _find_second_template(self, current_index, pre_template,maxLoc):
-        current_y_min= maxLoc[1]
-        current_y_max= maxLoc[1] + pre_template.shape[0]
-        current_x_min= maxLoc[0]
-        current_x_max= maxLoc[0] + pre_template.shape[1]
+    def _find_second_template(self, current_index, pre_template, maxLoc):
+        current_y_min = maxLoc[1]
+        current_y_max = maxLoc[1] + pre_template.shape[0]
+        current_x_min = maxLoc[0]
+        current_x_max = maxLoc[0] + pre_template.shape[1]
         template = (self.masked_frames[current_index])[current_y_min:current_y_max, current_x_min:current_x_max]
         return template
 
