@@ -92,7 +92,10 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         x_value_difference = abs(x_distance - n_x_distance)
         y_value_difference = abs(y_distance - n_y_distance)
 
-        if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance):
+        direction_flag = self.find_direction(first_location, second_location)
+        # print direction_flag
+
+        if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
             print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
             avg_x = (x_distance + n_x_distance) / 2
             avg_y = (y_distance + n_y_distance) / 2
@@ -134,8 +137,12 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         same_bucket_flag = False
         x1, y1 = first_location
         x2, y2 = second_location
-        first_direction = y1 / x1
-        second_direction = y2 / x2
+        if(y1==0 or y2==0):
+            return same_bucket_flag
+
+        # print x1, y1 , x2, y2
+        first_direction = x1 / y1
+        second_direction = x2 / y2
 
         if (first_direction > 0 and second_direction > 0 and y1 > 0 and y2 > 0):
             same_bucket_flag = True
