@@ -92,7 +92,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
             print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
             avg_x = (x_distance + n_x_distance) / 2
             avg_y = (y_distance + n_y_distance) / 2
-            self.pixel_distances.append([avg_x, avg_y])
+            self.update_pixel_distances([avg_x, avg_y])
             self.template_color = (255, 0, 255)
 
         if self.debug:
