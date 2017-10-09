@@ -73,7 +73,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         ref_point_y = y_min
         x_distance = maxLoc[0] - ref_point_x
         y_distance = ref_point_y - maxLoc[1]
-        self.pixels_per_second = x_distance * self.frame_rate
+
 
         # find the template for the second time
         updated_template = self._find_second_template(1, template, maxLoc)

@@ -91,7 +91,6 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             y_distance = ref_point_y - maxLoc[1]
             self.update_pixel_distances([x_distance, y_distance])
             self.direction_filter.update((x_distance, y_distance))
-            self.pixels_per_second = x_distance * self.frame_rate
             if self.debug:
                 self.draw_templates(pre_index=pre_index, current_index=current_index, template=template,
                                     ref_point=(ref_point_x, ref_point_y), match_point=maxLoc, score=maxVal)
