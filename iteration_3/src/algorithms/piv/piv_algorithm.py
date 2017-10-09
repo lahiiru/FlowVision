@@ -54,9 +54,9 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
         self.pixels_per_second = UNKNOWN_SPEED
         for i in range(self.frame_wallet.wallet_size - 1):
-            self.matched_points = []
+            self.pixel_distances = []
             pixels_per_second = self._match_template(i, i + 1)
-            self.get_mode_distance(self.matched_points)
+            self.get_mode_distance(self.pixel_distances)
 
         if self.debug:
             for i in range(self.frame_wallet.wallet_size):
@@ -78,7 +78,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         if len(template_top_conner_pairs) == 0:
             logger.info("no good templates found, skipping frame")
             return UNKNOWN_SPEED
-        self.matched_points = []
+        self.pixel_distances = []
         for i in range(len(template_top_conner_pairs)):
             (x_min, y_min), template = template_top_conner_pairs[i]
             matching_area = self.find_matching_area(self.masked_frames[current_index],ref_point=(x_min,y_min))
@@ -89,7 +89,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             ref_point_y = y_min
             x_distance = maxLoc[0] - ref_point_x
             y_distance = ref_point_y - maxLoc[1]
-            self.matched_points.append([x_distance, y_distance])
+            self.pixel_distances.append([x_distance, y_distance])
             self.direction_filter.update((x_distance, y_distance))
             self.pixels_per_second = x_distance * self.frame_rate
             if self.debug:
