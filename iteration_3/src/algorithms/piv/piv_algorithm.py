@@ -7,13 +7,13 @@ from iteration_3.src.algorithms.algorithm import Algorithm
 from frame_wallet import FrameWallet
 from iteration_3.src.utilities import *
 
-
 logger = logging.getLogger()
 
 UNKNOWN_SPEED = None
 
 
 class ParticleImageVelocimetryAlgorithm(object, Algorithm):
+
     def __init__(self, frame_rate):
         Algorithm.__init__(self)
         self.direction_filter = DirectionFilter()

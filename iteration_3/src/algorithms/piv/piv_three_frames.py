@@ -14,6 +14,7 @@ UNKNOWN_SPEED = None
 
 
 class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
+
     def __init__(self, frame_rate):
         ParticleImageVelocimetryAlgorithm.__init__(self, frame_rate)
         self.direction_filter = DirectionFilter()
@@ -42,6 +43,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         self.pixels_per_second = UNKNOWN_SPEED
         # for i in range(self.frame_wallet.wallet_size - 1) :
 
+
         pixels_per_second = self._match_template(0, 1)
 
         if self.debug:
@@ -53,8 +55,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
 
             self.visualization = np.hstack(displays)
             for row, txt in enumerate(self.debug_vis_text.split('\n')):
-                self.visualization = cv2.putText(self.visualization, txt, (10, 15 + 15 * row), cv2.FONT_HERSHEY_SIMPLEX,
-                                                 0.5, (255, 255, 128), 1)
+                self.visualization = cv2.putText(self.visualization, txt, (10, 15+ 15 * row), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 128), 1)
 
         return pixels_per_second
 
@@ -65,6 +66,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
             logger.info("no good templates found, skipping frame")
             return UNKNOWN_SPEED
 
+
         (x_min, y_min), template = template_top_conner_pairs[0]
 
         correlation_values = cv2.matchTemplate(self.masked_frames[current_index], template, method=cv2.TM_CCOEFF_NORMED)
@@ -73,7 +75,10 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         ref_point_y = y_min
         x_distance = maxLoc[0] - ref_point_x
         y_distance = ref_point_y - maxLoc[1]
+        self.matched_point = (x_distance, y_distance)
+        self.direction_filter.update((x_distance, y_distance))
         self.pixels_per_second = x_distance * self.frame_rate
+        first_location = x_distance,y_distance
 
         # find the template for the second time
         updated_template = self._find_second_template(1, template, maxLoc)
@@ -84,6 +89,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         ref_y = maxLoc[1]
         n_x_distance = n_maxLoc[0] - ref_x
         n_y_distance = ref_y - n_maxLoc[1]
+        second_location = n_x_distance,n_y_distance
 
         x_value_difference = abs(x_distance - n_x_distance)
         y_value_difference = abs(y_distance - n_y_distance)
@@ -117,10 +123,30 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
 
         return self.pixels_per_second
 
-    def _find_second_template(self, current_index, pre_template, maxLoc):
-        current_y_min = maxLoc[1]
-        current_y_max = maxLoc[1] + pre_template.shape[0]
-        current_x_min = maxLoc[0]
-        current_x_max = maxLoc[0] + pre_template.shape[1]
+    def _find_second_template(self, current_index, pre_template,maxLoc):
+        current_y_min= maxLoc[1]
+        current_y_max= maxLoc[1] + pre_template.shape[0]
+        current_x_min= maxLoc[0]
+        current_x_max= maxLoc[0] + pre_template.shape[1]
         template = (self.masked_frames[current_index])[current_y_min:current_y_max, current_x_min:current_x_max]
         return template
+
+    def find_direction(self, first_location, second_location):
+
+        same_bucket_flag = False
+        x1, y1 = first_location
+        x2, y2 = second_location
+        first_direction = y1 / x1
+        second_direction = y2 / x2
+
+        if (first_direction > 0 and second_direction > 0 and y1 > 0 and y2 > 0):
+            same_bucket_flag = True
+        elif (first_direction > 0 and second_direction > 0 and y1 < 0 and y2 < 0):
+            same_bucket_flag = True
+        elif (first_direction < 0 and second_direction < 0 and y1 < 0 and y2 < 0):
+            same_bucket_flag = True
+        elif (first_direction < 0 and second_direction < 0 and y1 > 0 and y2 > 0):
+            same_bucket_flag = True
+
+        return same_bucket_flag
+
