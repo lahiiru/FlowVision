@@ -6,7 +6,7 @@ import logging
 from iteration_3.src.algorithms.algorithm import Algorithm
 from frame_wallet import FrameWallet
 from iteration_3.src.utilities import *
-
+import math
 
 logger = logging.getLogger()
 
@@ -23,6 +23,8 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.x_offset = 20
         self.y_offset = 5
         self.debug_vis_text = ""
+        self.x_distance = 0
+        self.y_distance = 0
         logger.info("PIV Algorithm initiated.")
 
     def configure(self, frame_rate):
@@ -209,3 +211,25 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         ref_point=kwargs['ref_point']
         return frame
 
+    def update_pixel_distances(self, point):
+        self.pixel_distances.append(point)
+
+        if self.frame_count >= 100:
+            x_distances = zip(*self.pixel_distances)[0]
+            y_distances = zip(*self.pixel_distances)[1]
+            x_hist = np.histogram(x_distances)
+            y_hist = np.histogram(y_distances)
+
+            self.x_distance = (x_hist[1][np.argmax(x_hist[0])] + x_hist[1][np.argmax(x_hist[0]) + 1]) / 2
+            self.y_distance = (y_hist[1][np.argmax(y_hist[0])] + y_hist[1][np.argmax(y_hist[0]) + 1]) / 2
+
+            if self.history_pixel_distances.full():
+                self.history_pixel_distances.get()
+
+            self.history_pixel_distances.put((round(self.x_distance, 2), round(self.y_distance, 2), len(self.pixel_distances)))
+
+            self.frame_count = 0
+            self.pixel_distances = []
+
+    def calculate_pixels_per_second(self):
+        self.pixels_per_second = math.sqrt(math.pow(self.x_distance, 2) + math.pow(self.y_distance, 2))*self.frame_rate

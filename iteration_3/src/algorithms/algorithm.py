@@ -1,5 +1,8 @@
 from iteration_3.src.debuggers import Debuggable
 import Queue
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 class Algorithm(Debuggable):
     def __init__(self):
@@ -12,6 +15,7 @@ class Algorithm(Debuggable):
         self.frame_count = 0
 
     def get_pixels_per_second(self):
+        self.calculate_pixels_per_second()
         return self.pixels_per_second
 
     def get_visualization(self):
@@ -26,5 +30,5 @@ class Algorithm(Debuggable):
     def update(self, **kwargs):
         raise NotImplementedError("Subclass must implement abstract method")
 
-    def update_pixel_distances(self, point):
-        pass
+    def calculate_pixels_per_second(self):
+        raise NotImplementedError("Subclass must implement abstract method")

@@ -5,6 +5,7 @@ import time
 from config import DevConfig
 from algorithms import *
 from debuggers import *
+from utilities import *
 import cv2
 
 if __name__ == '__main__':
@@ -38,18 +39,21 @@ class Device:
         self.camera.start()
         time.sleep(5)
 
-        self.algorithm.debug = True
+        self.algorithm.debug = False
         self.algorithm.visualization_mode = 0
 
         self.debugger.start()
+
+        self.meters_per_second = 0
 
         while True:
             frame = self.camera.get_frame()
             if frame is not None:
                 self.algorithm.receive_frame(frame)
                 self.algorithm.update()
-                time.sleep(1)
-
+                # time.sleep(1)
+                self.meters_per_second  = round(Converter.convert_meters_per_second(self.algorithm.get_pixels_per_second()),2)
+                print str(self.meters_per_second) + ' m/s'
                 # cv2.imshow('frame', frame)
                 # cv2.waitKey(0)
 
