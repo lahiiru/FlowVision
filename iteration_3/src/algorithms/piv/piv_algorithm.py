@@ -14,6 +14,7 @@ UNKNOWN_SPEED = None
 
 
 class ParticleImageVelocimetryAlgorithm(object, Algorithm):
+
     def __init__(self, frame_rate):
         Algorithm.__init__(self)
         self.direction_filter = DirectionFilter()

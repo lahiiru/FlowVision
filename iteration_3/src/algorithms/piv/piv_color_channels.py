@@ -19,6 +19,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
     def _process_pre_filters(self):
         pass
 
+
     def _calculate_template_bounds(self, frame):
         bounds = []
         feature_points = cv2.goodFeaturesToTrack(frame, 50, 0.01, 5)

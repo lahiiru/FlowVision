@@ -73,7 +73,10 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         ref_point_y = y_min
         x_distance = maxLoc[0] - ref_point_x
         y_distance = ref_point_y - maxLoc[1]
-
+        self.matched_point = (x_distance, y_distance)
+        self.direction_filter.update((x_distance, y_distance))
+        self.pixels_per_second = x_distance * self.frame_rate
+        first_location = x_distance,y_distance
 
         # find the template for the second time
         updated_template = self._find_second_template(1, template, maxLoc)
@@ -84,11 +87,15 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         ref_y = maxLoc[1]
         n_x_distance = n_maxLoc[0] - ref_x
         n_y_distance = ref_y - n_maxLoc[1]
+        second_location = n_x_distance,n_y_distance
 
         x_value_difference = abs(x_distance - n_x_distance)
         y_value_difference = abs(y_distance - n_y_distance)
 
-        if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance):
+        direction_flag = self.find_direction(first_location, second_location)
+        # print direction_flag
+
+        if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
             print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
             avg_x = (x_distance + n_x_distance) / 2
             avg_y = (y_distance + n_y_distance) / 2
@@ -124,3 +131,27 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         current_x_max = maxLoc[0] + pre_template.shape[1]
         template = (self.masked_frames[current_index])[current_y_min:current_y_max, current_x_min:current_x_max]
         return template
+
+    def find_direction(self, first_location, second_location):
+
+        same_bucket_flag = False
+        x1, y1 = first_location
+        x2, y2 = second_location
+        if(y1==0 or y2==0):
+            return same_bucket_flag
+
+        # print x1, y1 , x2, y2
+        first_direction = x1 / y1
+        second_direction = x2 / y2
+
+        if (first_direction > 0 and second_direction > 0 and y1 > 0 and y2 > 0):
+            same_bucket_flag = True
+        elif (first_direction > 0 and second_direction > 0 and y1 < 0 and y2 < 0):
+            same_bucket_flag = True
+        elif (first_direction < 0 and second_direction < 0 and y1 < 0 and y2 < 0):
+            same_bucket_flag = True
+        elif (first_direction < 0 and second_direction < 0 and y1 > 0 and y2 > 0):
+            same_bucket_flag = True
+
+        return same_bucket_flag
+
