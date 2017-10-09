@@ -11,7 +11,6 @@ class RPiCamera(AbstractCamera):
     def __init__(self, path):
         AbstractCamera.__init__(self)
         self.frame_rate = 30
-        self.frame_no = 0
 
     def _process(self):
         with picamera.PiCamera(sensor_mode=7, resolution='VGA') as camera:
@@ -29,8 +28,7 @@ class RPiCamera(AbstractCamera):
             image = cv2.imdecode(data, 1)
             # cv2.imshow('image', image)
             # cv2.waitKey(1)
-            self._put_frame((image, self.frame_no))
-            self.frame_no += 1
+            self._put_frame(image)
             stream.seek(0)
             stream.truncate()
 

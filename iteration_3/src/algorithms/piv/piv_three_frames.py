@@ -42,7 +42,6 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         self.pixels_per_second = UNKNOWN_SPEED
         # for i in range(self.frame_wallet.wallet_size - 1) :
 
-
         pixels_per_second = self._match_template(0, 1)
 
         if self.debug:
