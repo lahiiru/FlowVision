@@ -1,11 +1,11 @@
 class FrameWallet:
     def __init__(self, wallet_size):
         self.wallet_size = wallet_size
-        self._original_frames=[]
+        self._original_frames = []
         self._masked_frames = []
-        self._tags=[]
+        self._tags = []
 
-    def put_original_frame(self,frame):
+    def put_original_frame(self, frame):
         if len(self._original_frames) >= self.wallet_size:
             self._original_frames.pop(0)
         self._original_frames.append(frame)

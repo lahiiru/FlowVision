@@ -12,6 +12,7 @@ class FromVideoCamera(AbstractCamera):
         AbstractCamera.__init__(self)
         self.path = path
         self.frame_rate = 30
+        self.frame_no = 0
 
     def _process(self):
         self.cap = cv2.VideoCapture(self.path)
@@ -27,7 +28,8 @@ class FromVideoCamera(AbstractCamera):
                 break
             img = cv2.resize(img, self.resolution)
             time.sleep(1.0 / self.frame_rate)
-            self._put_frame(img)
+            self._put_frame((img, self.frame_no))
+            self.frame_no += 1
 
     def _release(self):
         self.cap.release()

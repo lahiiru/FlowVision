@@ -6,6 +6,10 @@ logger = logging.getLogger()
 
 
 class WebCamera(AbstractCamera):
+    def __init__(self, path):
+        AbstractCamera.__init__(self)
+        self.frame_rate = 30
+        self.frame_no = 0
 
     def _process(self):
         self.cap = cv2.VideoCapture(0)
@@ -23,7 +27,8 @@ class WebCamera(AbstractCamera):
                 logger.warn("Corrupted frame found. Exiting. ")
                 break
             img = cv2.resize(img, self.resolution)
-            self._put_frame(img)
+            self._put_frame((img, self.frame_no))
+            self.frame_no += 1
 
     def _release(self):
         self.cap.release()
