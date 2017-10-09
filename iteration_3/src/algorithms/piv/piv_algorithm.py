@@ -29,12 +29,13 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.frame_rate = frame_rate
         logger.info("PIV Algorithm configured.")
 
-    def receive_frame(self, frame,tag):
+    def receive_frame(self, frame):
+        self.frame_count+=1
         current_fg_mask = Filters.background_substractor_filter(frame)
         current_mask = Filters.morphological_opening_filter(current_fg_mask)
         self.frame_wallet.put_masked_frame(current_mask)
         self.frame_wallet.put_original_frame(frame)
-        self.frame_wallet.put_tag(tag)
+
 
     def update(self, **kwargs):
         self.original_frames = self.frame_wallet.get_original_frames()
@@ -54,7 +55,6 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
         self.pixels_per_second = UNKNOWN_SPEED
         for i in range(self.frame_wallet.wallet_size - 1):
-            self.pixel_distances = []
             pixels_per_second = self._match_template(i, i + 1)
             self.get_mode_distance(self.pixel_distances)
 
@@ -78,7 +78,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         if len(template_top_conner_pairs) == 0:
             logger.info("no good templates found, skipping frame")
             return UNKNOWN_SPEED
-        self.pixel_distances = []
+
         for i in range(len(template_top_conner_pairs)):
             (x_min, y_min), template = template_top_conner_pairs[i]
             matching_area = self.find_matching_area(self.masked_frames[current_index],ref_point=(x_min,y_min))
@@ -89,7 +89,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             ref_point_y = y_min
             x_distance = maxLoc[0] - ref_point_x
             y_distance = ref_point_y - maxLoc[1]
-            self.pixel_distances.append([x_distance, y_distance])
+            self.update_pixel_distances([x_distance, y_distance])
             self.direction_filter.update((x_distance, y_distance))
             self.pixels_per_second = x_distance * self.frame_rate
             if self.debug:

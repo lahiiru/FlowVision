@@ -12,10 +12,9 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         self.matching_y_offset=200
         logger.info('ColorChannelsPIV algorithm initiated')
 
-    def receive_frame(self, frame, tag):
+    def receive_frame(self, frame):
         self.separate_channels(frame)
-        self.frame_wallet.put_tag(tag)
-        self.frame_wallet.put_tag(tag)
+        self.frame_count += 1
 
     def _process_pre_filters(self):
         pass
@@ -62,13 +61,8 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         y_mode = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
         if self.debug:
-            file_name=self.frame_wallet.get_tags()[0].replace('-',' ')
-            file_name = file_name.replace('_', ' ')
-            file_name = file_name.replace('.jpg', '')
-            file_name = file_name.replace('x', 'X:')
-            file_name = file_name.replace('y', 'Y:')
-            file_name = file_name.replace('distance', 'Actual    ')
-            self.debug_vis_text = file_name+ '\nCalculated X: ' + str(x_mode) + '  Y:' + str(
+
+            self.debug_vis_text =  '\nCalculated X: ' + str(x_mode) + '  Y:' + str(
             y_mode)
             print self.debug_vis_text
         return (x_mode, y_mode)

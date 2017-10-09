@@ -20,7 +20,7 @@ class Algorithm(Debuggable):
         elif self.visualization_mode == 1:
             return self.pixel_distances
 
-    def receive_frame(self, frame,tag):
+    def receive_frame(self, frame):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def update(self, **kwargs):

@@ -46,7 +46,7 @@ class Device:
         while True:
             frame = self.camera.get_frame()
             if frame is not None:
-                self.algorithm.receive_frame(frame[0], frame[1])
+                self.algorithm.receive_frame(frame)
                 self.algorithm.update()
                 time.sleep(1)
 
