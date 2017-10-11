@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=VCC Pin=P3-1
+Removed Pin From Net: NetName=GND Pin=P3-4
+Change Component Comment : Designator=P3 Old Comment=Boost Conveter New Comment=Buck Conveter
+Change Component Comment : Designator=P6 Old Comment=Buck Conveter New Comment=Boost Conveter
+Added Pin To Net: NetName=GND Pin=P3-1
+Added Pin To Net: NetName=VCC Pin=P3-4

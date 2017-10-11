@@ -1,0 +1,2 @@
+Removed Pin From Net: NetName=DHT11_D Pin=U1-6
+Added Pin To Net: NetName=DHT11_D Pin=U1-12

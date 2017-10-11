@@ -1,0 +1,8 @@
+Added Component: Designator=JP1(HDR1X2)
+Added Component: Designator=JP2(HDR1X2)
+Added Pin To Net: NetName=BUCK_IN Pin=JP1-1
+Added Pin To Net: NetName=GND Pin=JP1-2
+Added Pin To Net: NetName=BUCK_IN Pin=JP2-1
+Added Pin To Net: NetName=GND Pin=JP2-2
+Added Member To Class: ClassName=HeadBoard Member=Component JP1 Header 2
+Added Member To Class: ClassName=HeadBoard Member=Component JP2 Header 2

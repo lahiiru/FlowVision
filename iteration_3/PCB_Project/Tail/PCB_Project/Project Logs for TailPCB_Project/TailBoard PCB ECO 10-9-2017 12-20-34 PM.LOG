@@ -1,0 +1,6 @@
+Added Component: Designator=P2(USB_Female)
+Added Pin To Net: NetName=VCC Pin=P2-1
+Added Pin To Net: NetName=D- Pin=P2-2
+Added Pin To Net: NetName=D+ Pin=P2-3
+Added Pin To Net: NetName=GND Pin=P2-4
+Added Member To Class: ClassName=TailBoard Member=Component P2 USB - Data card

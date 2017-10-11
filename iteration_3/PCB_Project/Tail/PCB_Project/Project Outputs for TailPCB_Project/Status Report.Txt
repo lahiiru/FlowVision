@@ -1,0 +1,13 @@
+Output: Gerber Files
+Type  : Gerber
+From  : Variant [[No Variations]] of Project [TailPCB_Project.PrjPcb]
+   Generated File[TailBoard.GBL]
+   Generated File[TailBoard.RUL]
+   Generated File[TailBoard.EXTREP]
+   Generated File[TailBoard.REP]
+
+
+Files Generated   : 4
+Documents Printed : 0
+
+Finished Output Generation At 7:33:41 PM On 10/11/2017

@@ -1,0 +1,6 @@
+Added Component: Designator=P16(PIN1)
+Added Component: Designator=P17(PIN1)
+Added Pin To Net: NetName=BUCK_IN Pin=P16-1
+Added Pin To Net: NetName=BUCK_IN Pin=P17-1
+Added Member To Class: ClassName=HeadBoard Member=Component P16 Plug
+Added Member To Class: ClassName=HeadBoard Member=Component P17 Plug

@@ -1,0 +1,3 @@
+Added Component: Designator=P?(PIN1)
+Added Pin To Net: NetName=GND Pin=P?-1
+Added Member To Class: ClassName=HeadBoard Member=Component P? Plug

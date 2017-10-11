@@ -1,0 +1,13 @@
+Output: Gerber Files
+Type  : Gerber
+From  : Variant [[No Variations]] of Project [HeadPCB_Project.PrjPcb]
+   Generated File[HeadBoard.GBL]
+   Generated File[HeadBoard.RUL]
+   Generated File[HeadBoard.EXTREP]
+   Generated File[HeadBoard.REP]
+
+
+Files Generated   : 4
+Documents Printed : 0
+
+Finished Output Generation At 7:36:57 PM On 10/11/2017

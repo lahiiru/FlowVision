@@ -1,0 +1,11 @@
+Change Component Footprint: Designator=P4 Old Footprint=HDR1X2 New Footprint=PWR_HEADER - duplicate
+Change Component Footprint: Designator=P5 Old Footprint=HDR1X2 New Footprint=PWR_HEADER - duplicate
+Change Component Footprint: Designator=P3 Old Footprint=HDR2X2 New Footprint=PWR_HEADER
+Change Component Footprint: Designator=P6 Old Footprint=HDR2X2 New Footprint=PWR_HEADER
+Added Member To Class: ClassName=TailBoard Member=Component P1 RJ45 PUE - Head
+Added Member To Class: ClassName=TailBoard Member=Component P2 USB - Data card
+Added Member To Class: ClassName=TailBoard Member=Component P3 Buck Conveter
+Added Member To Class: ClassName=TailBoard Member=Component P4 Charger
+Added Member To Class: ClassName=TailBoard Member=Component P5 12V Battery
+Added Member To Class: ClassName=TailBoard Member=Component P6 Boost Conveter
+Added Member To Class: ClassName=TailBoard Member=Component P7 RJ45 Ethernet

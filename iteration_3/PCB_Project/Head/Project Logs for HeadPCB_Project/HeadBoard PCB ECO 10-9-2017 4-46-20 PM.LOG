@@ -1,0 +1,4 @@
+Added Component: Designator=W1(RAD-0.2)
+Added Component: Designator=W2(RAD-0.2)
+Added Member To Class: ClassName=HeadBoard Member=Component W1 Jumper
+Added Member To Class: ClassName=HeadBoard Member=Component W2 Jumper

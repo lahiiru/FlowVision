@@ -1,0 +1,10 @@
+Added Component: Designator=P17(PIN1)
+Added Component: Designator=P18(PIN1)
+Added Component: Designator=P23(HDR1X2)
+Added Pin To Net: NetName=VCC Pin=P17-1
+Added Pin To Net: NetName=VCC Pin=P18-1
+Added Pin To Net: NetName=VCC Pin=P23-1
+Added Pin To Net: NetName=GND Pin=P23-2
+Added Member To Class: ClassName=HeadBoard Member=Component P17 Plug
+Added Member To Class: ClassName=HeadBoard Member=Component P18 Plug
+Added Member To Class: ClassName=HeadBoard Member=Component P23 Extra

@@ -1,0 +1,9 @@
+Added Component: Designator=P5(USB_Female)
+Added Component: Designator=P11(USB_Female)
+Added Pin To Net: NetName=D- Pin=P5-2
+Added Pin To Net: NetName=D+ Pin=P5-3
+Added Pin To Net: NetName=GND Pin=P5-4
+Added Pin To Net: NetName=VCC Pin=P11-1
+Added Pin To Net: NetName=GND Pin=P11-4
+Added Member To Class: ClassName=HeadBoard Member=Component P5 USB Data - RPi
+Added Member To Class: ClassName=HeadBoard Member=Component P11 USB Power - RPi

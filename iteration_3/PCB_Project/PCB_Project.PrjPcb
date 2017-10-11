@@ -30,7 +30,7 @@ DItemRevisionGUID=
 ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
-OutputPath=Project Outputs for PCB_Project
+OutputPath=
 LogFolderPath=
 ManagedProjectGUID=
 
@@ -90,7 +90,7 @@ GenerateClassCluster=0
 DocumentUniqueId=STAMMIFF
 
 [Document4]
-DocumentPath=F:\Libraries\Atmel\Atmel Footprints.PcbLib
+DocumentPath=..\..\..\..\..\..\Libraries\Atmel\Atmel Footprints.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -107,7 +107,7 @@ GenerateClassCluster=0
 DocumentUniqueId=
 
 [Document5]
-DocumentPath=F:\Libraries\Atmel\Atmel Microcontroller 8-Bit AVR Battery Management.IntLib
+DocumentPath=..\..\..\..\..\..\Libraries\Atmel\Atmel Microcontroller 8-Bit AVR Battery Management.IntLib
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -124,7 +124,7 @@ GenerateClassCluster=0
 DocumentUniqueId=
 
 [Document6]
-DocumentPath=F:\Libraries\Atmel\Atmel Microcontroller 8-Bit AVR.IntLib
+DocumentPath=..\..\..\..\..\..\Libraries\Atmel\Atmel Microcontroller 8-Bit AVR.IntLib
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -141,7 +141,7 @@ GenerateClassCluster=0
 DocumentUniqueId=
 
 [Document7]
-DocumentPath=F:\Libraries\Atmel\Atmel Microcontroller 8-Bit megaAVR.IntLib
+DocumentPath=..\..\..\..\..\..\Libraries\Atmel\Atmel Microcontroller 8-Bit megaAVR.IntLib
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -158,7 +158,7 @@ GenerateClassCluster=0
 DocumentUniqueId=
 
 [Document8]
-DocumentPath=F:\Libraries\Atmel\Atmel Microcontroller 8-Bit tinyAVR.IntLib
+DocumentPath=..\..\..\..\..\..\Libraries\Atmel\Atmel Microcontroller 8-Bit tinyAVR.IntLib
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -242,6 +242,23 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
+[Document13]
+DocumentPath=TailBoard.SchDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=SPPTIWWY
+
 [Configuration1]
 Name=Default Configuration
 ParameterCount=0
@@ -288,7 +305,7 @@ SCH_HasExpandLogicalToPhysicalSheets=0
 SaveSettingsToOutJob=-1
 
 [Generic_EDE]
-OutputDir=Project Outputs for PCB_Project
+OutputDir=
 
 [OutputGroup1]
 Name=Netlist Outputs
