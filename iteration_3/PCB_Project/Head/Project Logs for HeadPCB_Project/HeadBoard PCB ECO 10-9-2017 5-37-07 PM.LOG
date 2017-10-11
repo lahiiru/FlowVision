@@ -1,6 +1,0 @@
-Added Component: Designator=P19(PIN1)
-Added Component: Designator=P20(PIN1)
-Added Pin To Net: NetName=RESET Pin=P19-1
-Added Pin To Net: NetName=RESET Pin=P20-1
-Added Member To Class: ClassName=HeadBoard Member=Component P19 Plug
-Added Member To Class: ClassName=HeadBoard Member=Component P20 Plug

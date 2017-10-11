@@ -1,6 +1,0 @@
-Added Component: Designator=P14(PIN1)
-Added Component: Designator=P15(PIN1)
-Added Pin To Net: NetName=DHT11_D Pin=P14-1
-Added Pin To Net: NetName=DHT11_D Pin=P15-1
-Added Member To Class: ClassName=HeadBoard Member=Component P14 Plug
-Added Member To Class: ClassName=HeadBoard Member=Component P15 Plug

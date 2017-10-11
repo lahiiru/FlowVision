@@ -1,7 +1,0 @@
-Added Component: Designator=P9(HDR1X5)
-Added Pin To Net: NetName=MOSI Pin=P9-1
-Added Pin To Net: NetName=MISO Pin=P9-2
-Added Pin To Net: NetName=SCK Pin=P9-3
-Added Pin To Net: NetName=RESET Pin=P9-4
-Added Pin To Net: NetName=GND Pin=P9-5
-Added Member To Class: ClassName=HeadBoard Member=Component P9 ICSP

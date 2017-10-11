@@ -1,5 +1,0 @@
-Removed Pin From Net: NetName=TRIG Pin=P7-11
-Removed Pin From Net: NetName=NetP7_13 Pin=P7-13
-Added Pin To Net: NetName=TRIG Pin=P7-16
-Added Pin To Net: NetName=NetP7_13 Pin=P7-18
-Change Net Name : Old Net Name=NetP7_13 New Net Name=NetP7_18

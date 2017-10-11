@@ -1,4 +1,0 @@
-Removed Pin From Net: NetName=BUCK_IN Pin=P3-3
-Removed Pin From Net: NetName=GND Pin=P3-4
-Added Pin To Net: NetName=GND Pin=P3-3
-Added Pin To Net: NetName=BUCK_IN Pin=P3-4

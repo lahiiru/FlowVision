@@ -1,4 +1,0 @@
-Removed Pin From Net: NetName=CON_TXD Pin=P13-2
-Removed Pin From Net: NetName=CON_RXD Pin=P13-3
-Added Pin To Net: NetName=CON_RXD Pin=P13-2
-Added Pin To Net: NetName=CON_TXD Pin=P13-3
