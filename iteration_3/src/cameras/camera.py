@@ -2,7 +2,6 @@ import threading
 import Queue
 import logging
 from iteration_3.src.debuggers import Debuggable
-import json
 
 logger = logging.getLogger()
 
@@ -62,4 +61,4 @@ class AbstractCamera(threading.Thread, Debuggable):
         state["type"] = self.get_name()
         state["frame rate"] = self.frame_rate
         state["resolution"] = self.resolution
-        return json.dumps(state)
+        return state

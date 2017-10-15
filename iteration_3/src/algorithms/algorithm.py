@@ -2,8 +2,6 @@ from iteration_3.src.debuggers import Debuggable
 import Queue
 import numpy as np
 import matplotlib.pyplot as plt
-import json
-
 
 class Algorithm(Debuggable):
 
@@ -42,4 +40,4 @@ class Algorithm(Debuggable):
         state = {}
         state["type"] = self.get_name()
         state["pixels_per_second"] = self.pixels_per_second
-        return json.dumps(state)
+        return state
