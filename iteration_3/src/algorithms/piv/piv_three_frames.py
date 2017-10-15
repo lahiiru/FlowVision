@@ -22,6 +22,9 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         self.y_tolerance = 4
         logger.info("PIVThreeFrames Algorithm initiated.")
 
+    def get_name(self):
+        return 'PIV three frame algorithm '
+
     def update(self, **kwargs):
         self.original_frames = self.frame_wallet.get_original_frames()
         self.masked_frames = self.frame_wallet.get_masked_frames()

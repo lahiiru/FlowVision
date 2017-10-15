@@ -10,6 +10,9 @@ class WebCamera(AbstractCamera):
     def __init__(self, path):
         AbstractCamera.__init__(self)
 
+    def get_name(self):
+        return 'Web Camera'
+
     def _process(self):
         self.cap = cv2.VideoCapture(0)
         frame_width, frame_height = 640, 480  # 2048, 1536 or 640, 480

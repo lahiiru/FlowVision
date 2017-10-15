@@ -13,6 +13,9 @@ class FromVideoCamera(AbstractCamera):
         self.path = path
         self.frame_rate = 30
 
+    def get_name(self):
+        return 'From Video Camera'
+
     def _process(self):
         self.cap = cv2.VideoCapture(self.path)
         r, img = self.cap.read()

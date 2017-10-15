@@ -12,6 +12,9 @@ class FromFolderCamera(AbstractCamera):
         AbstractCamera.__init__(self)
         self.path = path
 
+    def get_name(self):
+        return 'From Folder Camera'
+
     def _process(self):
 
         if not os.path.isdir(self.path):

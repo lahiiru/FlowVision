@@ -2,9 +2,11 @@ from iteration_3.src.debuggers import Debuggable
 import Queue
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 
 
 class Algorithm(Debuggable):
+
     def __init__(self):
         self.debug = False
         self.pixels_per_second = 0
@@ -32,3 +34,12 @@ class Algorithm(Debuggable):
 
     def calculate_pixels_per_second(self):
         raise NotImplementedError("Subclass must implement abstract method")
+
+    def get_name(self):
+        raise NotImplementedError("Subclass must implement abstract method")
+
+    def get_state(self):
+        state = {}
+        state["type"] = self.get_name()
+        state["pixels_per_second"] = self.pixels_per_second
+        return json.dumps(state)

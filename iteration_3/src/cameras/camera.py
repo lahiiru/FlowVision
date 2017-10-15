@@ -1,11 +1,13 @@
 import threading
 import Queue
 import logging
+from iteration_3.src.debuggers import Debuggable
+import json
 
 logger = logging.getLogger()
 
 
-class AbstractCamera(threading.Thread):
+class AbstractCamera(threading.Thread, Debuggable):
     def __init__(self, img_buf_size=120):
         self.img_buf_size = img_buf_size
         threading.Thread.__init__(self)
@@ -49,3 +51,15 @@ class AbstractCamera(threading.Thread):
                 self.frames.put(frame)
         self.latest_frame = frame
 
+    def get_visualization(self):
+        return self.peek_frame()
+
+    def get_name(self):
+        raise NotImplementedError("Subclass must implement abstract method")
+
+    def get_state(self):
+        state = {}
+        state["type"] = self.get_name()
+        state["frame rate"] = self.frame_rate
+        state["resolution"] = self.resolution
+        return json.dumps(state)
