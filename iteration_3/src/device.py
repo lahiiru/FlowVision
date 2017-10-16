@@ -1,4 +1,5 @@
 import logging
+from _threading_local import local
 from logging.config import fileConfig
 from cameras import *
 import time
@@ -6,7 +7,7 @@ from config import DevConfig
 from algorithms import *
 from debuggers import *
 from utilities import *
-import cv2
+from communicator import *
 
 if __name__ == '__main__':
     logger = logging.getLogger()
@@ -22,8 +23,8 @@ class Device:
     # algorithm = ColorChannelsPIV()
     algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
 
-    communicator = None
-    id = ""
+    communicator = Communicator()
+    id = "FlowMeter-local"
     logger = None
     debugger = None
 
@@ -43,7 +44,7 @@ class Device:
         self.algorithm.visualization_mode = 0
 
         self.debugger.start()
-
+        self.communicator.start()
         self.meters_per_second = 0
 
         while True:
@@ -62,7 +63,7 @@ class Device:
 
     @staticmethod
     def main():
-        device = Device(1)
+        device = Device("FlowMeter-local")
         device.start()
 
 
