@@ -1,5 +1,5 @@
 from MQTTBroker import MQTTBroker
-from iteration_3.src.debuggers.mqtt_debugger import MQTTDebugger
+from iteration_3.src.debuggers.debugger import Debugger
 import json
 import time
 import threading
@@ -7,14 +7,16 @@ import threading
 
 class Communicator(threading.Thread):
 
-    broker = MQTTBroker()
-    client = broker.getClient()
+    broker = None
+    client = None
 
     def __init__(self):
         self.loopCount = 0
+        broker = MQTTBroker()
+        client = broker.getClient()
 
     def send(self):
-        debugObj = MQTTDebugger.get_state_object()
+        debugObj = Debugger.get_state_object()
         reported = dict()
         reported["velocity"] = 0
         reported["level"] = 0

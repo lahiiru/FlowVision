@@ -13,9 +13,22 @@ if __name__ == '__main__':
     logger = logging.getLogger()
     fileConfig('logging.ini')
 
+class Singleton(type):
+    """
+    Define an Instance operation that lets clients access its unique
+    instance.
+    """
+    def __init__(cls, name, bases, attrs, **kwargs):
+        super(Singleton, cls).__init__(name, bases, attrs)
+        cls._instance = None
 
-class Device:
+    def __call__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instance
 
+class Device():
+    __metaclass__ = Singleton
     camera = FromVideoCamera(DevConfig.TEST_VIDEO)
     # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
 
@@ -23,10 +36,12 @@ class Device:
     # algorithm = ColorChannelsPIV()
     algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
 
-    communicator = Communicator()
+    communicator = None
     id = "FlowMeter-local"
     logger = None
     debugger = None
+
+    device = None
 
     def __init__(self, id):
         self.id = id

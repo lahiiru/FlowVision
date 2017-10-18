@@ -1,12 +1,12 @@
-from debugger import AbstractDebugger
+from debugger import Debugger
 import cv2
 import matplotlib.pyplot as plt
 
 
-class DisplayDebugger(AbstractDebugger):
+class DisplayDebugger(Debugger):
 
     def __init__(self, device):
-        AbstractDebugger.__init__(self, device)
+        Debugger.__init__(self, device)
 
     def run(self):
 
