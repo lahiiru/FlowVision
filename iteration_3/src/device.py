@@ -36,7 +36,7 @@ class Device():
     # algorithm = ColorChannelsPIV()
     algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
 
-    communicator = None
+    communicator = Communicator()
     id = "FlowMeter-local"
     logger = None
     debugger = None

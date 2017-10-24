@@ -63,7 +63,7 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
-myAWSIoTMQTTClient.subscribe("$aws/things/FlowMeter-local/shadow/update/rejected", 1, customCallback)
+myAWSIoTMQTTClient.subscribe("$aws/things/FlowMeter-local/shadow/update/+", 1, customCallback)
 time.sleep(2)
 
 # Publish to the same topic in a loop forever
@@ -71,11 +71,11 @@ loopCount = 0
 m = """{
     "state": {
         "reported": {
-            "a": "red" 
+            "color": "blue"
         }
     }
 } """
 while True:
 	myAWSIoTMQTTClient.publish("$aws/things/FlowMeter-local/shadow/update", m, 1)
 	loopCount += 1
-	time.sleep(5)
+	time.sleep(20)

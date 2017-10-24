@@ -1,4 +1,5 @@
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+import os
 
 
 class MQTTBroker(object):
@@ -8,6 +9,12 @@ class MQTTBroker(object):
         self.rootCAPath = "certs/root-ca.pem"
         self.certificatePath = "certs/cert.pem"
         self.privateKeyPath = "certs/private.key"
+
+        package_dir = os.path.dirname(os.path.abspath(__file__))
+        self.rootCAPath = os.path.join(package_dir, self.rootCAPath)
+        self.certificatePath = os.path.join(package_dir, self.certificatePath)
+        self.privateKeyPath = os.path.join(package_dir, self.privateKeyPath)
+
         self.myAWSIoTMQTTClient = None
         self.myAWSIoTMQTTClient = AWSIoTMQTTClient("basicPubSub")
         self.myAWSIoTMQTTClient.configureEndpoint(self.host, 8883)
@@ -17,6 +24,8 @@ class MQTTBroker(object):
         self.myAWSIoTMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
         self.myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
         self.myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
+
+
 
     def getClient(self):
         self.myAWSIoTMQTTClient.connect()

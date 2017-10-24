@@ -2,25 +2,32 @@ from MQTTBroker import MQTTBroker
 from iteration_3.src.debuggers.debugger import Debugger
 import json
 import time
-import threading
+from threading import Thread
+import logging
+
+logger = logging.getLogger()
 
 
-class Communicator(threading.Thread):
+class Communicator(Thread):
 
-    broker = None
-    client = None
 
     def __init__(self):
+        Thread.__init__(self)
+        self.broker = MQTTBroker()
+        self.client = self.broker.getClient()
         self.loopCount = 0
-        broker = MQTTBroker()
-        client = broker.getClient()
 
     def send(self):
-        debugObj = Debugger.get_state_object()
+
         reported = dict()
         reported["velocity"] = 0
         reported["level"] = 0
-        reported["debug"] = debugObj
+
+        try:
+            debugObj = Debugger.get_state_object()
+            reported["debug"] = debugObj
+        except:
+            logger.warn("couldn't get state object from debugger")
 
         state = dict()
 
