@@ -9,13 +9,13 @@ frame_rate=29
 
 resize_width=640
 history_ratio = 0.6
-ref_line_ratio=0.5
+ref_line_ratio=0.6
 hor_start_ratio=0
 hor_end_ratio=1
 scale_factor = 2
-height=200
+height=100
 
-debug = False
+debug = True
 
 def main():
     import sys
@@ -24,7 +24,7 @@ def main():
         if video_src.isdigit():
             video_src = int(video_src)
     except:
-        video_src = DevConfig.VIDEO_DIR + "03.mov"
+        video_src = DevConfig.VIDEO_DIR + "video_slowest.mp4"
 
     c = cv2.VideoCapture(video_src)
 
@@ -51,23 +51,24 @@ def main():
 
 
         if (sp.can_analyze):
+            print  '@frame : '+ str(sp.count);
             ft.process(spatio_image)
             ft_image =ft.get_filtered_spectrum()
-            cv2.imshow('imamge', ft_image)
-            ch = cv2.waitKey(1)
+            # cv2.imshow('imamge', ft_image)
+            # ch = cv2.waitKey(1)
             if debug:
                 plt.clf()
-                plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
+                # plt.subplot(131), plt.imshow(spatio_image,cmap="gray")
                 m = np.tan(np.deg2rad(ft.get_direction()))
                 pixel_ditance = frame_rate/(m*resize_fx)
                 h, w = ft_image.shape[:2]
                 x = np.arange(h/10)
                 y = m * x
-                plt.subplot(132), plt.plot(x + w/2, y), plt.imshow(ft_image, cmap="gray")
-                plt.subplot(133), plt.plot(x, y)
+                # plt.subplot(132), plt.plot(x + w/2, y), plt.imshow(ft_image, cmap="gray")
+                # plt.subplot(133), plt.plot(x, y)
                 # plt.pause(0.0001)
-                print ft.get_direction(), pixel_ditance
-                print "calculated pixel Distancce",ft.get_pixel_distance()
+                # print ft.get_direction(), pixel_ditance
+                # print "calculated pixel Distancce",ft.get_pixel_distance()
         if debug:
             selected_line_index=sp.ref_point
             frame[selected_line_index, hor_start_index:hor_end_index, :] = np.ones_like(frame[selected_line_index, hor_start_index:hor_end_index, :]) * 255

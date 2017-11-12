@@ -22,6 +22,8 @@ class sti_builder:
     ref_point_ratio=0
     can_analyze=False
 
+    count=0
+
 
 
     def __init__(self,ref_point_ratio,history_ratio,scale_factor,horizontal_start_index,horizontal_end_index,height):
@@ -45,6 +47,8 @@ class sti_builder:
     def build_image(self, frame):
         if(not self.is_configured) :
             self.init_configuration(frame)
+
+        self.count+=1
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -121,6 +125,8 @@ class sti_analyzer:
         tan_hist = plt.hist(tan_value, np.arange(0,50,1));
         maxBinUpper = np.argmax(tan_hist[0])
         self._pixel_distance = (tan_hist[1][maxBinUpper + 1] + tan_hist[1][maxBinUpper]) / 2.0
+
+        print self._global_direction,self._pixel_distance
 
         # plt.pause(0.001)
 
