@@ -36,7 +36,7 @@ class Device():
     # algorithm = ColorChannelsPIV()
     algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
 
-    communicator = Communicator()
+    # communicator = Communicator()
     id = "FlowMeter-local"
     logger = None
     debuggers = []
@@ -54,12 +54,12 @@ class Device():
         # TODO: add your test code
 
         self.attach_debugger(DisplayDebugger(self))
-        self.attach_debugger(TelnetDebugger(self))
+        # self.attach_debugger(TelnetDebugger(self))
 
         self.camera.start()
         time.sleep(5)
 
-        self.algorithm.debug = False
+        self.algorithm.debug = True
         self.algorithm.visualization_mode = 0
 
         # for debugger in self.debuggers:
