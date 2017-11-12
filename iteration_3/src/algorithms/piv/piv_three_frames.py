@@ -95,12 +95,14 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         direction_flag = self.find_direction(first_location, second_location)
         # print direction_flag
 
-        if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
-            print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
-            avg_x = (x_distance + n_x_distance) / 2
-            avg_y = (y_distance + n_y_distance) / 2
-            self.update_pixel_distances([avg_x, avg_y])
-            self.template_color = (255, 0, 255)
+        # if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
+        # print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
+        avg_x = (x_distance + n_x_distance) / 2
+        avg_y = (y_distance + n_y_distance) / 2
+        print 'frame '+str(self.count) +' : '+ str(avg_x)+','+ str( avg_y)
+        self.direction_filter.update((avg_x, avg_y))
+        self.update_pixel_distances([avg_x, avg_y])
+        self.template_color = (255, 0, 255)
 
         if self.debug:
             self.original_frames[pre_index] = cv2.rectangle(self.original_frames[pre_index], (x_min, y_min),

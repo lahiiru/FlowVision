@@ -62,8 +62,8 @@ class Device():
         self.algorithm.debug = False
         self.algorithm.visualization_mode = 0
 
-        for debugger in self.debuggers:
-            debugger.start()
+        # for debugger in self.debuggers:
+        #     debugger.start()
 
         # self.communicator.start()
         self.meters_per_second = 0

@@ -26,6 +26,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.debug_vis_text = ""
         self.x_distance = 0
         self.y_distance = 0
+        self.count=0
         logger.info("PIV Algorithm initiated.")
 
     def configure(self, frame_rate):
@@ -41,6 +42,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         current_mask = Filters.morphological_opening_filter(current_fg_mask)
         self.frame_wallet.put_masked_frame(current_mask)
         self.frame_wallet.put_original_frame(frame)
+        self.count+=1
 
 
     def update(self, **kwargs):
@@ -96,6 +98,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             x_distance = maxLoc[0] - ref_point_x
             y_distance = ref_point_y - maxLoc[1]
             self.update_pixel_distances([x_distance, y_distance])
+            print 'frame ' + str(self.count) + ' : ' + str(x_distance) + ',' + str(y_distance)
             self.direction_filter.update((x_distance, y_distance))
             if self.debug:
                 self.draw_templates(pre_index=pre_index, current_index=current_index, template=template,
@@ -180,9 +183,16 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         max_cluster = self.clusters[cluster_index]
         y_min, x_min = np.min(max_cluster, axis=0)
         y_max, x_max = np.max(max_cluster, axis=0)
+        # clustered= cv2.cvtColor(frame,cv2.COLOR_GRAY2RGB)
         # for c in self.clusters:
         #     for p in c:
-        #         cv2.circle(self.prev_display, tuple(p[::-1]), 1, (255, 0, 0), -1)
+        #        clustered = cv2.circle(clustered, tuple(p[::-1]), 1, (0, 0, 255), -1)
+        # cv2.imshow('frame', clustered)
+        # k=cv2.waitKey(0)
+        # if k== ord('s'):
+        #     cv2.imwrite('frame.png',frame)
+        #     cv2.imwrite('clustered.png', clustered)
+
 
         return x_min, x_max, y_min, y_max
 
