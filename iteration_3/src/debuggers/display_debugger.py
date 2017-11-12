@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 class DisplayDebugger(Debugger):
 
     def __init__(self, device):
-        Debugger.__init__(self, device)
+        Debugger.__init__(self, device, "Display")
 
-    def run(self):
+    def routine(self):
 
         if self.device.algorithm.debug:
 

@@ -39,18 +39,22 @@ class Device():
     communicator = Communicator()
     id = "FlowMeter-local"
     logger = None
-    debugger = None
+    debuggers = []
 
     device = None
 
     def __init__(self, id):
         self.id = id
 
+    def attach_debugger(self, debugger_instance):
+        self.debuggers += [debugger_instance]
+
     def start(self):
         logger.info("Device with id {0} started.".format(self.id))
         # TODO: add your test code
 
-        self.debugger = DisplayDebugger(self)
+        self.attach_debugger(DisplayDebugger(self))
+        self.attach_debugger(TelnetDebugger(self))
 
         self.camera.start()
         time.sleep(5)
@@ -58,8 +62,10 @@ class Device():
         self.algorithm.debug = False
         self.algorithm.visualization_mode = 0
 
-        self.debugger.start()
-        self.communicator.start()
+        for debugger in self.debuggers:
+            debugger.start()
+
+        # self.communicator.start()
         self.meters_per_second = 0
 
         while True:
