@@ -7,4 +7,4 @@ class DeviceTestCase(unittest.TestCase):
         self.device = Device(123)
 
     def test_return_on(self):
-        self.assertEqual(self.device.return_one(),1)
+        self.assertEqual(self.device.return_one(), 1)

@@ -3,6 +3,7 @@ import Queue
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class Algorithm(Debuggable):
 
     def __init__(self):

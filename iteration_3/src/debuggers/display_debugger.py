@@ -1,6 +1,7 @@
 from debugger import Debugger
 import cv2
 import matplotlib.pyplot as plt
+import numpy
 
 
 class DisplayDebugger(Debugger):
@@ -9,7 +10,7 @@ class DisplayDebugger(Debugger):
         Debugger.__init__(self, device, "Display")
 
     def routine(self):
-
+        points =[]
         if self.device.algorithm.debug:
 
             if self.device.algorithm.visualization_mode == 0:
@@ -27,6 +28,8 @@ class DisplayDebugger(Debugger):
             elif self.device.algorithm.visualization_mode == 1:
                 while True:
                     point = self.device.algorithm.get_visualization()
+                    points.append(point)
                     if point is not None and len(point)>0:
                         plt.scatter(*zip(*point), s=2)
                         plt.pause(0.01)
+

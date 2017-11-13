@@ -44,7 +44,6 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.frame_wallet.put_original_frame(frame)
         self.count+=1
 
-
     def update(self, **kwargs):
         self.original_frames = self.frame_wallet.get_original_frames()
         self.masked_frames = self.frame_wallet.get_masked_frames()
@@ -98,7 +97,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             x_distance = maxLoc[0] - ref_point_x
             y_distance = ref_point_y - maxLoc[1]
             self.update_pixel_distances([x_distance, y_distance])
-            print 'frame ' + str(self.count) + ' : ' + str(x_distance) + ',' + str(y_distance)
+            print ('frame ' + str(self.count) + ' : ' + str(x_distance) + ',' + str(y_distance))
             self.direction_filter.update((x_distance, y_distance))
             if self.debug:
                 self.draw_templates(pre_index=pre_index, current_index=current_index, template=template,

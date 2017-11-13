@@ -13,6 +13,7 @@ if __name__ == '__main__':
     logger = logging.getLogger()
     fileConfig('logging.ini')
 
+
 class Singleton(type):
     """
     Define an Instance operation that lets clients access its unique
@@ -27,9 +28,10 @@ class Singleton(type):
             cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instance
 
+
 class Device():
     __metaclass__ = Singleton
-    camera = FromVideoCamera(DevConfig.TEST_VIDEO)
+    camera = FromVideoCamera(DevConfig.VIDEO3)
     # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
 
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
@@ -62,8 +64,8 @@ class Device():
         self.algorithm.debug = True
         self.algorithm.visualization_mode = 0
 
-        # for debugger in self.debuggers:
-        #     debugger.start()
+        for debugger in self.debuggers:
+            debugger.start()
 
         # self.communicator.start()
         self.meters_per_second = 0
@@ -75,7 +77,7 @@ class Device():
                 self.algorithm.update()
                 # time.sleep(1)
                 self.meters_per_second  = round(Converter.convert_meters_per_second(self.algorithm.get_pixels_per_second()),2)
-                print str(self.meters_per_second) + ' m/s'
+                print (str(self.meters_per_second) + ' m/s')
                 # cv2.imshow('frame', frame)
                 # cv2.waitKey(0)
 

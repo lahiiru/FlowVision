@@ -16,6 +16,13 @@ class DirectionFilter:
         self.points.put(point)
         self.no_of_points += 1
 
+
+        # if point is not None:
+        #     plt.ylim(-200, 200)
+        #     plt.xlim(-300,300)
+        #     plt.scatter(point[0], point[1], s=2)
+        #     plt.pause(0.01)
+
         if self.no_of_points == 100:
             self.no_of_points = 0
             self.analyze_histogram()
