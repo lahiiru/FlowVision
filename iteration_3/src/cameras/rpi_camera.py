@@ -10,14 +10,16 @@ class RPiCamera(AbstractCamera):
 
     def __init__(self):
         AbstractCamera.__init__(self)
-        self.frame_rate = 30
+        self.frame_rate = 50
 
     def get_name(self):
         return 'RPi Camera'
 
     def _process(self):
         with picamera.PiCamera(sensor_mode=7, resolution='VGA') as camera:
-            time.sleep(2)
+            camera.shutter_speed = 2000
+            camera.framerate = 50
+            time.sleep(4)
             while True:
                 start = time.time()
                 camera.capture_sequence(self.__receiver(), format='jpeg', use_video_port=True)
