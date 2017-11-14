@@ -1,4 +1,5 @@
-from iteration_3.src.debuggers import Debuggable
+# from iteration_3.src.debuggers import Debuggable
+from debuggers.debuggable import Debuggable
 import Queue
 import numpy as np
 import matplotlib.pyplot as plt

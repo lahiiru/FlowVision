@@ -1,4 +1,4 @@
-from camera import AbstractCamera
+from cameras.camera import AbstractCamera
 import picamera
 import time
 import numpy as np
@@ -8,7 +8,7 @@ import io
 
 class RPiCamera(AbstractCamera):
 
-    def __init__(self, path):
+    def __init__(self):
         AbstractCamera.__init__(self)
         self.frame_rate = 30
 

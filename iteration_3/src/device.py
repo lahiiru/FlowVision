@@ -7,12 +7,11 @@ from config import DevConfig
 from algorithms import *
 from debuggers import *
 from utilities import *
-from communicator import *
+from communicators import *
 
 if __name__ == '__main__':
     logger = logging.getLogger()
     fileConfig('logging.ini')
-
 
 class Singleton(type):
     """
@@ -28,11 +27,11 @@ class Singleton(type):
             cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instance
 
-
 class Device():
     __metaclass__ = Singleton
-    camera = FromVideoCamera(DevConfig.VIDEO3)
-    # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
+    #camera = FromVideoCamera(DevConfig.TEST_VIDEO)
+    #camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
+    camera = RPiCamera()
 
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
     # algorithm = ColorChannelsPIV()

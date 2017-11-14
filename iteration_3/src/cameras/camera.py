@@ -1,7 +1,8 @@
 import threading
 import Queue
 import logging
-from iteration_3.src.debuggers import Debuggable
+# from iteration_3.src.debuggers import Debuggable
+from debuggers.debuggable import Debuggable
 
 logger = logging.getLogger()
 

@@ -3,15 +3,16 @@ from cv2 import *
 import numpy as np
 from sklearn.cluster import DBSCAN
 import logging
-from iteration_3.src.algorithms.algorithm import Algorithm
-from iteration_3.src.algorithms.piv.piv_algorithm import ParticleImageVelocimetryAlgorithm
-from frame_wallet import FrameWallet
-from iteration_3.src.utilities import *
+from algorithms.algorithm import Algorithm
+from algorithms.piv.piv_algorithm import ParticleImageVelocimetryAlgorithm
+from algorithms.piv.frame_wallet import FrameWallet
+# from iteration_3.src.utilities import *
+from utilities import *
+
 
 logger = logging.getLogger()
 
 UNKNOWN_SPEED = None
-
 
 class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
     def __init__(self, frame_rate):

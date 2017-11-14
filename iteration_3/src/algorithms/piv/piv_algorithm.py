@@ -3,9 +3,11 @@ from cv2 import *
 import numpy as np
 from sklearn.cluster import DBSCAN
 import logging
-from iteration_3.src.algorithms.algorithm import Algorithm
+#from iteration_3.src.algorithms.algorithm import Algorithm
+from algorithms.algorithm import Algorithm
 from frame_wallet import FrameWallet
-from iteration_3.src.utilities import *
+#from iteration_3.src.utilities import *
+from utilities import *
 import math
 
 logger = logging.getLogger()

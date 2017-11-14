@@ -4,11 +4,12 @@ import json
 import time
 from threading import Thread
 import logging
+from iteration_3.src.communicator.communicator import Communicator
 
 logger = logging.getLogger()
 
 
-class Communicator(Thread):
+class AWSCommunicator(Communicator):
 
 
     def __init__(self):
