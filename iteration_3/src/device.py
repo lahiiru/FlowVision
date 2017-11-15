@@ -8,10 +8,23 @@ from algorithms import *
 from debuggers import *
 from utilities import *
 from communicators import *
+from sensors import *
+import sys
+import os
 
-if __name__ == '__main__':
+path = os.path.realpath(__file__)
+if '.zip' in path:
+    cur_dir = path.rsplit(os.sep, 2)[0]
+else:
+    cur_dir = path.rsplit(os.sep, 1)[0]
+
+log_path = cur_dir + os.sep + 'logging.ini'
+
+print ("Device initializing from, {0}".format(path))
+
+if __name__ in ['__main__','device']:
     logger = logging.getLogger()
-    fileConfig('logging.ini')
+    fileConfig(log_path)
 
 class Singleton(type):
     """
@@ -29,14 +42,17 @@ class Singleton(type):
 
 class Device():
     __metaclass__ = Singleton
-    #camera = FromVideoCamera(DevConfig.TEST_VIDEO)
-    #camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
-    camera = RPiCamera()
+    if sys.platform == 'linux2':
+        camera = RPiCamera()
+    else:
+        camera = FromVideoCamera(DevConfig.TEST_VIDEO)
+        #camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
+
 
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
     # algorithm = ColorChannelsPIV()
     algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
-
+    distance_sensor = DistanceOneFeet()
     # communicator = Communicator()
     id = "FlowMeter-local"
     logger = None
@@ -69,6 +85,7 @@ class Device():
         # self.communicator.start()
         self.meters_per_second = 0
 
+        logger.info("Distance: {0}".format(self.distance_sensor.get_real_time_distance_cm()))
         while True:
             frame = self.camera.get_frame()
             if frame is not None:
