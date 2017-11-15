@@ -167,14 +167,14 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
     def __cluster(self, frame):
         logger.info("clustering started")
-        # data_set = np.argwhere(frame > 0)
-        data_set = []
+        data_set = np.argwhere(frame > 0)
+        # data_set = []
         if self.count==3 :
             logger.info("forcely stop the clustering")
             return 0,0,0,0
         if not len(data_set):
             logger.info("points are not presented to cluster")
-            return 20, 60, 40, 100
+            return 0, 0, 0, 0
 
 
         db = DBSCAN(eps=3, min_samples=10).fit(data_set)
