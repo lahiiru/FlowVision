@@ -1,8 +1,11 @@
 import cv2
 from cv2 import *
 import numpy as np
-from sklearn.cluster import DBSCAN
 import logging
+from sklearn.cluster import DBSCAN
+import  DBSCAN_multiplex as DB
+
+# print('imports')
 #from iteration_3.src.algorithms.algorithm import Algorithm
 from algorithms.algorithm import Algorithm
 from frame_wallet import FrameWallet
@@ -11,6 +14,8 @@ from utilities import *
 import math
 
 logger = logging.getLogger()
+logger.info('imports done')
+
 
 UNKNOWN_SPEED = None
 
@@ -163,9 +168,16 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         return bounds
 
     def __cluster(self, frame):
-        data_set = np.argwhere(frame > 0)
+        logger.info("clustering started")
+        # data_set = np.argwhere(frame > 0)
+        data_set = []
+        if self.count==3 :
+            logger.info("no clusters")
+            return 0,0,0,0
         if not len(data_set):
             return 0, 0, 0, 0
+
+
         db = DBSCAN(eps=3, min_samples=10).fit(data_set)
         labels = db.labels_
         self.n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
@@ -194,7 +206,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         #     cv2.imwrite('frame.png',frame)
         #     cv2.imwrite('clustered.png', clustered)
 
-
+        logger.info("end of clustering process")
         return x_min, x_max, y_min, y_max
 
     def draw_templates(self, **kwargs):
@@ -230,6 +242,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.pixel_distances.append(point)
 
         if self.frame_count >= 100:
+            logger.info('pixel distances updated')
             x_distances = zip(*self.pixel_distances)[0]
             y_distances = zip(*self.pixel_distances)[1]
             x_hist = np.histogram(x_distances)

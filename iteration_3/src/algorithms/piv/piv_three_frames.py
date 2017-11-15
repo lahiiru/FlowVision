@@ -1,9 +1,7 @@
 import cv2
 from cv2 import *
 import numpy as np
-from sklearn.cluster import DBSCAN
 import logging
-from algorithms.algorithm import Algorithm
 from algorithms.piv.piv_algorithm import ParticleImageVelocimetryAlgorithm
 from algorithms.piv.frame_wallet import FrameWallet
 # from iteration_3.src.utilities import *
@@ -11,6 +9,7 @@ from utilities import *
 
 
 logger = logging.getLogger()
+logger.info('imports done')
 
 UNKNOWN_SPEED = None
 
@@ -63,6 +62,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         return pixels_per_second
 
     def _match_template(self, pre_index, current_index):
+        logger.info("template matching process started")
         template_top_conner_pairs = self._find_good_templates(pre_index)
 
         if len(template_top_conner_pairs) == 0:
@@ -100,7 +100,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         #     print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
         avg_x = (x_distance + n_x_distance) / 2
         avg_y = (y_distance + n_y_distance) / 2
-        print ('frame '+str(self.count) +' : '+ str(avg_x)+','+ str( avg_y))
+        # print ('frame '+str(self.count) +' : '+ str(avg_x)+','+ str( avg_y))
         self.direction_filter.update((avg_x, avg_y))
         self.update_pixel_distances([avg_x, avg_y])
         self.template_color = (255, 0, 255)
@@ -124,6 +124,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
                 x_distance) + '\nDistance Y : ' + str(y_distance) + '\nMax Score : ' + str(
                 maxVal * 10) + '\n' + '\nDistance X : ' + str(n_x_distance) + '\nDistance Y : ' + str(
                 n_y_distance) + '\nMax Score : ' + str(n_maxVal * 10) + '\n'
+        logger.info("end template matching ")
 
         return self.pixels_per_second
 

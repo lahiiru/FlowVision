@@ -15,12 +15,14 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
     def receive_frame(self, frame):
         self.separate_channels(frame)
         self.frame_count += 1
+        self.count+=1
 
     def _process_pre_filters(self):
         pass
 
 
     def _calculate_template_bounds(self, frame):
+        logger.info('template bound calculation started')
         bounds = []
         feature_points = cv2.goodFeaturesToTrack(frame, 50, 0.01, 5)
         for i in feature_points:
@@ -32,7 +34,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
             x_min = int(x - np.min((self.x_offset, x)))
             bounds += [(x_min, x_max, y_min, y_max)]
             self.original_frames[0]= cv2.circle(self.original_frames[0], (x,y), 1, (255, 255, 0), 5)
-
+        logger.info('end of template bound calculation')
         return bounds
 
     def _template_qa_passed(self, template):
@@ -61,11 +63,13 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
         maxBinUpper = np.argmax(hist[0])
         y_mode = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2.0
 
+        # print 'frame ' + str(self.count) + ' : ' + str(x_mode) + ',' + str(y_mode)
+
         if self.debug:
 
             self.debug_vis_text =  '\nCalculated X: ' + str(x_mode) + '  Y:' + str(
             y_mode)
-            print (self.debug_vis_text)
+            logger.info(self.debug_vis_text)
         return (x_mode, y_mode)
 
     def draw_templates(self, **kwargs):
