@@ -3,8 +3,6 @@ from cv2 import *
 import numpy as np
 import logging
 from sklearn.cluster import DBSCAN
-import  DBSCAN_multiplex as DB
-
 # print('imports')
 #from iteration_3.src.algorithms.algorithm import Algorithm
 from algorithms.algorithm import Algorithm
@@ -172,9 +170,10 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         # data_set = np.argwhere(frame > 0)
         data_set = []
         if self.count==3 :
-            logger.info("no clusters")
+            logger.info("forcely stop the clustering")
             return 0,0,0,0
         if not len(data_set):
+            logger.info("points are not presented to cluster")
             return 0, 0, 0, 0
 
 
