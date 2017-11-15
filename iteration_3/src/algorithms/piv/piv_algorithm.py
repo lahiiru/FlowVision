@@ -174,7 +174,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             return 0,0,0,0
         if not len(data_set):
             logger.info("points are not presented to cluster")
-            return 0, 0, 0, 0
+            return 20, 60, 40, 100
 
 
         db = DBSCAN(eps=3, min_samples=10).fit(data_set)
