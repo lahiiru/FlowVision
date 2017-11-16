@@ -6,6 +6,7 @@ from algorithms.piv.piv_algorithm import ParticleImageVelocimetryAlgorithm
 from algorithms.piv.frame_wallet import FrameWallet
 # from iteration_3.src.utilities import *
 from utilities import *
+import math
 
 
 logger = logging.getLogger()
@@ -20,6 +21,9 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         self.frame_wallet = FrameWallet(3)
         self.x_tolerance = 4
         self.y_tolerance = 4
+        self.count = 0
+        self.direction_angles = []
+        self.angle = 0
         logger.info("PIVThreeFrames Algorithm initiated.")
 
     def get_name(self):
@@ -96,12 +100,30 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         direction_flag = self.find_direction(first_location, second_location)
         # print direction_flag
 
-        # if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
-        #     print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
         avg_x = (x_distance + n_x_distance) / 2
         avg_y = (y_distance + n_y_distance) / 2
-        # print ('frame '+str(self.count) +' : '+ str(avg_x)+','+ str( avg_y))
-        self.direction_filter.update((avg_x, avg_y))
+
+        # if(avg_x!=0):
+        #     self.angle = np.arctan(avg_y /avg_x)
+        # if(self.direction_angles.count()<50):
+        #     self.direction_angles.append(self.angle)
+        # else:
+
+
+        if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
+            # print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
+            resultant_distance = math.sqrt(avg_x ** 2 + avg_y ** 2)
+            self.direction_filter.update((self.count, resultant_distance))
+            self.isPaused=True
+            # print self.direction_angles
+
+        # avg_x = (x_distance + n_x_distance) / 2
+        # avg_y = (y_distance + n_y_distance) / 2
+        # resultant_distance = math.sqrt(avg_x**2 + avg_y**2)
+        print ('frame '+str(self.count) +' : '+ str(avg_x)+','+ str( avg_y))
+        # self.direction_filter.update((avg_x, avg_y))
+
+        self.count = self.count + 1
         self.update_pixel_distances([avg_x, avg_y])
         self.template_color = (255, 0, 255)
 

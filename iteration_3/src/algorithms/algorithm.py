@@ -13,6 +13,7 @@ class Algorithm(Debuggable):
         self.pixel_distances = []
         self.history_pixel_distances = Queue.Queue(maxsize=100)
         self.frame_count = 0
+        self.isPaused = False
 
     def get_pixels_per_second(self):
         self.calculate_pixels_per_second()
