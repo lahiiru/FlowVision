@@ -14,6 +14,7 @@ logger.info('imports done')
 
 UNKNOWN_SPEED = None
 
+
 class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
     def __init__(self, frame_rate):
         ParticleImageVelocimetryAlgorithm.__init__(self, frame_rate)

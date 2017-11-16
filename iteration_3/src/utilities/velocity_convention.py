@@ -2,7 +2,7 @@ import math
 
 
 class Converter:
-    height = 2
+    height = 0.16
     angle_of_view = 54
     width = 640
 
@@ -11,9 +11,9 @@ class Converter:
 
     @staticmethod
     def set_system_params(height=2, angle_of_view=54, width=640):
-        Converter.height=height
-        Converter.angle_of_view=angle_of_view
-        Converter.width=width
+        Converter.height = height
+        Converter.angle_of_view = angle_of_view
+        Converter.width = width
 
     @staticmethod
     def convert_meters_per_second(pixels_per_second):

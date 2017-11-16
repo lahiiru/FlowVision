@@ -4,6 +4,9 @@ import cv2
 import time
 import logging
 import os
+import logging
+
+logger = logging.getLogger()
 
 
 class FromFolderCamera(AbstractCamera):
@@ -11,6 +14,7 @@ class FromFolderCamera(AbstractCamera):
     def __init__(self, path):
         AbstractCamera.__init__(self)
         self.path = path
+        logger.info("From folder camera initiated.")
 
     def get_name(self):
         return 'From Folder Camera'

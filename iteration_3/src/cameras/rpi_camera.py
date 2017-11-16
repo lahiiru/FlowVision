@@ -4,6 +4,9 @@ import time
 import numpy as np
 import cv2
 import io
+import logging
+
+logger = logging.getLogger()
 
 
 class RPiCamera(AbstractCamera):
@@ -11,6 +14,7 @@ class RPiCamera(AbstractCamera):
     def __init__(self):
         AbstractCamera.__init__(self)
         self.frame_rate = 50
+        logger.info("Raspberry Pi camera initiated.")
 
     def get_name(self):
         return 'RPi Camera'
@@ -21,6 +25,10 @@ class RPiCamera(AbstractCamera):
             camera.framerate = 50
             time.sleep(4)
             while True:
+                if self.frames.qsize() == self.frames.maxsize:
+                    logger.info("Semaphore acquired")
+                    self.sem.acquire()
+
                 start = time.time()
                 camera.capture_sequence(self.__receiver(), format='jpeg', use_video_port=True)
                 self.frame_rate = (self.img_buf_size / (time.time() - start))

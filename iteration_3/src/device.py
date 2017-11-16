@@ -40,16 +40,18 @@ class Singleton(type):
             cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instance
 
-
-class Device:
+class Device():
     __metaclass__ = Singleton
     if sys.platform == 'linux2':
         camera = RPiCamera()
         distance_sensor = DistanceSR04(18, 24)
     else:
-        camera = FromVideoCamera(DevConfig.TEST_VIDEO)
+        camera = FromVideoCamera(DevConfig.VIDEO3)
         distance_sensor = DistanceOneFeet()
         # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
+        #camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
+
+
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
     # algorithm = ColorChannelsPIV()
     algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
@@ -77,7 +79,7 @@ class Device:
         self.camera.start()
         time.sleep(5)
 
-        self.algorithm.debug = True
+        self.algorithm.debug = False
         self.algorithm.visualization_mode = 0
 
         for debugger in self.debuggers:
@@ -89,6 +91,7 @@ class Device:
         logger.info("Distance: {0}".format(self.distance_sensor.get_real_time_distance_cm()))
         while True:
             frame = self.camera.get_frame()
+
             if frame is not None:
                 self.algorithm.receive_frame(frame)
                 self.algorithm.update()
@@ -103,6 +106,9 @@ class Device:
                 if(self.meters_per_second>0):
                     logger.info("Current velocity: " +str(self.meters_per_second) + ' m/s')
                     # print (str(self.meters_per_second) + ' m/s')
+
+                self.meters_per_second  = round(Converter.convert_meters_per_second(self.algorithm.get_pixels_per_second()), 2)
+                print (str(self.meters_per_second) + ' m/s')
 
                 # cv2.imshow('frame', frame)
                 # cv2.waitKey(0)
