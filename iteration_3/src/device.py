@@ -1,3 +1,13 @@
+import sys
+import os
+
+# remote debug
+if sys.platform == 'linux2':
+    REMOTE_IP = '192.168.137.142'
+    sys.path.insert(0, '/home/pi/Desktop/FlowVision/iteration_3/src/pycharm-debug.egg')
+    import pydevd
+    pydevd.settrace(REMOTE_IP, port=8888, stdoutToServer=True, stderrToServer=True)
+
 import logging
 from _threading_local import local
 from logging.config import fileConfig
@@ -9,8 +19,6 @@ from debuggers import *
 from utilities import *
 from communicators import *
 from sensors import *
-import sys
-import os
 
 path = os.path.realpath(__file__)
 if '.zip' in path:
