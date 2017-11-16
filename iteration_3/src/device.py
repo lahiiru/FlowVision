@@ -45,7 +45,7 @@ class Device:
     __metaclass__ = Singleton
     if sys.platform == 'linux2':
         camera = RPiCamera()
-        distance_sensor = DistanceSR04()
+        distance_sensor = DistanceSR04(18, 24)
     else:
         camera = FromVideoCamera(DevConfig.TEST_VIDEO)
         distance_sensor = DistanceOneFeet()
