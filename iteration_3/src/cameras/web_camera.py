@@ -9,6 +9,7 @@ class WebCamera(AbstractCamera):
 
     def __init__(self, path):
         AbstractCamera.__init__(self)
+        logger.info("Web camera initiated.")
 
     def get_name(self):
         return 'Web Camera'

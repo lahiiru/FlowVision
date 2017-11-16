@@ -8,7 +8,7 @@ logger = logging.getLogger()
 
 
 class AbstractCamera(threading.Thread, Debuggable):
-    def __init__(self, img_buf_size=120):
+    def __init__(self, img_buf_size=12):
         self.img_buf_size = img_buf_size
         threading.Thread.__init__(self)
         self.frames = Queue.Queue(maxsize=self.img_buf_size * 4)
@@ -17,7 +17,7 @@ class AbstractCamera(threading.Thread, Debuggable):
         self.resolution = (640, 480)
         self.frame_rate = 7
         self.setName('camera')
-        logger.info("Camera initiated.")
+        self.sem = threading.Semaphore()
 
     def run(self):
         logger.info("Camera started.")
@@ -31,7 +31,11 @@ class AbstractCamera(threading.Thread, Debuggable):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def get_frame(self):
+        logger.info("Queue size " + str(self.frames.qsize()))
         if not self.frames.empty():
+            if self.frames.qsize() == self.frames.maxsize/2:
+                self.sem.release()
+                logger.info("Frame Queue empty.Semaphore released")
             return self.frames.get()
         return None
 

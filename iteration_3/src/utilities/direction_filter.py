@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 class DirectionFilter:
 
+    plt.rcParams["figure.figsize"]=(40,3)
     def __init__(self):
         self.points = Queue.Queue(maxsize=500)
         self.directions = Queue.Queue(maxsize=10)
@@ -16,16 +17,22 @@ class DirectionFilter:
         self.points.put(point)
         self.no_of_points += 1
 
-
         # if point is not None:
-        #     plt.ylim(-200, 200)
-        #     plt.xlim(-300,300)
-        #     plt.scatter(point[0], point[1], s=2)
-        #     plt.pause(0.01)
+            # plt.ylim(0, 350)
+            # plt.xlim(0, 350)
 
-        if self.no_of_points == 100:
-            self.no_of_points = 0
-            self.analyze_histogram()
+            # if point[2] >= 300:
+            #     plt.scatter(point[2], average, s=2)
+            #     while 1:
+            #         plt.pause(0.01)
+
+            # plt.scatter(point[0], point[1], s=2)
+            # plt.pause(0.01)
+
+
+        # if self.no_of_points == 100:
+        #     self.no_of_points = 0
+        #     self.analyze_histogram()
 
     def analyze_histogram(self):
             polar = []
