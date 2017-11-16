@@ -40,19 +40,20 @@ class Singleton(type):
             cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instance
 
-class Device():
+
+class Device:
     __metaclass__ = Singleton
     if sys.platform == 'linux2':
         camera = RPiCamera()
+        distance_sensor = DistanceSR04()
     else:
         camera = FromVideoCamera(DevConfig.TEST_VIDEO)
-        #camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
-
-
+        distance_sensor = DistanceOneFeet()
+        # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
     # algorithm = ColorChannelsPIV()
     algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
-    distance_sensor = DistanceOneFeet()
+
     # communicator = Communicator()
     id = "FlowMeter-local"
     logger = None
