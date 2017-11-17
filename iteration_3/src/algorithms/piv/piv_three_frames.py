@@ -7,6 +7,7 @@ from algorithms.piv.frame_wallet import FrameWallet
 # from iteration_3.src.utilities import *
 from utilities import *
 import math
+import Queue
 
 
 logger = logging.getLogger()
@@ -190,10 +191,15 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         for frame in frames:
             self.receive_frame(frame)
             self.update()
-        # self.reset_fields()
+        self.reset_fields()
         return self.matching_distances
 
     def reset_fields(self):
-        self.__init__(self.frame_rate)
+        self.frame_wallet = FrameWallet(3)
+        self.pixel_distances = []
+        self.history_pixel_distances = Queue.Queue(maxsize=100)
+        self.frame_count = 0
+        self.pixel_distances = []
+
 
 
