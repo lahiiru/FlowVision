@@ -27,7 +27,7 @@ class RPiCamera(AbstractCamera):
             while True:
                 start = time.time()
                 camera.capture_sequence(self.__receiver(), format='jpeg', use_video_port=True)
-                self.frame_rate = (self.img_buf_size / (time.time() - start))
+                #self.frame_rate = int(self.img_buf_size / (time.time() - start))
 
     def __receiver(self):
         stream = io.BytesIO()

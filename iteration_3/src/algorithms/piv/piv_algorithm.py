@@ -258,6 +258,11 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             self.x_distance = (x_hist[1][np.argmax(x_hist[0])] + x_hist[1][np.argmax(x_hist[0]) + 1]) / 2
             self.y_distance = (y_hist[1][np.argmax(y_hist[0])] + y_hist[1][np.argmax(y_hist[0]) + 1]) / 2
 
+            self.calculate_pixels_per_second()
+            self.meters_per_second = round(Converter.convert_meters_per_second(self.get_pixels_per_second()),
+                                           2)
+            logger.info("Current velocity: " + str(self.meters_per_second) + ' m/s')
+
             if self.history_pixel_distances.full():
                 self.history_pixel_distances.get()
 
