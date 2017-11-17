@@ -10,7 +10,7 @@ import math
 
 
 logger = logging.getLogger()
-logger.info('imports done')
+logger.debug('imports done')
 
 UNKNOWN_SPEED = None
 
@@ -25,7 +25,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         self.count = 0
         self.direction_angles = []
         self.angle = 0
-        logger.info("PIVThreeFrames Algorithm initiated.")
+        logger.debug("PIVThreeFrames Algorithm initiated.")
 
     def get_name(self):
         return 'PIV three frame algorithm '
@@ -68,11 +68,11 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         return pixels_per_second
 
     def _match_template(self, pre_index, current_index):
-        logger.info("template matching process started")
+        logger.debug("template matching process started")
         template_top_conner_pairs = self._find_good_templates(pre_index)
 
         if len(template_top_conner_pairs) == 0:
-            logger.info("no good templates found, skipping frame")
+            logger.debug("no good templates found, skipping frame")
             return UNKNOWN_SPEED
 
         (x_min, y_min), template = template_top_conner_pairs[0]
@@ -149,7 +149,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
                 x_distance) + '\nDistance Y : ' + str(y_distance) + '\nMax Score : ' + str(
                 maxVal * 10) + '\n' + '\nDistance X : ' + str(n_x_distance) + '\nDistance Y : ' + str(
                 n_y_distance) + '\nMax Score : ' + str(n_maxVal * 10) + '\n'
-        logger.info("end template matching ")
+        logger.debug("end template matching ")
 
         return self.pixels_per_second
 
