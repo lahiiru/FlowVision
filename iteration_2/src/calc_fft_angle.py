@@ -13,7 +13,7 @@ ref_line_ratio=0.6
 hor_start_ratio=0
 hor_end_ratio=1
 scale_factor = 2
-height=100
+height=200
 
 debug = True
 
@@ -24,7 +24,7 @@ def main():
         if video_src.isdigit():
             video_src = int(video_src)
     except:
-        video_src = DevConfig.VIDEO_DIR + "video_slowest.mp4"
+        video_src = DevConfig.VIDEO_DIR + "medium.avi"
 
     c = cv2.VideoCapture(video_src)
 
@@ -54,7 +54,8 @@ def main():
             print  '@frame : '+ str(sp.count);
             ft.process(spatio_image)
             ft_image =ft.get_filtered_spectrum()
-            # cv2.imshow('imamge', ft_image)
+            plt.imshow(spatio_image)
+            plt.pause(0.01)
             # ch = cv2.waitKey(1)
             if debug:
                 plt.clf()

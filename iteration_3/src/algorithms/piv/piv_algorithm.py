@@ -10,6 +10,9 @@ from frame_wallet import FrameWallet
 #from iteration_3.src.utilities import *
 from utilities import *
 import math
+# from memory_profiler import  profile
+# import guppy
+# import gc
 
 logger = logging.getLogger()
 logger.info('imports done')
@@ -32,6 +35,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.x_distance = 0
         self.y_distance = 0
         self.count=0
+        # self.hp=guppy.hpy()
         logger.info("PIV Algorithm initiated.")
 
     def configure(self, frame_rate):
@@ -165,7 +169,9 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
         return bounds
 
+
     def __cluster(self, frame):
+
         logger.info("clustering started")
         data_set = np.argwhere(frame > 0)
         # data_set = []
@@ -175,8 +181,8 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         if not len(data_set):
             logger.info("points are not presented to cluster")
             return 0, 0, 0, 0
-
-
+        # print (self.hp.heap())
+        # gc.collect()
         db = DBSCAN(eps=3, min_samples=10).fit(data_set)
         labels = db.labels_
         self.n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
@@ -204,7 +210,9 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         # if k== ord('s'):
         #     cv2.imwrite('frame.png',frame)
         #     cv2.imwrite('clustered.png', clustered)
-
+        # print (self.hp.heap())
+        # gc.collect()
+        # print(self.hp.heap())
         logger.info("end of clustering process")
         return x_min, x_max, y_min, y_max
 

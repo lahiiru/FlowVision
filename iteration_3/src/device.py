@@ -32,6 +32,8 @@ print ("Device initializing from, {0}".format(path))
 
 if __name__ in ['__main__','device']:
     logger = logging.getLogger()
+    fileConfig('logging.ini')
+    logger.info('imports done')
     fileConfig(log_path)
 
 class Singleton(type):
@@ -101,6 +103,9 @@ class Device():
             frame = self.camera.get_frame()
 
             if frame is not None:
+                # frame= Encoder.encode(frame,self.distance_sensor.get_real_time_distance_cm())
+                # frame,height=Encoder.decode(frame)
+                # print 'height'+ str(height)
                 self.algorithm.receive_frame(frame)
                 self.algorithm.update()
                 # time.sleep(1)
@@ -110,7 +115,7 @@ class Device():
                     while self.debuggers[0].isPaused:
                         pass
                     self.algorithm.isPaused = False
-                self.meters_per_second  = round(Converter.convert_meters_per_second(self.algorithm.get_pixels_per_second()),2)
+                self.meters_per_second  = round(Converter.convert_meters_per_second(self.algorithm.get_pixels_per_second()))
                 if(self.meters_per_second>0):
                     logger.info("Current velocity: " +str(self.meters_per_second) + ' m/s')
                     # print (str(self.meters_per_second) + ' m/s')
