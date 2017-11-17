@@ -120,9 +120,6 @@ class Device():
                     logger.info("Current velocity: " +str(self.meters_per_second) + ' m/s')
                     # print (str(self.meters_per_second) + ' m/s')
 
-                self.meters_per_second  = round(Converter.convert_meters_per_second(self.algorithm.get_pixels_per_second()), 2)
-                print (str(self.meters_per_second) + ' m/s')
-
                 # cv2.imshow('frame', frame)
                 # cv2.waitKey(0)
 
