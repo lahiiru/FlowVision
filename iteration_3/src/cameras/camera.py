@@ -20,7 +20,7 @@ class AbstractCamera(threading.Thread, Debuggable):
         self.sem = threading.Semaphore()
 
     def run(self):
-        logger.info("Camera started.")
+        logger.debug("Camera started.")
         self._process()
         self._release()
 

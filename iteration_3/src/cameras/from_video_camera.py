@@ -12,7 +12,7 @@ class FromVideoCamera(AbstractCamera):
         AbstractCamera.__init__(self)
         self.path = path
         self.frame_rate = 30
-        logger.info("From video camera initiated.")
+        logger.debug("From video camera initiated.")
 
     def get_name(self):
         return 'From Video Camera'
@@ -33,7 +33,7 @@ class FromVideoCamera(AbstractCamera):
             img = cv2.resize(img, self.resolution)
             time.sleep(1.0 / self.frame_rate)
             self._put_frame(img)
-            logger.info("Put frame. Queue size :" + str(self.frames.qsize()))
+            logger.debug("Put frame. Queue size :" + str(self.frames.qsize()))
 
     def _release(self):
         self.cap.release()

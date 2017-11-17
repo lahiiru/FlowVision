@@ -14,7 +14,7 @@ class FromFolderCamera(AbstractCamera):
     def __init__(self, path):
         AbstractCamera.__init__(self)
         self.path = path
-        logger.info("From folder camera initiated.")
+        logger.debug("From folder camera initiated.")
 
     def get_name(self):
         return 'From Folder Camera'

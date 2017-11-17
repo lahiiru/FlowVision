@@ -14,7 +14,7 @@ class RPiCamera(AbstractCamera):
     def __init__(self):
         AbstractCamera.__init__(self)
         self.frame_rate = 50
-        logger.info("Raspberry Pi camera initiated.")
+        logger.debug("Raspberry Pi camera initiated.")
 
     def get_name(self):
         return 'RPi Camera'
@@ -38,7 +38,7 @@ class RPiCamera(AbstractCamera):
             # cv2.imshow('image', image)
             # cv2.waitKey(1)
             self._put_frame(image)
-            logger.info("Put frame. Queue size :" + str(self.frames.qsize()))
+            logger.debug("Put frame. Queue size :" + str(self.frames.qsize()))
             stream.seek(0)
             stream.truncate()
 
