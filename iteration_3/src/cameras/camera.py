@@ -31,11 +31,7 @@ class AbstractCamera(threading.Thread, Debuggable):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def get_frame(self):
-        logger.info("Queue size " + str(self.frames.qsize()))
         if not self.frames.empty():
-            if self.frames.qsize() == self.frames.maxsize/2:
-                self.sem.release()
-                logger.info("Frame Queue empty.Semaphore released")
             return self.frames.get()
         return None
 

@@ -33,11 +33,7 @@ class FromVideoCamera(AbstractCamera):
             img = cv2.resize(img, self.resolution)
             time.sleep(1.0 / self.frame_rate)
             self._put_frame(img)
-            logger.info("Put frame : " + str(self.frames.qsize()))
-
-            if self.frames.qsize() == self.frames.maxsize:
-                logger.info("Frame Queue full.Semaphore acquired")
-                self.sem.acquire()
+            logger.info("Put frame. Queue size :" + str(self.frames.qsize()))
 
     def _release(self):
         self.cap.release()

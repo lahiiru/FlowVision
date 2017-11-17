@@ -3,7 +3,7 @@ import os
 
 # remote debug
 if sys.platform == 'linux2':
-    REMOTE_IP = '192.168.137.142'
+    REMOTE_IP = '192.168.137.1'
     sys.path.insert(0, '/home/pi/Desktop/FlowVision/iteration_3/src/pycharm-debug.egg')
     import pydevd
     pydevd.settrace(REMOTE_IP, port=8888, stdoutToServer=True, stderrToServer=True)
@@ -120,6 +120,7 @@ class Device():
 
                 # cv2.imshow('frame', frame)
                 # cv2.waitKey(0)
+
 
     def return_one(self):
         return 1
