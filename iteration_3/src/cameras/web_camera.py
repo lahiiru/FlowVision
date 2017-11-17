@@ -7,22 +7,23 @@ logger = logging.getLogger()
 
 class WebCamera(AbstractCamera):
 
-    def __init__(self):
+    def __init__(self, index):
         AbstractCamera.__init__(self)
+        self.cam_index = index
         logger.debug("Web camera initiated.")
 
     def get_name(self):
         return 'Web Camera'
 
     def _process(self):
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(self.cam_index)
         frame_width, frame_height = 640, 480  # 2048, 1536 or 640, 480
 
         # say cameras to adjust resolution
         self.cap.set(3, frame_width)
         self.cap.set(4, frame_height)
         # see whether cameras has adjusted the resolution
-        self.resolution = (self.cap.get(3), self.cap.get(4))
+        self.resolution = (int(self.cap.get(3)), int(self.cap.get(4)))
 
         while True:
             r, img = self.cap.read()

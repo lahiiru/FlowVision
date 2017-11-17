@@ -17,7 +17,6 @@ class AbstractCamera(threading.Thread, Debuggable):
         self.resolution = (640, 480)
         self.frame_rate = 7
         self.setName('camera')
-        self.sem = threading.Semaphore()
 
     def run(self):
         logger.debug("Camera started.")

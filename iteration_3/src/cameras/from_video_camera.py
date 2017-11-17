@@ -33,7 +33,7 @@ class FromVideoCamera(AbstractCamera):
             img = cv2.resize(img, self.resolution)
             time.sleep(1.0 / self.frame_rate)
             self._put_frame(img)
-            logger.debug("Put frame. Queue size :" + str(self.frames.qsize()))
+            # logger.debug("Put frame. Queue size :" + str(self.frames.qsize()))
 
     def _release(self):
         self.cap.release()
