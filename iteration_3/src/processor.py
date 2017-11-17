@@ -17,10 +17,8 @@ class Processor:
                 conn = Client(('localhost', 7000+self.index), authkey=b'secret password')
                 array = conn.recv()
                 print("received {0} to processor {1}".format(len(array),self.index))
-                for f in array:
-                    self.algorithm.receive_frame(f)
-                    self.algorithm.update()
-                conn.send(self.algorithm.get_pixels_per_second())
+                pixel_distances = self.algorithm.bulk_receive(array)
+                conn.send(pixel_distances)
                 del array
                 conn.close()
             except:

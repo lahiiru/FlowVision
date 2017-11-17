@@ -1,14 +1,16 @@
 import sys
 import os
-
+remote_debug = False
 # remote debug
-if sys.platform == 'linux2':
+if sys.platform == 'linux2' and remote_debug:
     REMOTE_IP = '192.168.137.1'
     sys.path.insert(0, '/home/pi/Desktop/FlowVision/iteration_3/src/pycharm-debug.egg')
     import pydevd
     pydevd.settrace(REMOTE_IP, port=8888, stdoutToServer=True, stderrToServer=True)
 
 import logging
+import numpy as np
+import math
 from _threading_local import local
 from logging.config import fileConfig
 from cameras import *
@@ -58,7 +60,7 @@ class Device:
         camera = RPiCamera()
         distance_sensor = DistanceOneFeet()
     else:
-        camera = FromVideoCamera(DevConfig.VIDEO3)
+        camera = FromVideoCamera(DevConfig.TEST_VIDEO)
         # camera = WebCamera(1)
         distance_sensor = DistanceOneFeet()
         # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
@@ -68,7 +70,7 @@ class Device:
     logger = None
     debuggers = []
     device = None
-    multi_processing = False
+    multi_processing = True
 
     if not multi_processing:
         algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
@@ -83,6 +85,7 @@ class Device:
         self.sch_index = 0
         self.meters_per_second = 0
         self.frame_buff = []
+        self.lot = 200
 
         if self.multi_processing:
             self.listener_1 = Listener(('localhost', 7000), authkey=b'secret password')
@@ -143,54 +146,73 @@ class Device:
             frame = self.camera.get_frame()
 
             if frame is not None:
-                if self.sch_index % 100 == 0:
-                    logger.info("Frames in buffer: {0}".format(self.sch_index))
+
                 if not self.multi_processing:
                     self.single_thread_run(frame)
                 else:
                     self.multi_threaded_run(frame)
 
     def multi_threaded_run(self, frame):
+
+        if self.sch_index % 100 == 0:
+            logger.info("Frames in buffer: {0}".format(self.sch_index))
         self.put_frame_in_buffer(frame)
-        lot = 50
-        if self.peek_sch_index() == lot * 2:
+        if self.peek_sch_index() == self.lot * 2:
             self.conn_1 = self.listener_1.accept()
             logger.info('connection accepted from: {0}'.format(self.listener_1.last_accepted))
-            self.conn_1.send(self.get_frame_buffer()[:lot])
+            self.conn_1.send(self.get_frame_buffer()[:self.lot])
 
             self.conn_2 = self.listener_2.accept()
             logger.info('connection accepted from: {0}'.format(self.listener_2.last_accepted))
-            self.conn_2.send(self.get_frame_buffer()[lot:])
+            self.conn_2.send(self.get_frame_buffer()[self.lot:])
 
             self.frames_buffer_clear()
 
-        if self.peek_sch_index() == lot*2*2:
-            self.sch_index = lot * 2 - 1
+        if self.peek_sch_index() == self.lot*2*2:
+            self.sch_index = self.lot * 2 - 1
+
             ret_val1 = self.conn_1.recv()
+            self.calculate_velocity(ret_val1, 'process 1')
+
             ret_val2 = self.conn_2.recv()
-            logger.info("Received value {0} to listener {1}".format(ret_val1, 1))
-            logger.info("Received value {0} to listener {1}".format(ret_val2, 2))
+            self.calculate_velocity(ret_val2, 'process 2')
 
     def single_thread_run(self, frame):
-        # frame= Encoder.encode(frame,self.distance_sensor.get_real_time_distance_cm())
-        # frame,height=Encoder.decode(frame)
-        # print 'height'+ str(height)
-        self.algorithm.receive_frame(frame)
-        self.algorithm.update()
-        # time.sleep(1)
+        if len(self.get_frame_buffer()) <= self.lot:
+            self.put_frame_in_buffer(frame)
+        else:
+            pixel_distances = self.algorithm.bulk_receive(self.get_frame_buffer())
+            # print self.pixel_distances
+            self.calculate_velocity(pixel_distances, 'single thread')
+            self.frames_buffer_clear()
 
-        if (self.algorithm.isPaused):
-            self.debuggers[0].isPaused = True
-            while self.debuggers[0].isPaused:
-                pass
-            self.algorithm.isPaused = False
-        self.meters_per_second = round(Converter.convert_meters_per_second(self.algorithm.get_pixels_per_second()))
-        if (self.meters_per_second > 0):
-            logger.info("Current velocity: " + str(self.meters_per_second) + ' m/s')
-            # print (str(self.meters_per_second) + ' m/s')
+    def calculate_velocity(self, pixel_distances, process_id):
+        self.pixels_per_second = self.get_pixels_per_second(pixel_distances)
+        if self.pixels_per_second is not None:
+            self.meters_per_second = round(Converter.convert_meters_per_second(self.pixels_per_second), 2)
+            logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
+        pixel_distances = []
 
-            # cv2.imshow('frame', frame)
-            # cv2.waitKey(0)
+    def get_pixels_per_second(self, pixel_distances):
+        if not len(pixel_distances) == 0:
+            self.update_pixel_distances(pixel_distances)
+            return self.calculate_pixels_per_second()
+        return None
+
+    def update_pixel_distances(self, pixel_distances):
+        self.x_distances = zip(*pixel_distances)[0]
+        self.y_distances = zip(*pixel_distances)[1]
+        x_hist = np.histogram(self.x_distances)
+        y_hist = np.histogram(self.y_distances)
+
+        self.x_distance = (x_hist[1][np.argmax(x_hist[0])] + x_hist[1][np.argmax(x_hist[0]) + 1]) / 2
+        self.y_distance = (y_hist[1][np.argmax(y_hist[0])] + y_hist[1][np.argmax(y_hist[0]) + 1]) / 2
+
+    def calculate_pixels_per_second(self):
+        self.pixels_per_second = math.sqrt(
+            math.pow(self.x_distance, 2) + math.pow(self.y_distance, 2)) * self.camera.frame_rate
+        return self.pixels_per_second
+
     def return_one(self):
         return 1
 

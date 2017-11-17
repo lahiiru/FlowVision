@@ -24,7 +24,7 @@ class Converter:
 
     @staticmethod
     def convert_meters_per_second(pixels_per_second):
-        Converter.speed = (2 * Converter.height * math.tan(
-            math.radians(Converter.angle_of_view / 2)) / Converter.width) * pixels_per_second
-
-        return Converter.speed
+        if pixels_per_second is not None:
+            Converter.speed = (2 * Converter.height * math.tan(math.radians(Converter.angle_of_view / 2)) / Converter.width) * pixels_per_second
+            return Converter.speed
+        return None
