@@ -46,12 +46,12 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         return 'PIV algorithm'
 
     def receive_frame(self, frame):
-        self.frame_count+=1
+        self.frame_count += 1
         current_fg_mask = Filters.background_substractor_filter(frame)
         current_mask = Filters.morphological_opening_filter(current_fg_mask)
         self.frame_wallet.put_masked_frame(current_mask)
         self.frame_wallet.put_original_frame(frame)
-        self.count+=1
+        self.count += 1
 
     def update(self, **kwargs):
         self.original_frames = self.frame_wallet.get_original_frames()
@@ -262,7 +262,6 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
                 self.history_pixel_distances.get()
 
             self.history_pixel_distances.put((round(self.x_distance, 2), round(self.y_distance, 2), len(self.pixel_distances)))
-
             self.frame_count = 0
             self.pixel_distances = []
 
