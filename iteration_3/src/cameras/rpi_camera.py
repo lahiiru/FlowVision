@@ -25,10 +25,6 @@ class RPiCamera(AbstractCamera):
             camera.framerate = 50
             time.sleep(4)
             while True:
-                if self.frames.qsize() == self.frames.maxsize:
-                    logger.info("Semaphore acquired")
-                    self.sem.acquire()
-
                 start = time.time()
                 camera.capture_sequence(self.__receiver(), format='jpeg', use_video_port=True)
                 self.frame_rate = (self.img_buf_size / (time.time() - start))
@@ -42,6 +38,7 @@ class RPiCamera(AbstractCamera):
             # cv2.imshow('image', image)
             # cv2.waitKey(1)
             self._put_frame(image)
+            logger.info("Put frame. Queue size :" + str(self.frames.qsize()))
             stream.seek(0)
             stream.truncate()
 
