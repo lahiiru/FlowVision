@@ -92,7 +92,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         template_top_conner_pairs = self._find_good_templates(pre_index)
 
         if len(template_top_conner_pairs) == 0:
-            logger.info("no good templates found, skipping frame")
+            logger.debug("no good templates found, skipping frame")
             return UNKNOWN_SPEED
 
         for i in range(len(template_top_conner_pairs)):
@@ -147,7 +147,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         white_pixel_count = cv2.countNonZero(template[features])
         white_percentage = white_pixel_count * 100.0 / total
         if white_percentage < self.white_threshold:
-            logger.info("template white percentage check failed.")
+            logger.debug("template white percentage check failed.")
             if self.debug:
                 self.debug_vis_text = "Template rejected."
             return False
@@ -172,14 +172,14 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
     def __cluster(self, frame):
 
-        logger.info("clustering started")
+        logger.debug("clustering started")
         data_set = np.argwhere(frame > 0)
         # data_set = []
         if self.count==3 :
-            logger.info("forcely stop the clustering")
+            logger.debug("forcely stop the clustering")
             return 0,0,0,0
         if not len(data_set):
-            logger.info("points are not presented to cluster")
+            logger.debug("points are not presented to cluster")
             return 0, 0, 0, 0
         # print (self.hp.heap())
         # gc.collect()
@@ -213,7 +213,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         # print (self.hp.heap())
         # gc.collect()
         # print(self.hp.heap())
-        logger.info("end of clustering process")
+        logger.debug("end of clustering process")
         return x_min, x_max, y_min, y_max
 
     def draw_templates(self, **kwargs):
@@ -249,7 +249,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.pixel_distances.append(point)
 
         if self.frame_count >= 100:
-            logger.info('pixel distances updated')
+            logger.debug('pixel distances updated')
             x_distances = zip(*self.pixel_distances)[0]
             y_distances = zip(*self.pixel_distances)[1]
             x_hist = np.histogram(x_distances)

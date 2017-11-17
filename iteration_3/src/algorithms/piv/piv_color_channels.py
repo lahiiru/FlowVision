@@ -69,7 +69,7 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
 
             self.debug_vis_text =  '\nCalculated X: ' + str(x_mode) + '  Y:' + str(
             y_mode)
-            logger.info(self.debug_vis_text)
+            logger.debug(self.debug_vis_text)
         return (x_mode, y_mode)
 
     def draw_templates(self, **kwargs):
