@@ -7,9 +7,9 @@ logger = logging.getLogger()
 
 class WebCamera(AbstractCamera):
 
-    def __init__(self, path):
+    def __init__(self):
         AbstractCamera.__init__(self)
-        logger.info("Web camera initiated.")
+        logger.debug("Web camera initiated.")
 
     def get_name(self):
         return 'Web Camera'

@@ -14,7 +14,7 @@ class RPiCamera(AbstractCamera):
     def __init__(self):
         AbstractCamera.__init__(self)
         self.frame_rate = 50
-        logger.info("Raspberry Pi camera initiated.")
+        logger.debug("Raspberry Pi camera initiated.")
 
     def get_name(self):
         return 'RPi Camera'
@@ -27,7 +27,7 @@ class RPiCamera(AbstractCamera):
             while True:
                 start = time.time()
                 camera.capture_sequence(self.__receiver(), format='jpeg', use_video_port=True)
-                self.frame_rate = (self.img_buf_size / (time.time() - start))
+                #self.frame_rate = int(self.img_buf_size / (time.time() - start))
 
     def __receiver(self):
         stream = io.BytesIO()
@@ -38,7 +38,7 @@ class RPiCamera(AbstractCamera):
             # cv2.imshow('image', image)
             # cv2.waitKey(1)
             self._put_frame(image)
-            logger.info("Put frame. Queue size :" + str(self.frames.qsize()))
+            logger.debug("Put frame. Queue size :" + str(self.frames.qsize()))
             stream.seek(0)
             stream.truncate()
 
