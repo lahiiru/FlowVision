@@ -36,11 +36,11 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.y_distance = 0
         self.count=0
         # self.hp=guppy.hpy()
-        logger.info("PIV Algorithm initiated.")
+        logger.debug("PIV Algorithm initiated.")
 
     def configure(self, frame_rate):
         self.frame_rate = frame_rate
-        logger.info("PIV Algorithm configured.")
+        logger.debug("PIV Algorithm configured.")
 
     def get_name(self):
         return 'PIV algorithm'
@@ -239,6 +239,9 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             x_match - x_ref) + '\nDistance Y : ' + str(y_ref - y_match) + '\nMax Score : ' + str(score * 10) + '\n'
 
     def get_mode_distance(self, distances):
+        pass
+
+    def bulk_receive(self, frames):
         pass
 
     def find_matching_area(self,frame,**kwargs):

@@ -75,6 +75,9 @@ class ColorChannelsPIV(ParticleImageVelocimetryAlgorithm):
     def draw_templates(self, **kwargs):
         pass
 
+    def bulk_receive(self, frames):
+        pass
+
     def find_matching_area(self, frame, **kwargs):
         left_corner = kwargs['ref_point']
         return frame

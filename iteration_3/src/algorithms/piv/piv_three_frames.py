@@ -118,11 +118,12 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
             self.update_pixel_distances([avg_x, avg_y])
             resultant_distance = math.sqrt(self.x_distance ** 2 + self.y_distance ** 2)
             self.direction_filter.update((self.count, resultant_distance))
+            self.matching_distances.append([avg_x, avg_y])
             self.isPaused=True
             # print self.direction_angles
 
         # avg_x = (x_distance + n_x_distance) / 2
-        # avg_y = (y_distance + n_y_distance) / 2
+        # avg_y = (y_distance + n_y_distance) / 2v
         # resultant_distance = math.sqrt(avg_x**2 + avg_y**2)
         # print ('frame '+str(self.count) +' : '+ str(avg_x)+','+ str( avg_y))
         # self.direction_filter.update((avg_x, avg_y))
@@ -183,4 +184,16 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
             same_bucket_flag = True
 
         return same_bucket_flag
+
+    def bulk_receive(self, frames):
+        self.matching_distances=[]
+        for frame in frames:
+            self.receive_frame(frame)
+            self.update()
+        # self.reset_fields()
+        return self.matching_distances
+
+    def reset_fields(self):
+        self.__init__(self.frame_rate)
+
 

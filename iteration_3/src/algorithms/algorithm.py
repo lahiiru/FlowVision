@@ -14,6 +14,7 @@ class Algorithm(Debuggable):
         self.history_pixel_distances = Queue.Queue(maxsize=100)
         self.frame_count = 0
         self.isPaused = False
+        self.matching_distances=[]
 
     def get_pixels_per_second(self):
         self.calculate_pixels_per_second()
@@ -26,6 +27,9 @@ class Algorithm(Debuggable):
             return self.pixel_distances
 
     def receive_frame(self, frame):
+        raise NotImplementedError("Subclass must implement abstract method")
+
+    def bulk_receive(self, frames):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def update(self, **kwargs):
