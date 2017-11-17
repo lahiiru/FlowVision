@@ -16,7 +16,15 @@ class Converter:
         Converter.width = width
 
     @staticmethod
-    def convert_meters_per_second(pixels_per_second):
+    def convert_meters_per_second(pixels_per_second,height):
+        Converter.height=height
         Converter.speed = (2 * Converter.height * math.tan(math.radians(Converter.angle_of_view / 2)) / Converter.width) * pixels_per_second
+
+        return Converter.speed
+
+    @staticmethod
+    def convert_meters_per_second(pixels_per_second):
+        Converter.speed = (2 * Converter.height * math.tan(
+            math.radians(Converter.angle_of_view / 2)) / Converter.width) * pixels_per_second
 
         return Converter.speed
