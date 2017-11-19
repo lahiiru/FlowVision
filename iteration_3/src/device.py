@@ -60,7 +60,7 @@ class Device:
         camera = RPiCamera()
         distance_sensor = DistanceOneFeet()
     else:
-        camera = FromVideoCamera(DevConfig.TEST_VIDEO)
+        camera = FromVideoCamera(DevConfig.PAR_S)
         # camera = WebCamera(1)
         distance_sensor = DistanceOneFeet()
         # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
@@ -70,7 +70,7 @@ class Device:
     logger = None
     debuggers = []
     device = None
-    multi_processing = True
+    multi_processing = False
 
     if not multi_processing:
         algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
@@ -85,7 +85,11 @@ class Device:
         self.sch_index = 0
         self.meters_per_second = 0
         self.frame_buff = []
-        self.lot = 200
+        self.lot = 50
+        self.x_distance =0
+        self.y_distance = 0
+        self.frame_nos = ()
+        self.pixels_per_second = 0
 
         if self.multi_processing:
             self.listener_1 = Listener(('localhost', 7000), authkey=b'secret password')
@@ -184,13 +188,16 @@ class Device:
             pixel_distances = self.algorithm.bulk_receive(self.get_frame_buffer())
             # print self.pixel_distances
             self.calculate_velocity(pixel_distances, 'single thread')
+            self.save_data()
             self.frames_buffer_clear()
 
     def calculate_velocity(self, pixel_distances, process_id):
         self.pixels_per_second = self.get_pixels_per_second(pixel_distances)
         if self.pixels_per_second is not None:
             self.meters_per_second = round(Converter.convert_meters_per_second(self.pixels_per_second), 2)
-            logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
+            # logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
+            # logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
+
         pixel_distances = []
 
     def get_pixels_per_second(self, pixel_distances):
@@ -199,9 +206,15 @@ class Device:
             return self.calculate_pixels_per_second()
         return None
 
+    def calculate_discharge(self):
+        self.area = 0.000236
+        self.discharge = self.meters_per_second * self.area
+
     def update_pixel_distances(self, pixel_distances):
         self.x_distances = zip(*pixel_distances)[0]
         self.y_distances = zip(*pixel_distances)[1]
+        self.frame_nos = zip(*pixel_distances)[2]
+
         x_hist = np.histogram(self.x_distances)
         y_hist = np.histogram(self.y_distances)
 
@@ -212,6 +225,10 @@ class Device:
         self.pixels_per_second = math.sqrt(
             math.pow(self.x_distance, 2) + math.pow(self.y_distance, 2)) * self.camera.frame_rate
         return self.pixels_per_second
+
+    def save_data(self):
+        data_handler = DataHandler()
+        data_handler.save_to_file(self.frame_nos, self.pixels_per_second)
 
     def return_one(self):
         return 1

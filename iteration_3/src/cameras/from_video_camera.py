@@ -11,7 +11,7 @@ class FromVideoCamera(AbstractCamera):
     def __init__(self, path):
         AbstractCamera.__init__(self)
         self.path = path
-        self.frame_rate = 30
+        self.frame_rate = 50
         logger.debug("From video camera initiated.")
 
     def get_name(self):
