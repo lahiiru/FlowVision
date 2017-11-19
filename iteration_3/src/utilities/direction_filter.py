@@ -1,27 +1,50 @@
 import Queue
 import numpy as np
 import matplotlib.pyplot as plt
+from velocity_convention import Converter
 
 
 class DirectionFilter:
 
     plt.rcParams["figure.figsize"]=(40,3)
+
     def __init__(self):
         self.points = Queue.Queue(maxsize=500)
         self.directions = Queue.Queue(maxsize=10)
         self.no_of_points = 0
         self.good_point = False
         self.direction_interval = (0, 0)
+        self.area = 0.000236
+        self.array = []
+        self.no_of_frames = 1000
+        self.f = open('DataSet', 'w')
 
     def update(self, point):
         self.points.put(point)
         self.no_of_points += 1
 
         if point is not None:
-        #     plt.ylim(0, 350)
-        #     plt.xlim(0, 350)
-            plt.scatter(point[0], point[1], s=2)
-            plt.pause(0.01)
+            # plt.ylim(0, 350)
+            # plt.xlim(0, 350)
+
+            # pixels_per_second = point[1] * 50
+            # self.meters_per_second = round(Converter.convert_meters_per_second(pixels_per_second), 2)
+            # self.discharge = self.meters_per_second * self.area * 1000000
+
+            print(point[0])
+            # self.array.append([point[0], round(self.discharge*, 2)])
+
+            # self.f.write(str(point[1]))
+            # self.f.write('\t')
+            # self.f.write(str(point[2]))
+            # self.f.write('\n')
+
+            # if point[0] == self.no_of_frames:
+            #     self.array = np.array(self.array)
+            #     plt.plot(self.array[:,0], self.array[:,1])
+            #     plt.pause(0.01)
+            #     print (self.array)
+            #     self.f.close()
 
 
         # if self.no_of_points == 100:
