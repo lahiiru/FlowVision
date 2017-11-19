@@ -29,19 +29,18 @@ if not configured:
     job.minute.every(1)
     my_cron.write()
 
-process_ids = []
+cron_result = dict()
+cron_result['time'] = time.time()
+
 scripts = ["device.py"]
 for module_name in scripts:
     res = subprocess.check_output("pgrep -lf device.py", shell=True).split()
     idx = res.index("python")
     if idx > 0:
-        process_ids += [res[idx-1]]
-
-cron_result = dict()
-cron_result['time'] = time.time()
-
-for key, value in zip(scripts, process_ids):
-    cron_result[key] = value
+        cron_result[module_name] += [res[idx-1]]
+    else:
+        cron_result[module_name] += ["0"]
 
 with open("{0}{1}{2}".format(DevConfig.STATUS_DIR, os.sep, "proc_mon.json") , 'w') as outfile:
     json.dump(cron_result, outfile)
+    
