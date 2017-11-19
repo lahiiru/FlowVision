@@ -229,6 +229,7 @@ class Device:
     def save_data(self):
         data_handler = DataHandler()
         data_handler.save_to_file(self.frame_nos, self.pixels_per_second)
+        self.frame_nos = ()
 
     def return_one(self):
         return 1
