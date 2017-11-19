@@ -14,8 +14,8 @@ class DevConfig:
     VIDEO_DIR = 
     TEST_VIDEO =
     REAL_FRAME_DIR =
-    RB_FRAME_DIR
-
+    RB_FRAME_DIR =
+    STATUS_DIR =
 
 class ProdConfig:
     def __init__(self):
