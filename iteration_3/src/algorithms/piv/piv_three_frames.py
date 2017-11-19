@@ -7,6 +7,7 @@ from algorithms.piv.frame_wallet import FrameWallet
 # from iteration_3.src.utilities import *
 from utilities import *
 import math
+import matplotlib.pyplot as plt
 import Queue
 
 
@@ -23,6 +24,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         self.frame_wallet = FrameWallet(3)
         self.x_tolerance = 4
         self.y_tolerance = 4
+        self.f_count = 0
         self.count = 0
         self.direction_angles = []
         self.angle = 0
@@ -66,6 +68,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
                 self.visualization = cv2.putText(self.visualization, txt, (10, 15 + 15 * row), cv2.FONT_HERSHEY_SIMPLEX,
                                                  0.5, (255, 255, 128), 1)
 
+        self.f_count = self.f_count + 1
         return pixels_per_second
 
     def _match_template(self, pre_index, current_index):
@@ -106,12 +109,20 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         avg_x = (x_distance + n_x_distance) / 2
         avg_y = (y_distance + n_y_distance) / 2
 
-        # if(avg_x!=0):
-        #     self.angle = np.arctan(avg_y /avg_x)
-        # if(self.direction_angles.count()<50):
-        #     self.direction_angles.append(self.angle)
-        # else:
+        if (avg_x != 0):
+            self.angle = np.arctan2(avg_y, avg_x) * 180 / np.pi
 
+            # self.angle = math.degrees(np.arctan(avg_y / avg_x))
+            self.direction_angles.append(self.angle)
+
+        # print(self.f_count)
+        # if(self.f_count==100):
+        #     plt.xlabel("Direction angle")
+        #     plt.ylabel("No of matches")
+        #     x = self.direction_angles
+        #     bins = np.linspace(-10, 10, 100)
+        #     plt.hist(x, bins, alpha=0.5)
+        #     plt.show()
 
         if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
             # print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
@@ -121,7 +132,27 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
             self.direction_filter.update((self.count, resultant_distance))
             self.matching_distances.append([avg_x, avg_y])
             self.isPaused=True
-            # print self.direction_angles
+            print self.direction_angles
+
+            # if (avg_x != 0):
+            #     self.angle = math.degrees(np.arctan(avg_y / avg_x))
+            #     self.direction_angles.append(self.angle)
+
+            if(len(self.direction_angles)==30):
+                # print self.direction_angles
+                plt.xlabel("Direction angle")
+                plt.ylabel("No of matches")
+                x = self.direction_angles
+                bins = np.arange(-180,180,1)
+                hist = plt.hist(x, bins, alpha=0.5)
+                maxBinUpper = np.argmax(hist[0])
+                globalDirection = (hist[1][maxBinUpper + 1] + hist[1][maxBinUpper]) / 2
+                # print globalDirection
+                #angle_radian = np.deg2rad(globalDirection)
+                print ref_x, ref_y
+                x,y = self.find_frame_lane(globalDirection,ref_x,ref_y)
+                print x,y
+                plt.show()
 
         # avg_x = (x_distance + n_x_distance) / 2
         # avg_y = (y_distance + n_y_distance) / 2v
@@ -129,7 +160,6 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         # print ('frame '+str(self.count) +' : '+ str(avg_x)+','+ str( avg_y))
         # self.direction_filter.update((avg_x, avg_y))
 
-        self.count = self.count + 1
         self.template_color = (255, 0, 255)
 
         if self.debug:

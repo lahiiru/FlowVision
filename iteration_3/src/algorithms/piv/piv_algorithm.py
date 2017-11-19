@@ -274,3 +274,15 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
 
     def calculate_pixels_per_second(self):
         self.pixels_per_second = math.sqrt(math.pow(self.x_distance, 2) + math.pow(self.y_distance, 2))*self.frame_rate
+
+    def find_frame_lane(self,teta,point_x,point_y):
+
+        print point_x, point_y
+        z = point_x + point_y*1j
+        new_z = z*(math.cos(teta)+math.sin(teta)*1j)
+        new_x = new_z.real
+        new_y = new_z.imag
+
+        return new_x, new_y
+
+
