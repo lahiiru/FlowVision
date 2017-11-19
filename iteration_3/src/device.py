@@ -60,7 +60,7 @@ class Device:
         camera = RPiCamera()
         distance_sensor = DistanceOneFeet()
     else:
-        camera = FromVideoCamera(DevConfig.PAR_S)
+        camera = FromVideoCamera(DevConfig.TEST_VIDEO)
         # camera = WebCamera(1)
         distance_sensor = DistanceOneFeet()
         # camera = FromFolderCamera(DevConfig.RB_FRAME_DIR)
