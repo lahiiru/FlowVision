@@ -188,7 +188,9 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
 
     def bulk_receive(self, frames):
         self.matching_distances=[]
-        for frame in frames:
+        for frame in frames[:3]:
+            self.receive_frame(frame)
+        for frame in frames[3:]:
             self.receive_frame(frame)
             self.update()
         self.reset_fields()
