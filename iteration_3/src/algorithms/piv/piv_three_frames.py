@@ -8,7 +8,7 @@ from algorithms.piv.frame_wallet import FrameWallet
 from utilities import *
 import math
 import matplotlib.pyplot as plt
-import Queue
+
 
 
 logger = logging.getLogger()
@@ -126,13 +126,12 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
 
         if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
             # print 'x values :'+str(x_distance)+' '+ str(n_x_distance) +' y values :'+str(y_distance)+' '+str(n_y_distance)
-
-            self.update_pixel_distances([avg_x, avg_y])
             resultant_distance = math.sqrt(self.x_distance ** 2 + self.y_distance ** 2)
-            self.direction_filter.update((self.count, resultant_distance))
+            instance_resultant = math.sqrt(avg_x ** 2 + avg_y** 2)
+            self.direction_filter.update((self.count, instance_resultant))
             self.matching_distances.append([avg_x, avg_y])
             self.isPaused=True
-            print self.direction_angles
+            # print self.direction_angles
 
             # if (avg_x != 0):
             #     self.angle = math.degrees(np.arctan(avg_y / avg_x))
@@ -228,10 +227,8 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
 
     def reset_fields(self):
         self.frame_wallet = FrameWallet(3)
-        self.pixel_distances = []
-        self.history_pixel_distances = Queue.Queue(maxsize=100)
         self.frame_count = 0
-        self.pixel_distances = []
+
 
 
 

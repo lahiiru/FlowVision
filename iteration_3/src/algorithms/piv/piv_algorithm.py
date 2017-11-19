@@ -72,7 +72,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
         self.pixels_per_second = UNKNOWN_SPEED
         for i in range(self.frame_wallet.wallet_size - 1):
             pixels_per_second = self._match_template(i, i + 1)
-            self.get_mode_distance(self.pixel_distances)
+
 
         if self.debug:
             for i in range(self.frame_wallet.wallet_size):
@@ -105,8 +105,7 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
             ref_point_y = y_min
             x_distance = maxLoc[0] - ref_point_x
             y_distance = ref_point_y - maxLoc[1]
-            self.update_pixel_distances([x_distance, y_distance])
-            print ('frame ' + str(self.count) + ' : ' + str(x_distance) + ',' + str(y_distance))
+            # print ('frame ' + str(self.count) + ' : ' + str(x_distance) + ',' + str(y_distance))
             self.direction_filter.update((x_distance, y_distance))
             if self.debug:
                 self.draw_templates(pre_index=pre_index, current_index=current_index, template=template,
@@ -247,30 +246,6 @@ class ParticleImageVelocimetryAlgorithm(object, Algorithm):
     def find_matching_area(self,frame,**kwargs):
         ref_point=kwargs['ref_point']
         return frame
-
-    def update_pixel_distances(self, point):
-        self.pixel_distances.append(point)
-
-        if self.frame_count >= 100:
-            logger.debug('pixel distances updated')
-            x_distances = zip(*self.pixel_distances)[0]
-            y_distances = zip(*self.pixel_distances)[1]
-            x_hist = np.histogram(x_distances)
-            y_hist = np.histogram(y_distances)
-
-            self.x_distance = (x_hist[1][np.argmax(x_hist[0])] + x_hist[1][np.argmax(x_hist[0]) + 1]) / 2
-            self.y_distance = (y_hist[1][np.argmax(y_hist[0])] + y_hist[1][np.argmax(y_hist[0]) + 1]) / 2
-
-            self.meters_per_second = round(Converter.convert_meters_per_second(self.get_pixels_per_second()),
-                                           2)
-            logger.info("Current velocity: " + str(self.meters_per_second) + ' m/s | Frame count: ' + str(self.count))
-
-            if self.history_pixel_distances.full():
-                self.history_pixel_distances.get()
-
-            self.history_pixel_distances.put((round(self.x_distance, 2), round(self.y_distance, 2), len(self.pixel_distances)))
-            self.frame_count = 0
-            self.pixel_distances = []
 
     def calculate_pixels_per_second(self):
         self.pixels_per_second = math.sqrt(math.pow(self.x_distance, 2) + math.pow(self.y_distance, 2))*self.frame_rate

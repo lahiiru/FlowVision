@@ -1,6 +1,6 @@
 # from iteration_3.src.debuggers import Debuggable
 from debuggers.debuggable import Debuggable
-import Queue
+
 
 
 class Algorithm(Debuggable):
@@ -11,7 +11,6 @@ class Algorithm(Debuggable):
         self.visualization = None
         self.visualization_mode = 0
         self.pixel_distances = []
-        self.history_pixel_distances = Queue.Queue(maxsize=100)
         self.frame_count = 0
         self.isPaused = False
         self.matching_distances=[]
