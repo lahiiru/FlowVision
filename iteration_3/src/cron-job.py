@@ -14,7 +14,7 @@ for _job in my_cron:
         configured = True
         job = _job
 
-if len(sys.argv[1])>1:
+if len(sys.argv)>1:
     if 'r' in sys.argv[1]:
         if job == None:
             exit(0)
