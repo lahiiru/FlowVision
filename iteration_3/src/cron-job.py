@@ -1,7 +1,7 @@
 from crontab import CronTab
 import os, sys
 import subprocess
-from ..src.config import DevConfig
+from config import DevConfig
 import json
 import time
 
@@ -14,16 +14,18 @@ for _job in my_cron:
         configured = True
         job = _job
 
-if 'r' in sys.argv[1]:
-    if job == None:
+if len(sys.argv[1])>1:
+    if 'r' in sys.argv[1]:
+        if job == None:
+            exit(0)
+        my_cron.remove(job)
+        my_cron.write()
         exit(0)
-    my_cron.remove(job)
-    my_cron.write()
-    exit(0)
 
 if not configured:
     path = os.path.realpath(__file__)
-    job = my_cron.new(command=path, comment='proc_mon')
+    cmd = "python {0}".format(path)
+    job = my_cron.new(command=cmd, comment='proc_mon')
     job.minute.every(1)
     my_cron.write()
 
@@ -33,7 +35,7 @@ for module_name in scripts:
     res = subprocess.check_output("pgrep -lf device.py", shell=True).split()
     idx = res.index("python")
     if idx > 0:
-        process_ids += res[idx-1]
+        process_ids += [res[idx-1]]
 
 cron_result = dict()
 cron_result['time'] = time.time()
