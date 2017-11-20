@@ -1,4 +1,4 @@
-from processor import Processor
+from communicator_process import CommunicatorProcess
 
-p = Processor(0)
+p = CommunicatorProcess(0)
 p.run()

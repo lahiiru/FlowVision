@@ -11,7 +11,6 @@ if sys.platform == 'linux2' and remote_debug:
 import logging
 import numpy as np
 import math
-from _threading_local import local
 from logging.config import fileConfig
 from cameras import *
 import time
@@ -19,9 +18,9 @@ from config import DevConfig
 from algorithms import *
 from debuggers import *
 from utilities import *
-from communicators import *
 from sensors import *
 from multiprocessing.connection import Listener
+from communicators import *
 import subprocess
 
 path = os.path.realpath(__file__)
@@ -75,7 +74,7 @@ class Device:
     if not multi_processing:
         algorithm = PIVThreeFramesAlgorithm(camera.frame_rate)
 
-    # communicator = Communicator()
+    communicator = ThingspeakCommunicator()
     # algorithm = ParticleImageVelocimetryAlgorithm(camera.frame_rate)
     # algorithm = ColorChannelsPIV()
 
@@ -90,10 +89,14 @@ class Device:
         self.y_distance = 0
         self.frame_nos = ()
         self.pixels_per_second = 0
-
-        if self.multi_processing:
+        try:
             self.listener_1 = Listener(('localhost', 7000), authkey=b'secret password')
+        except:
+            logger.warn("Listener at {0} couldn't started.", 7000)
+        try:
             self.listener_2 = Listener(('localhost', 7001), authkey=b'secret password')
+        except:
+            logger.warn("Listener at {0} couldn't started.", 7001)
 
     def frames_count_up(self):
         self.sch_index += 1
@@ -128,9 +131,8 @@ class Device:
         self.camera.start()
         time.sleep(5)
 
-        if not self.multi_processing:
-            self.algorithm.debug = False
-            self.algorithm.visualization_mode = 0
+        self.algorithm.debug = False
+        self.algorithm.visualization_mode = 0
 
         # for debugger in self.debuggers:
         #     debugger.start()
@@ -139,7 +141,8 @@ class Device:
 
         logger.info("Distance: {0}".format(self.distance_sensor.get_real_time_distance_cm()))
         logger.info(cur_dir)
-        if self.multi_processing:
+
+        if sys.platform == 'win32':
             for script in ["processor_1.py", "processor_2.py"]:
                 script_path = cur_dir + os.sep + script
                 logger.info("starting sub-processes from : {0}".format(script_path))
@@ -150,36 +153,7 @@ class Device:
             frame = self.camera.get_frame()
 
             if frame is not None:
-
-                if not self.multi_processing:
-                    self.single_thread_run(frame)
-                else:
-                    self.multi_threaded_run(frame)
-
-    def multi_threaded_run(self, frame):
-
-        if self.sch_index % 100 == 0:
-            logger.info("Frames in buffer: {0}".format(self.sch_index))
-        self.put_frame_in_buffer(frame)
-        if self.peek_sch_index() == self.lot * 2:
-            self.conn_1 = self.listener_1.accept()
-            logger.info('connection accepted from: {0}'.format(self.listener_1.last_accepted))
-            self.conn_1.send(self.get_frame_buffer()[:self.lot])
-
-            self.conn_2 = self.listener_2.accept()
-            logger.info('connection accepted from: {0}'.format(self.listener_2.last_accepted))
-            self.conn_2.send(self.get_frame_buffer()[self.lot:])
-
-            self.frames_buffer_clear()
-
-        if self.peek_sch_index() == self.lot*2*2:
-            self.sch_index = self.lot * 2 - 1
-
-            ret_val1 = self.conn_1.recv()
-            self.calculate_velocity(ret_val1, 'process 1')
-
-            ret_val2 = self.conn_2.recv()
-            self.calculate_velocity(ret_val2, 'process 2')
+                self.single_thread_run(frame)
 
     def single_thread_run(self, frame):
         if len(self.get_frame_buffer()) <= self.lot:
@@ -195,6 +169,12 @@ class Device:
         self.pixels_per_second = self.get_pixels_per_second(pixel_distances)
         if self.pixels_per_second is not None:
             self.meters_per_second = round(Converter.convert_meters_per_second(self.pixels_per_second), 2)
+
+            message = self.communicator.prepare_message_json(self.meters_per_second, 10, dict())
+            self.conn_1 = self.listener_1.accept()
+            logger.info('connection accepted from: {0}'.format(self.listener_1.last_accepted))
+            self.conn_1.send(message)
+
             # logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
             # logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
 

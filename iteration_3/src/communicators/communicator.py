@@ -1,24 +1,16 @@
-from communicators.MQTTBroker import MQTTBroker
 from debuggers.debugger import Debugger
-import json
-import time
-from threading import Thread
 import logging
+import json
 
 logger = logging.getLogger()
 
 
-class Communicator(Thread):
-
-
+class Communicator:
     def __init__(self):
-        Thread.__init__(self)
+        pass
 
-
-    def send(self):
+    def send_message(self, message):
         raise NotImplementedError("Subclass must implement abstract method")
 
-    def run(self):
-        while True:
-            self.send()
-            time.sleep(5)
+    def prepare_message_json(self, velocity, level, debugObj):
+        raise NotImplementedError("Subclass must implement abstract method")

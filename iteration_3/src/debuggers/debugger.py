@@ -15,9 +15,8 @@ class Debugger(threading.Thread):
     def run(self):
         self.routine()
 
-    @staticmethod
     def get_state_object(self):
-        state = {}
+        state = dict()
         state['camera'] = self.device.camera.get_state()
         state['algorithm'] = self.device.algorithm.get_state()
         return state
