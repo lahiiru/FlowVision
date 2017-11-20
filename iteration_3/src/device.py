@@ -243,6 +243,7 @@ class Device:
             device.start()
         except KeyboardInterrupt:
             logger.warn("Forcely stopped by user")
+            exit(0)
 
 if __name__ == '__main__':
     Device.main()
