@@ -13,9 +13,10 @@ class CommunicatorProcess:
         while 1:
 
             conn = Client(('localhost', 7000+self.index), authkey=b'secret password')
+            print("placing receive request by process {0}".format(self.index))
             message = conn.recv()
+            print("received length {0} to processor {1}".format(len(message), self.index))
             conn.close()
-            print("received length {0} to processor {1}".format(len(message),self.index))
             ret = "0"
             while ret == "0":
                 ret = self.communicator.send_message(message)

@@ -198,7 +198,7 @@ class Device:
             self.conn_1.send(message)
 
             logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
-            logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
+            # logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
 
         pixel_distances = []
 
@@ -240,9 +240,11 @@ class Device:
 
     @staticmethod
     def main():
-        device = Device("FlowMeter-local")
-        device.start()
-
+        try:
+            device = Device("FlowMeter-local")
+            device.start()
+        except KeyboardInterrupt:
+            logger.warn("Forcely stopped by user")
 
 if __name__ == '__main__':
     Device.main()

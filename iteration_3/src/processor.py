@@ -15,6 +15,7 @@ class Processor:
         while 1:
             try:
                 conn = Client(('localhost', 7000+self.index), authkey=b'secret password')
+                print("placing receive request by process {0}".format(self.index))
                 array = conn.recv()
                 print("received {0} to processor {1}".format(len(array),self.index))
                 pixel_distances = self.algorithm.bulk_receive(array)
