@@ -155,7 +155,8 @@ class Device:
 
         clk = 0
         good_frames = 0
-        frames_per_log = 10
+        good_frames_per_log = 10
+        frames_per_log = 100
         cyclic_logging = True
         while True:
             frame = self.camera.get_frame()
@@ -166,18 +167,19 @@ class Device:
             # cyclic logging section -- start  #
                 if cyclic_logging:
                     good_frames += 1
-                    if good_frames % frames_per_log == 0:
+                    if good_frames % good_frames_per_log == 0:
                         logger.info("--->{0}th good frame processed.".format(good_frames))
             if cyclic_logging:
                 clk += 1
                 if clk % frames_per_log == 0:
-                    logger.info("---{0}th clock passed.".format(clk))
+                    logger.info("---{0}th clock.".format(clk/frames_per_log))
             # cyclic logging section -- end   #
 
     def single_thread_run(self, frame):
         if len(self.get_frame_buffer()) <= self.lot:
             self.put_frame_in_buffer(frame)
         else:
+            logger.info('waiting for bulk receive.')
             pixel_distances = self.algorithm.bulk_receive(self.get_frame_buffer())
             # print self.pixel_distances
             self.calculate_velocity(pixel_distances, 'single thread')
@@ -190,12 +192,13 @@ class Device:
             self.meters_per_second = round(Converter.convert_meters_per_second(self.pixels_per_second), 2)
 
             message = self.communicator.prepare_message_json(self.meters_per_second, 10, dict())
+            logger.info('waiting for request from: process {0}'.format(0))
             self.conn_1 = self.listener_1.accept()
             logger.info('connection accepted from: {0}'.format(self.listener_1.last_accepted))
             self.conn_1.send(message)
 
-            # logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
-            # logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
+            logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
+            logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
 
         pixel_distances = []
 
