@@ -4,6 +4,7 @@ import subprocess
 from config import DevConfig
 import json
 import time
+import os
 
 my_cron = CronTab(user='pi')
 configured = False
@@ -28,6 +29,15 @@ if not configured:
     job = my_cron.new(command=cmd, comment='proc_mon')
     job.minute.every(1)
     my_cron.write()
+
+kill_flag = "{0}{1}{2}".format(DevConfig.STATUS_DIR, os.sep, "kill")
+if os.path.exists(kill_flag):
+    try:
+        res = subprocess.check_output("killall python")
+    except:
+        pass
+    finally:
+        os.remove(kill_flag)
 
 cron_result = dict()
 cron_result['timestmp'] = time.time()
