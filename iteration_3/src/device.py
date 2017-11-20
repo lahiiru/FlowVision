@@ -18,9 +18,9 @@ from config import DevConfig
 from algorithms import *
 from debuggers import *
 from utilities import *
+from communicators import *
 from sensors import *
 from multiprocessing.connection import Listener
-from communicators import *
 import subprocess
 
 path = os.path.realpath(__file__)
@@ -89,6 +89,9 @@ class Device:
         self.y_distance = 0
         self.frame_nos = ()
         self.pixels_per_second = 0
+        self.x_distances = []
+        self.y_distances = []
+
         try:
             self.listener_1 = Listener(('localhost', 7000), authkey=b'secret password')
         except:
@@ -162,7 +165,7 @@ class Device:
             pixel_distances = self.algorithm.bulk_receive(self.get_frame_buffer())
             # print self.pixel_distances
             self.calculate_velocity(pixel_distances, 'single thread')
-            self.save_data()
+            # self.save_data()
             self.frames_buffer_clear()
 
     def calculate_velocity(self, pixel_distances, process_id):
@@ -208,7 +211,9 @@ class Device:
 
     def save_data(self):
         data_handler = DataHandler()
-        data_handler.save_to_file(self.frame_nos, self.pixels_per_second)
+        # data_handler.save_pixel_velocity(self.frame_nos, self.pixels_per_second)
+        # data_handler.save_pixel_distances(self.frame_nos, self.x_distances, self.y_distances)
+        data_handler.save_pixel_distance_validated(self.frame_nos, self.x_distance, self.y_distance)
         self.frame_nos = ()
 
     def return_one(self):
