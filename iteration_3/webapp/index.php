@@ -31,24 +31,49 @@ if(array_key_exists("_conf", $_REQUEST)){
 }
 // Loading...
 $cfg_path = "../";
-$file_path = "C:/wamp/";
+$file_path = "/var/www/html/FlowVision/updates/";
 $config_str = file_get_contents("config.json");
 $config_obj = json_decode($config_str);
 
-var_dump($_FILES);
+$proc_mon_path = "/var/www/html/FlowVision/status/";
+$proc_mon_str = file_get_contents($proc_mon_path."proc_mon.json");
+$proc_mon_obj = json_decode($proc_mon_str);
+
 if( @$_FILES['file']['name'] != "" )
 {
-    echo $_FILES['file']['type'];
+    if ($_FILES['file']['type'] == "application/x-zip-compressed"){
+
+	}
     $destFile = $file_path.$_FILES['file']['name'];
     move_uploaded_file( $_FILES['file']['tmp_name'], $destFile );
 }
 
 function get_server_cpu_usage(){
-
     $load = sys_getloadavg();
-    print_r($load);
     return $load[0];
+}
 
+function get_server_memory_usage(){
+
+    $free = shell_exec('free');
+    $free = (string)trim($free);
+    $free_arr = explode("\n", $free);
+    $mem = explode(" ", $free_arr[1]);
+    $mem = array_filter($mem);
+    $mem = array_merge($mem);
+    $memory_usage = ($mem[2]/$mem[1])*100;
+
+    return  round($memory_usage, 2);
+}
+
+function get_up_time(){
+	$str   = @file_get_contents('/proc/uptime');
+	$num   = floatval($str);
+	$secs  = fmod($num, 60); $num = (int)($num / 60);
+	$mins  = $num % 60;      $num = (int)($num / 60);
+	$hours = $num % 24;      $num = (int)($num / 24);
+	$days  = $num;
+	return $days."d ".$hours."h ".$mins."m";
 }
 ?>
 <div class="container">
@@ -99,7 +124,7 @@ function get_server_cpu_usage(){
                         </tr>
                         </tbody>
                     </table>
-                    <h6 class="text-right">Latest updated at: 17:56,2017/11/20</h6>
+                    <h6 class="text-right">Latest updated at: <?php htmlspecialchars(gmdate("H:i:sa Y/m/d", $proc_mon_obj->time)); ?></h6>
                     <!--<h6><Last updated at: 17:56,2017/11/20</h6>-->
                     <table class="table table-bordered">
                         <thead>
@@ -132,19 +157,25 @@ function get_server_cpu_usage(){
                         </thead>
                         <tbody>
                         <tr>
-                            <td>CPU</td>
-                            <td>100%</td>
+                            <td>CPU utilization</td>
+                            <td><?php echo get_server_cpu_usage(); ?>%</td>
                         </tr>
                         <tr>
-                            <td>Memory(GB)</td>
-                            <td>65%</td>
+                            <td>Memory usage</td>
+                            <td><?php echo get_server_memory_usage(); ?>%</td>
                         </tr>
                         <tr>
-                            <td>Discharge (m3/s)</td>
-                            <td>10%</td>
+                            <td>Uptime</td>
+                            <td><?php echo get_up_time(); ?></td>
+                        </tr>
+						<tr>
+                            <td>IP Address</td>
+                            <td><?php echo $_SERVER['SERVER_ADDR']; ?></td>
                         </tr>
                         </tbody>
                     </table>
+					<h6 class="text-right">Latest updated at: <?php echo date("H:i:sa Y/m/d"); ?></h6>
+
                     <div class="text-right">
                         <button type="button" class="btn btn-info">Reset</button>
                         <button type="button" class="btn btn-warning">Restart</button>
@@ -205,9 +236,9 @@ function get_server_cpu_usage(){
 
                 <div class="bhoechie-tab-content">
                     <center>
-                        <form action="upload.php" method="post" enctype="multipart/form-data">
+                        <form method="post" enctype="multipart/form-data">
                             Select image to upload:
-                            <input type="file" name="fileToUpload" id="fileToUpload">
+                            <input type="file" name="file" id="file">
                             <input type="submit" value="Upload Image" name="submit">
                         </form>
                     </center>

@@ -30,7 +30,7 @@ if not configured:
     my_cron.write()
 
 cron_result = dict()
-cron_result['time'] = time.time()
+cron_result['timestmp'] = time.time()
 
 scripts = ["device.py"]
 for module_name in scripts:
