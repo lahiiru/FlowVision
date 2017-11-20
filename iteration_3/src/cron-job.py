@@ -32,7 +32,7 @@ if not configured:
 cron_result = dict()
 cron_result['timestmp'] = time.time()
 
-scripts = ["device.py"]
+scripts = ["device.py", "processor_1.py", "processor_2.py"]
 for module_name in scripts:
     res = subprocess.check_output("pgrep -lf device.py", shell=True).split()
     if "python" in res:
