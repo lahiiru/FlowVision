@@ -38,9 +38,9 @@ for module_name in scripts:
     if "python" in res:
         idx = res.index("python")
         if idx > 0:
-            cron_result[module_name] = [res[idx-1]]
+            cron_result[module_name] = res[idx-1]
         else:
-            cron_result[module_name] = ["0"]
+            cron_result[module_name] = "0"
 
 with open("{0}{1}{2}".format(DevConfig.STATUS_DIR, os.sep, "proc_mon.json") , 'w') as outfile:
     json.dump(cron_result, outfile)
