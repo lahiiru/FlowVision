@@ -73,3 +73,10 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
  width:100%;
  border-top:1px solid gray;
 }
+
+.glyphicon.glyphicon-repeat {
+    font-size: 60px;
+}
+.glyphicon.glyphicon-off {
+    font-size: 60px;
+}
