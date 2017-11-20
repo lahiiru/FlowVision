@@ -125,7 +125,7 @@ class PIVThreeFramesAlgorithm(ParticleImageVelocimetryAlgorithm):
         #     plt.show()
 
         if (x_value_difference < self.x_tolerance and y_value_difference < self.y_tolerance and direction_flag ):
-            self.matching_distances.append([avg_x, avg_y, self.count])
+            self.matching_distances.append([avg_x, avg_y])
             self.isPaused=True
             # print self.direction_angles
 

@@ -84,7 +84,7 @@ class Device:
         self.sch_index = 0
         self.meters_per_second = 0
         self.frame_buff = []
-        self.lot = 50
+        self.lot = 100
         self.x_distance =0
         self.y_distance = 0
         self.frame_nos = ()
@@ -158,11 +158,11 @@ class Device:
         good_frames_per_log = 10
         frames_per_log = 100
         cyclic_logging = True
-        while True:
-            frame = self.camera.get_frame()
 
-            if frame is not None:
-                self.single_thread_run(frame)
+        while True:
+            self.frame_buff = self.camera.get_bulk_frames(self.lot)
+            if not len(self.frame_buff) == 0:
+                self.single_thread_run(self.frame_buff)
 
             # cyclic logging section -- start  #
                 if cyclic_logging:
@@ -176,15 +176,13 @@ class Device:
             # cyclic logging section -- end   #
 
     def single_thread_run(self, frame):
-        if len(self.get_frame_buffer()) <= self.lot:
-            self.put_frame_in_buffer(frame)
-        else:
-            logger.info('waiting for bulk receive.')
-            pixel_distances = self.algorithm.bulk_receive(self.get_frame_buffer())
-            # print self.pixel_distances
-            self.calculate_velocity(pixel_distances, 'single thread')
-            # self.save_data()
-            self.frames_buffer_clear()
+        pixel_distances = self.algorithm.bulk_receive(self.get_frame_buffer())
+        print pixel_distances
+        # print self.pixel_distances
+        self.calculate_velocity(pixel_distances, 'single thread')
+        # self.save_data()
+        self.frames_buffer_clear()
+
 
     def calculate_velocity(self, pixel_distances, process_id):
         self.pixels_per_second = self.get_pixels_per_second(pixel_distances)
@@ -215,7 +213,7 @@ class Device:
     def update_pixel_distances(self, pixel_distances):
         self.x_distances = zip(*pixel_distances)[0]
         self.y_distances = zip(*pixel_distances)[1]
-        self.frame_nos = zip(*pixel_distances)[2]
+        # self.frame_nos = zip(*pixel_distances)[2]
 
         x_hist = np.histogram(self.x_distances)
         y_hist = np.histogram(self.y_distances)

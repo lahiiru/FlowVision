@@ -38,3 +38,24 @@ class FromVideoCamera(AbstractCamera):
     def _release(self):
         self.cap.release()
 
+    def get_bulk_frames(self, bulk_size):
+        self.cap = cv2.VideoCapture(self.path)
+        r, img = self.cap.read()
+
+        if not r:
+            raise IOError("File not found at " + self.path)
+
+        for i in range(bulk_size):
+            r, img = self.cap.read()
+            if not r:
+                logger.warn("EOF of video found. Exiting. ")
+                break
+
+            img = cv2.resize(img, self.resolution)
+            self.frame_array.append(img)
+            time.sleep(1.0 / self.frame_rate)
+            i +=1
+
+        array = self.frame_array[:bulk_size]
+        self.frame_array = []
+        return array
