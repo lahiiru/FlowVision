@@ -37,17 +37,147 @@
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
                 <!-- status section -->
                 <div class="bhoechie-tab-content active">
-                    Device is running
+                    <h4><strong>Flow-meter local</strong></h4>
+                    <table class="table table-bordered">
+                     <thead>
+                     <tr>
+                        <th>Programs</th>
+                        <th>Status</th>
+                     </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Main program</td>
+                        <td>running</td>
+                     </tr>
+                     <tr>
+                        <td>Communicator</td>
+                        <td>running</td>
+                    </tr>
+                    <tr>
+                        <td>Height measurement</td>
+                        <td>running</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    <h6 class="text-right">Latest updated at: 17:56,2017/11/20</h6>
+                    <!--<h6><Last updated at: 17:56,2017/11/20</h6>-->
+                    <table class="table table-bordered">
+                     <thead>
+                     <tr>
+                        <th colspan="2" class="text-center">Latest Measurements</th>
+                     </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Surface velocity (m/s)</td>
+                        <td>13.42</td>
+                     </tr>
+                     <tr>
+                        <td>Flow level (m)</td>
+                        <td>0.21</td>
+                    </tr>
+                    <tr>
+                        <td>Discharge (m3/s)</td>
+                        <td>3.21</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                     <h6 class="text-right">Latest updated at: 18:46,2017/11/20</h6>
+
+                    <table class="table table-bordered">
+                     <thead>
+                     <tr>
+                        <th colspan="2" class="text-center">System Info</th>
+                     </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>CPU </td>
+                        <td>100%</td>
+                     </tr>
+                     <tr>
+                        <td>Memory(GB)</td>
+                        <td>65%</td>
+                    </tr>
+                    <tr>
+                        <td>Discharge (m3/s)</td>
+                        <td>10%</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-info" >Reset</button>
+                        <button type="button" class="btn btn-warning">Restart</button>
+                    </div>
+
+
                 </div>
-                <!-- train section -->
+                <!-- configuration section -->
+                <div class="bhoechie-tab-content">
+                    <h4 class="text-left">Drainage Parameters</h4>
+
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="email"><h5>Shape</h5></label>
+                            <div class="radio">
+                                <label><input type="radio" name="optradio">Round</label>
+                             </div>
+                        <div class="radio">
+                              <label><input type="radio" name="optradio">Rectangular</label>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="email"><h5>Diameter/ Width</h5></label>
+                            <div class="col-sm-8">
+                            <input type="text" class="form-control" id="diameter" placeholder="diameter or width">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                             <label class="control-label col-sm-4" for="pwd"><h5>Depth</h5></label>
+                                <div class="col-sm-8">
+                             <input type="text" class="form-control" id="depth" placeholder="depth">
+                                </div>
+                        </div>
+                        <div class="form-group">
+                     <div class="text-center" >
+                         <!--<button type="submit" class="btn btn-default">Update Parameters</button>-->
+                          <button type="submit" class="btn btn-primary" >Update parameters</button>
+                     </div>
+                        </div>
+                    </form>
+
+                    <div class="h-divider"></div>
+                      <h4 class="text-left">Location Details</h4>
+                             <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="email"><h5>Meter Id</h5></label>
+                            <div class="col-sm-8">
+                            <input type="text" class="form-control" id="MetrId" placeholder="Meter id">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                             <label class="control-label col-sm-4" for="pwd"><h5>Address</h5></label>
+                                <div class="col-sm-8">
+                             <input type="text" class="form-control" id="Address" placeholder="Installed location">
+                                </div>
+                        </div>
+                        <div class="form-group">
+                     <div class="text-center">
+                         <button type="submit" class="btn btn-primary" >Update parameters</button>
+                     </div>
+                        </div>
+                    </form>
+
+
+
+                </div>
+
+                <!-- list preview search -->
                 <div class="bhoechie-tab-content">
 
                 </div>
-
-                <!-- hotel search -->
-                <div class="bhoechie-tab-content">
-
-                </div>
+                <!--update section-->
                 <div class="bhoechie-tab-content">
 
                 </div>
