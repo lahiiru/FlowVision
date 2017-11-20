@@ -14,6 +14,14 @@
 <?php
 // Saving...
 $path = "../";
+$proc_mon_path = "/var/www/html/FlowVision/status/kill";
+
+if(isset($_REQUEST["reset"])){
+
+	file_put_contents($proc_mon_path, "");
+
+    echo "<script type='application/javascript'>alert('Success. Processes will be up within 1 minute.');</script>";
+}
 
 if(array_key_exists("_config", $_REQUEST)){
     unset($_REQUEST["_config"]);
@@ -29,15 +37,32 @@ if(array_key_exists("_conf", $_REQUEST)){
     file_put_contents("config.json", $json_str);
     echo "<script type='application/javascript'>alert('Congiguration saved.');</script>";
 }
+
+function get_proc($name){
+	$proc_mon_path = "/var/www/html/FlowVision/status/";
+	$proc_mon_str = file_get_contents($proc_mon_path."proc_mon.json");
+	$proc_mon_obj = json_decode($proc_mon_str, TRUE);
+
+	if ($proc_mon_obj[$name]!=NULL){
+		if($proc_mon_obj[$name]!="0"){
+			return "Running.";
+		}
+	}
+	return "Stopped.";
+}
+
+function get_logs(){
+	$log_file_path = "/var/www/html/FlowVision/iteration_3/src/device.log";
+	exec("tail -n 30 $log_file_path | tac", $output);
+	$output = implode("<br>", $output);
+	return $output;
+}
+
 // Loading...
 $cfg_path = "../";
 $file_path = "/var/www/html/FlowVision/updates/";
 $config_str = file_get_contents("config.json");
 $config_obj = json_decode($config_str);
-
-$proc_mon_path = "/var/www/html/FlowVision/status/";
-$proc_mon_str = file_get_contents($proc_mon_path."proc_mon.json");
-$proc_mon_obj = json_decode($proc_mon_str, TRUE);
 
 if( @$_FILES['file']['name'] != "" )
 {
@@ -75,10 +100,20 @@ function get_up_time(){
 	$days  = $num;
 	return $days."d ".$hours."h ".$mins."m";
 }
+
+if (file_exists($proc_mon_path)){
+	$kill = True;
+}
+
 ?>
 <div class="container">
     <div class="row">
         <div class="col-lg-offset-2 col-md-2 col-sm-2 col-lg-8 col-md-8 col-sm-8 col-xs-12 bhoechie-tab-container">
+			<?php if($kill): ?>
+			<div class="alert alert-warning" role="alert">
+				ATTENTION: Programs restart is pending!
+			</div>
+			<?php endif; ?>
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 bhoechie-tab-menu">
                 <div class="list-group">
                     <a href="#" class="list-group-item active text-center">
@@ -92,9 +127,6 @@ function get_up_time(){
                     </a>
                     <a href="#" class="list-group-item text-center">
                         <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Logs
-                    </a>
-                    <a href="#" class="list-group-item text-center">
-                        <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Credit Card
                     </a>
                 </div>
             </div>
@@ -112,20 +144,25 @@ function get_up_time(){
                         <tbody>
                         <tr>
                             <td>Main program</td>
-                            <td>running</td>
+                            <td><?php echo get_proc("device.py"); ?></td>
                         </tr>
                         <tr>
                             <td>Communicator</td>
-                            <td>running</td>
+                            <td><?php echo get_proc("processor_1.py"); ?></td>
                         </tr>
                         <tr>
                             <td>Height measurement</td>
-                            <td>running</td>
+                            <td><?php echo get_proc("processor_2.py"); ?></td>
                         </tr>
                         </tbody>
                     </table>
                     <h6 class="text-right">Latest updated at: <?php echo htmlspecialchars(date("H:i:sa Y/m/d", $proc_mon_obj["timestmp"])); ?></h6>
-                    <!--<h6><Last updated at: 17:56,2017/11/20</h6>-->
+                    <div class="text-right">
+						<form>
+                        <input type="submit" value="restart programs" name="reset" class="btn btn-large btn-warning">
+						</form>
+                    </div>
+					<br>
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -175,11 +212,6 @@ function get_up_time(){
                         </tbody>
                     </table>
 					<h6 class="text-right">Latest updated at: <?php echo date("H:i:sa Y/m/d"); ?></h6>
-
-                    <div class="text-right">
-                        <button type="button" class="btn btn-info">Reset</button>
-                        <button type="button" class="btn btn-warning">Restart</button>
-                    </div>
 
 
                 </div>
@@ -237,7 +269,7 @@ function get_up_time(){
                 <div class="bhoechie-tab-content">
                     <center>
                         <form method="post" enctype="multipart/form-data">
-                            Select image to upload:
+                            Select update package to upload:
                             <input type="file" name="file" id="file">
                             <input type="submit" value="Upload" name="submit">
                         </form>
@@ -246,10 +278,14 @@ function get_up_time(){
                 </div>
 
                 <div class="bhoechie-tab-content">
-                    ss
+				<pre>
+<?php
+	echo get_logs();
+?>
+				</pre>
                 </div>
                 <div class="bhoechie-tab-content">
-                    sss
+
                 </div>
             </div>
         </div>
