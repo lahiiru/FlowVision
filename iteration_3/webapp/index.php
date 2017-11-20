@@ -37,7 +37,7 @@ $config_obj = json_decode($config_str);
 
 $proc_mon_path = "/var/www/html/FlowVision/status/";
 $proc_mon_str = file_get_contents($proc_mon_path."proc_mon.json");
-$proc_mon_obj = json_decode($proc_mon_str);
+$proc_mon_obj = json_decode($proc_mon_str, TRUE);
 
 if( @$_FILES['file']['name'] != "" )
 {
@@ -124,7 +124,7 @@ function get_up_time(){
                         </tr>
                         </tbody>
                     </table>
-                    <h6 class="text-right">Latest updated at: <?php htmlspecialchars(gmdate("H:i:sa Y/m/d", $proc_mon_obj->time)); ?></h6>
+                    <h6 class="text-right">Latest updated at: <?php echo htmlspecialchars(date("H:i:sa Y/m/d", $proc_mon_obj["timestmp"])); ?></h6>
                     <!--<h6><Last updated at: 17:56,2017/11/20</h6>-->
                     <table class="table table-bordered">
                         <thead>
@@ -239,7 +239,7 @@ function get_up_time(){
                         <form method="post" enctype="multipart/form-data">
                             Select image to upload:
                             <input type="file" name="file" id="file">
-                            <input type="submit" value="Upload Image" name="submit">
+                            <input type="submit" value="Upload" name="submit">
                         </form>
                     </center>
 
