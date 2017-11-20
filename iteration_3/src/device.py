@@ -242,7 +242,7 @@ class Device:
             device = Device("FlowMeter-local")
             device.start()
         except KeyboardInterrupt:
-            logger.warn("Forcely stopped by user")
+            logger.warn("Forcely stopped by user with signal SIGINT")
             exit(0)
 
 if __name__ == '__main__':

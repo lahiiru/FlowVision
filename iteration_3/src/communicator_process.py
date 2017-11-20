@@ -11,7 +11,7 @@ class CommunicatorProcess:
 
     def run(self):
         while 1:
-
+            print("creating new client {0}".format(self.index))
             conn = Client(('localhost', 7000+self.index), authkey=b'secret password')
             print("placing receive request by process {0}".format(self.index))
             message = conn.recv()
