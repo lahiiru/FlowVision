@@ -131,7 +131,7 @@ class Device:
         self.attach_debugger(DisplayDebugger(self))
         # self.attach_debugger(TelnetDebugger(self))
 
-        self.camera.start()
+        # self.camera.start()
         time.sleep(5)
         self.algorithm.debug = False
         self.algorithm.visualization_mode = 0

@@ -15,18 +15,19 @@ class RPiCamera(AbstractCamera):
         AbstractCamera.__init__(self)
         self.frame_rate = 50
         logger.debug("Raspberry Pi camera initiated.")
+        self.bulk_size = 50
 
     def get_name(self):
         return 'RPi Camera'
 
-    def _process(self, bulk_size):
+    def _process(self):
         with picamera.PiCamera(sensor_mode=7, resolution='VGA') as camera:
             camera.shutter_speed = 2000
             camera.framerate = 50
             time.sleep(4)
             while True:
                 start = time.time()
-                camera.capture_sequence(self.__receiver(bulk_size), format='jpeg', use_video_port=True)
+                camera.capture_sequence(self.__receiver(self.bulk_size), format='jpeg', use_video_port=True)
                 #self.frame_rate = int(self.img_buf_size / (time.time() - start))
 
     def __receiver(self, bulk_size):
