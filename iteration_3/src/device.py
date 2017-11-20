@@ -133,7 +133,6 @@ class Device:
 
         self.camera.start()
         time.sleep(5)
-
         self.algorithm.debug = False
         self.algorithm.visualization_mode = 0
 
@@ -145,6 +144,8 @@ class Device:
         logger.info("Distance: {0}".format(self.distance_sensor.get_real_time_distance_cm()))
         logger.info(cur_dir)
 
+        logger.info("{0} platform detected.".format(sys.platform))
+
         if sys.platform == 'win32':
             for script in ["processor_1.py", "processor_2.py"]:
                 script_path = cur_dir + os.sep + script
@@ -152,11 +153,26 @@ class Device:
                 _proc = subprocess.Popen(["python", script_path])
                 logger.info("started {0} with PID: {1}".format(script, _proc.pid))
 
+        clk = 0
+        good_frames = 0
+        frames_per_log = 10
+        cyclic_logging = True
         while True:
             frame = self.camera.get_frame()
 
             if frame is not None:
                 self.single_thread_run(frame)
+
+            # cyclic logging section -- start  #
+                if cyclic_logging:
+                    good_frames += 1
+                    if good_frames % frames_per_log == 0:
+                        logger.info("--->{0}th good frame processed.".format(good_frames))
+            if cyclic_logging:
+                clk += 1
+                if clk % frames_per_log == 0:
+                    logger.info("---{0}th clock passed.".format(clk))
+            # cyclic logging section -- end   #
 
     def single_thread_run(self, frame):
         if len(self.get_frame_buffer()) <= self.lot:
