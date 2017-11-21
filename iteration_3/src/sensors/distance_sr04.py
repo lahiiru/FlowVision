@@ -8,7 +8,7 @@ class DistanceSR04(DistanceSensor):
         self.trig_pin = trig_pin
         self.echo_pin = echo_pin
         # GPIO Mode (BOARD / BCM)
-        GPIO.setmode(GPIO.BCM)
+        GPIO.setmode(GPIO.BOARD)
 
         # set GPIO direction (IN / OUT)
         GPIO.setup(self.trig_pin, GPIO.OUT)
