@@ -117,16 +117,16 @@ if (file_exists($proc_mon_path)){
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 bhoechie-tab-menu">
                 <div class="list-group">
                     <a href="#" class="list-group-item active text-center">
-                        <h4 class="glyphicon glyphicon-plane"></h4><br/>Status
+                        <h4 class="glyphicon glyphicon-signal"></h4><br/>Status
                     </a>
                     <a href="#" class="list-group-item text-center">
-                        <h4 class="glyphicon glyphicon-road"></h4><br/>Configuration
+                        <h4 class="glyphicon glyphicon-cog"></h4><br/>Configuration
                     </a>
                     <a href="#" class="list-group-item text-center">
-                        <h4 class="glyphicon glyphicon-home"></h4><br/>Update
+                        <h4 class="glyphicon glyphicon-refresh"></h4><br/>Update
                     </a>
                     <a href="#" class="list-group-item text-center">
-                        <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Logs
+                        <h4 class="glyphicon glyphicon-flag"></h4><br/>Logs
                     </a>
                 </div>
             </div>
@@ -224,10 +224,10 @@ if (file_exists($proc_mon_path)){
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="email"><h5>Shape</h5></label>
                             <div class="radio">
-                                <label><input type="radio" name="round">Round</label>
+                                <label><input type="radio" name="round" selected>Round</label>
                             </div>
                             <div class="radio">
-                                <label><input type="radio" name="rect">Rectangular</label>
+                                <label><input type="radio" name="rect" disabled>Rectangular</label>
                             </div>
                         </div>
                         <div class="form-group">
