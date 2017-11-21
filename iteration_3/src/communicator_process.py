@@ -26,7 +26,7 @@ class CommunicatorProcess:
                     if ret == "0":
                         logger.debug("update failed retrying...")
             except Exception as e:
-                logger.warn("Error from processor {0}: {0}. Retrying...".format(1,e.message))
+                logger.warn("Error from processor {0}: {0}. Retrying...".format(self.index,e.message))
 
 
 

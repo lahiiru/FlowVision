@@ -91,6 +91,7 @@ class Device:
         self.pixels_per_second = 0
         self.x_distances = []
         self.y_distances = []
+        self.distance = 1
 
         try:
             self.listener_1 = Listener(('localhost', 7000), authkey=b'secret password')
@@ -178,11 +179,18 @@ class Device:
     def single_thread_run(self, frame):
         pixel_distances = self.algorithm.bulk_receive(self.get_frame_buffer())
         print pixel_distances
+
         # print self.pixel_distances
         self.calculate_velocity(pixel_distances, 'single thread')
         # self.save_data()
         self.frames_buffer_clear()
 
+    def update_distance(self):
+        self.conn_1 = self.listener_1.accept()
+        logger.debug("placing distance receive request for process {0}".format(1))
+        self.distance = self.conn_1.recv()
+        logger.debug("distance received {0}".format(self.distance))
+        self.conn_1.close()
 
     def calculate_velocity(self, pixel_distances, process_id):
         self.pixels_per_second = self.get_pixels_per_second(pixel_distances)
