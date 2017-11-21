@@ -18,7 +18,10 @@ class SensorProcess:
             try:
                 m = []
                 for i in range(self.avg):
-                    m += [self.distance_sensor.get_real_time_distance_cm()]
+                    d=self.distance_sensor.get_real_time_distance_cm()
+                    logger.debug("taken measurement {0}cm".format(d))
+                    m += [d]
+
 
                 m = np.array(m)
                 self.distance = np.average(m)
