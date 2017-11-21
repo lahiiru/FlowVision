@@ -54,7 +54,7 @@ for module_name in scripts:
         else:
             cron_result[module_name] = "0"
     if not found:
-        subprocess.Popen(['python', '/var/www/html/FlowVision/iteration_3/{0}'.format(module_name), '0'], close_fds=True)
+        subprocess.Popen(['python', '/var/www/html/FlowVision/iteration_3/src/{0}'.format(module_name), '0'], close_fds=True)
 
 with open("{0}{1}{2}".format(DevConfig.STATUS_DIR, os.sep, "proc_mon.json") , 'w') as outfile:
     json.dump(cron_result, outfile)
