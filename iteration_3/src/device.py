@@ -21,6 +21,7 @@ from utilities import *
 from communicators import *
 from sensors import *
 from multiprocessing.connection import Listener
+import json
 import subprocess
 
 path = os.path.realpath(__file__)
@@ -196,14 +197,25 @@ class Device:
         self.pixels_per_second = self.get_pixels_per_second(pixel_distances)
         if self.pixels_per_second is not None:
             self.meters_per_second = round(Converter.convert_meters_per_second(self.pixels_per_second), 2)
-
-            message = self.communicator.prepare_message_json(self.meters_per_second, self.distance, dict())
+            d = 0
+            try:
+                with open("../webapp/{0}".format("config.json"), 'r') as outfile:
+                    c = outfile.read()
+                    obj = json.loads(c)
+                    d = obj['depth']
+            except:
+                pass
+            if d == 0:
+                level = self.distance
+            else:
+                level = (d - self.distance) * 100.0 / d
+            message = self.communicator.prepare_message_json(self.meters_per_second, level, dict())
             logger.info('waiting for request from: process {0}'.format(0))
             self.conn_1 = self.listener_1.accept()
             logger.info('connection accepted from: {0}'.format(self.listener_1.last_accepted))
             self.conn_1.send(message)
 
-            logger.info("Current velocity from {0}: {1} m/s".format(process_id, self.meters_per_second))
+            logger.info("Current velocity from {0}: {1} m/s. Level: {2}".format(process_id, self.meters_per_second, level))
             # logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
 
         pixel_distances = []
