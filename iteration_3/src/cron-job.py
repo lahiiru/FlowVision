@@ -44,13 +44,17 @@ cron_result['timestmp'] = time.time()
 
 scripts = ["device.py", "processor_1.py", "processor_2.py"]
 for module_name in scripts:
+    found = False
     res = subprocess.check_output("pgrep -lf {0}".format(module_name), shell=True).split()
     if "python" in res:
         idx = res.index("python")
         if idx > 0:
+            found = True
             cron_result[module_name] = res[idx-1]
         else:
             cron_result[module_name] = "0"
+    if not found:
+        subprocess.Popen(['python', '/var/www/html/FlowVision/iteration_3/{0}'.format(module_name), '0'], close_fds=True)
 
 with open("{0}{1}{2}".format(DevConfig.STATUS_DIR, os.sep, "proc_mon.json") , 'w') as outfile:
     json.dump(cron_result, outfile)
