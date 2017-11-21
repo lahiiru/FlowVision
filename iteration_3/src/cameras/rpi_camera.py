@@ -40,7 +40,7 @@ class RPiCamera(AbstractCamera):
             # cv2.waitKey(1)
             # self._put_frame(image)
             self.frame_array.append(image)
-            logger.debug("Put frame. Queue size :" + str(self.frames.qsize()))
+            #logger.debug("Put frame. Queue size :" + str(self.frames.qsize()))
             stream.seek(0)
             stream.truncate()
 
