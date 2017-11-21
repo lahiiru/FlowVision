@@ -197,7 +197,7 @@ class Device:
         if self.pixels_per_second is not None:
             self.meters_per_second = round(Converter.convert_meters_per_second(self.pixels_per_second), 2)
 
-            message = self.communicator.prepare_message_json(self.meters_per_second, 10, dict())
+            message = self.communicator.prepare_message_json(self.meters_per_second, self.distance, dict())
             logger.info('waiting for request from: process {0}'.format(0))
             self.conn_1 = self.listener_1.accept()
             logger.info('connection accepted from: {0}'.format(self.listener_1.last_accepted))

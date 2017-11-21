@@ -224,7 +224,7 @@ if (file_exists($proc_mon_path)){
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="email"><h5>Shape</h5></label>
                             <div class="radio">
-                                <label><input type="radio" name="round" selected>Round</label>
+                                <label><input type="radio" name="round" value="1">Round</label>
                             </div>
                             <div class="radio">
                                 <label><input type="radio" name="rect" disabled>Rectangular</label>
