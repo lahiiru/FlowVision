@@ -85,7 +85,7 @@ class Device:
         self.sch_index = 0
         self.meters_per_second = 0
         self.frame_buff = []
-        self.lot = 100
+        self.lot = 50
         self.x_distance =0
         self.y_distance = 0
         self.frame_nos = ()
@@ -217,6 +217,13 @@ class Device:
 
             logger.info("Current velocity from {0}: {1} m/s. Level: {2}".format(process_id, self.meters_per_second, level))
             # logger.info("Current discharge from {0}: {1} m3/s".format(process_id, self.discharge))
+            measurements = {}
+            measurements['timestmp'] = time.time()
+            measurements['velocity'] = self.meters_per_second
+            measurements['level'] = level
+
+            with open("{0}{1}{2}".format(DevConfig.STATUS_DIR, os.sep, "measures.json"), 'w') as outfile:
+                json.dump(measurements, outfile)
 
         pixel_distances = []
 

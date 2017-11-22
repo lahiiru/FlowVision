@@ -50,6 +50,16 @@ function get_proc($name){
 	}
 	return "Stopped.";
 }
+function get_m($param){
+	$m_path = "/var/www/html/FlowVision/status/";
+	$m_str = file_get_contents($m_path."measures.json");
+	$m_obj = json_decode($m_str, TRUE);
+
+	if ($m_obj[$name]!=NULL){
+		return $m_obj[$name];
+	}
+	return "N/A";
+}
 
 function get_logs(){
 	$log_file_path = "/var/www/html/FlowVision/iteration_3/src/device.log";
@@ -166,25 +176,25 @@ if (file_exists($proc_mon_path)){
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th colspan="2" class="text-center">Latest Measurements</th>
+                            <th colspan="2" class="text-center">Last Measurements</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td>Surface velocity (m/s)</td>
-                            <td>13.42</td>
+                            <td><?php echo get_m('velocity'); ?></td>
                         </tr>
                         <tr>
                             <td>Flow level (m)</td>
-                            <td>0.21</td>
+                            <td><?php echo get_m('level'); ?></td>
                         </tr>
                         <tr>
                             <td>Discharge (m3/s)</td>
-                            <td>3.21</td>
+                            <td><?php echo get_m('discharge'); ?></td>
                         </tr>
                         </tbody>
                     </table>
-                    <h6 class="text-right">Latest updated at: 18:46,2017/11/20</h6>
+                    <h6 class="text-right">Latest updated at:  <?php echo htmlspecialchars(date("H:i:sa Y/m/d", get_m('timestmp'))); ?></h6>
 
                     <table class="table table-bordered">
                         <thead>
