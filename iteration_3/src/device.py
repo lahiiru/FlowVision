@@ -202,7 +202,7 @@ class Device:
                 with open("../webapp/{0}".format("config.json"), 'r') as outfile:
                     c = outfile.read()
                     obj = json.loads(c)
-                    d = obj['depth']
+                    d = int(obj['depth'])
             except:
                 pass
             if d == 0:
